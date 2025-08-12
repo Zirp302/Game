@@ -1,35 +1,61 @@
 import pyglet
 from pyglet import shapes as sh
 from pyglet.window.key import *
-speed=5
+
 # доки пайглета https://pyglet.readthedocs.io/en/latest/programming_guide/shapes.html
 #это чтобы писать названия клавиш не указывая функцию key
 # wind is a window object
+
 wind = pyglet.window.Window(width=720,height=720,caption="gameOnPyglet")
-playr=pyglet.graphics.Batch()
-#playr is a player with all his parts
-body=sh.Rectangle(200,200,10,30,batch=playr,color=[54,136,181])
-head=sh.Circle(205,231,10,batch=playr,color=[54,136,181])
-leg1=sh.Line(201,202,193,189,batch=playr,color=[54,136,181])
-leg2=sh.Line(210,202,218,189,batch=playr,color=[54,136,181])
-arm1=sh.Line(200,224,192,215,batch=playr,color=[54,136,181])
-arm2=sh.Line(209,224,217,215,batch=playr,color=[54,136,181])
-@wind.event
-# this need to create a default-type function
-def on_draw():
-    wind.clear()
-    #кстати чтобы определить цвет я использую https://colorscheme.ru/color-names.html
-    playr.draw()
+w = 50
+h = 100
+playr = sh.Rectangle(331, 331, w, h, color=(54,136,181))
+
+
 @wind.event
 def on_mouse_press(x,y,button,modifiers):
     print(f"x = {x}, y = {y}")
-def pl_moving(dX,dY):
-    for i in [body,head,leg1,leg2,arm1,arm2]:
-        i.x+=dX
-        i.y+=dY
-    #не работает
+
+
+dom = pyglet.graphics.Batch()
+
+l_l_v = (240, 480)
+l_l_n = (240, 240)
+r_r_v = (480, 480)
+r_r_n = (480, 240)
+
+# Мысленно подели поле на 9 одинаковых квадратов
+
+wall_verh_left = sh.Line(l_l_v[0] + 10, l_l_v[1], l_l_n[0] + 10, l_l_n[1], thickness=20, batch=dom)
+wall_verh_right = sh.Line(r_r_v[0] - 10, r_r_v[1], r_r_n[0] - 10, r_r_n[1], thickness=20, batch=dom)
+
+wall_left_verh = sh.Line(r_r_v[0], r_r_v[1], l_l_v[0], l_l_v[1], thickness=20, batch=dom)
+wall_left_niz = sh.Line(r_r_n[0], r_r_n[1], l_l_n[0], l_l_n[1], thickness=20, batch=dom)
+
+wall_niz_left = sh.Line(100, 100, 100, 200, thickness=20, batch=dom)
+wall_niz_right = sh.Line(100, 100, 100, 200, thickness=20, batch=dom)
+
+wall_right_verh = sh.Line(100, 100, 100, 200, thickness=20, batch=dom)
+wall_right_niz = sh.Line(100, 100, 100, 200, thickness=20, batch=dom)
+
+
+zonaw = w + 10
+zonah = h / 2
+#                 проверяет является ли х игрока х стен и если да то прорверяет являетсяли у игрока выше нижней точки стены и является ли y игрока ниже высшой точки стены
+#                 и если все 3 условия выполнены то он не позваляет х увеличеваться
+# Работает только на левой стене НЕ ТРОГАЙ я сам допелю
+left_stena = not(5 + r_r_v[0] - 5 < zonaw + playr.x < 5 + r_r_v[0] and r_r_n[1] < zonah + playr.y < r_r_v[1] and not playr.x + x < playr.x)
+
+def pl_moving(x,y):
+    if 0 < x + playr.x < 721 - w and :
+        print(zonah + playr.x == r_r_v[0], r_r_n[1] < zonah + playr.y < r_r_v[1])
+        playr.x+=x
+    if 0 < y + playr.y < 721 - w:
+        playr.y+=y
+
 keys={'W': False, 'A': False, 'S': False, 'D': False}
 @wind.event
+
 def on_key_press(symbol, modifiers):
     if symbol == W:
         keys['W'] = True
@@ -39,6 +65,7 @@ def on_key_press(symbol, modifiers):
         keys['S'] = True
     elif symbol == D:
         keys['D'] = True
+
 
 @wind.event
 def on_key_release(symbol, modifiers):
@@ -51,15 +78,25 @@ def on_key_release(symbol, modifiers):
     elif symbol == D:
         keys['D'] = False
 
-def update(dt):
+
+
+def update(dt, speed=5):
     if keys['W']:
         pl_moving(0, speed)
-    if keys['A']:
-        pl_moving(-speed, 0)
     if keys['S']:
         pl_moving(0, -speed)
+    if keys['A']:
+        pl_moving(-speed, 0)
     if keys['D']:
         pl_moving(speed, 0)
+
+
+@wind.event
+def on_draw():
+    wind.clear()
+    #кстати чтобы определить цвет я использую https://colorscheme.ru/color-names.html
+    playr.draw()
+    dom.draw()
 
 pyglet.clock.schedule_interval(update,1/60)
 pyglet.app.run()
