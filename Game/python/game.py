@@ -47,23 +47,12 @@ zonah = h
 
 
 def ogran_x(x1, y1, x2, y2, playr_x, zonaw=zonaw, zonah=zonah, speed=5): # Доделать блокировку по высоте
-    shirina = False
-    if x1 == x2:
-        x = x1
-        visota = y1 < playr.y + zonah < y2 + zonah
-        if playr_x > 0:
-            shirina = x + speed > playr.x + zonaw > x - 10
-        else: 
-            shirina =  x + 15 < playr.x + speed < x + 20 
-
-    elif y1 == y2:
-        y = y1
-        shirina = x1 < playr.x + zonah < x2 + zonax
-        if playr_y > 0 and y + speed > playr.y + zonah > y:
-            visota = playr.y + zonah > y
-        elif playr_y < 0 and y + 15 < playr.y + speed < y + 20: # 15 = 20 - speed=5
-            visota = playr.y + speed < y + 20 
-
+    x = x1
+    visota = y1 < playr.y + zonah < y2 + zonah
+    if playr_x > 0:
+        shirina = x + speed > playr.x + zonaw > x - 10
+    else: 
+        shirina =  x + 15 < playr.x + speed < x + 20 
 
     print(shirina, visota, playr.x)
     return shirina and visota
@@ -71,8 +60,11 @@ def ogran_x(x1, y1, x2, y2, playr_x, zonaw=zonaw, zonah=zonah, speed=5): # До�
 
 
 def pl_moving(x,y):
-    l_v = not ogran_x(r_r_v[0] - 10, r_r_n[1], r_r_v[0] - 10, r_r_v[1], x) and not ogran_x(l_l_v[0] + 10, l_l_n[1], l_l_n[0] + 10, l_l_v[1], x)
-    if 0 < x + playr.x < 721 - w and l_v:
+    stena_l = not ogran_x(l_l_v[0] + 10, l_l_n[1], l_l_n[0] + 10, l_l_v[1], x)
+    stena_r = not ogran_x(r_r_v[0] - 10, r_r_n[1], r_r_v[0] - 10, r_r_v[1], x)
+
+    
+    if 0 < x + playr.x < 721 - w and stena_l and stena_r:
         playr.x += x
     if 0 < y + playr.y < 721 - w:
         playr.y += y
