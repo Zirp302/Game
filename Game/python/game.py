@@ -51,10 +51,10 @@ def ogran_x(x1, y1, x2, y2, playr_x, zonaw=zonaw, zonah=zonah, speed=5): # До�
     if x1 == x2:
         x = x1
         visota = y1 < playr.y + zonah < y2 + zonah
-        if playr_x > 0 and x + speed > playr.x + zonaw > x - 10:
-            shirina = playr.x + zonaw > x - 10
-        elif playr_x < 0 and x + 15 < playr.x + speed < x + 20: # 15 = 20 - speed=5
-            shirina = playr.x + speed < x + 20 
+        if playr_x > 0:
+            shirina = x + speed > playr.x + zonaw > x - 10
+        else: 
+            shirina =  x + 15 < playr.x + speed < x + 20 
 
     elif y1 == y2:
         y = y1
