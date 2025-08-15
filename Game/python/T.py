@@ -25,9 +25,9 @@ r_r_n = (480, 240)
 
 dom = pyglet.graphics.Batch()
 wall_verh_left = sh.Line(l_l_v[0] + 10, l_l_n[1], l_l_n[0] + 10, l_l_v[1], thickness=20, batch=dom)
-wall_verh_right = sh.Line(r_r_v[0] - 10, r_r_v[1], r_r_n[0] - 10, r_r_n[1], thickness=20, batch=dom)
+#wall_verh_right = sh.Line(r_r_v[0] - 10, r_r_v[1], r_r_n[0] - 10, r_r_n[1], thickness=20, batch=dom)
 
-wall_left_verh = sh.Line(r_r_v[0], r_r_v[1], l_l_v[0], l_l_v[1], thickness=20, batch=dom)
+#wall_left_verh = sh.Line(r_r_v[0], r_r_v[1], l_l_v[0], l_l_v[1], thickness=20, batch=dom)
 #wall_left_niz = sh.Line(r_r_n[0], r_r_n[1], l_l_n[0], l_l_n[1], thickness=20, batch=dom) Раскаментируй для появления нижней стены, a также раскаментируй код на 74 а также на 76 
 
 """ Ворота. Не доделано
@@ -38,44 +38,40 @@ wall_right_verh = sh.Line(100, 100, 100, 200, thickness=20, batch=dom)
 wall_right_niz = sh.Line(100, 100, 100, 200, thickness=20, batch=dom)"""
 
 
-def ogran(x1, y1, x2, y2, playr_x, playr_y, zonaw=w, zonah=h, speed=5): # Доделать блокировку cтенам
+def ogran(x1, y1, x2, y2, x, y, zonaw=w, zonah=h, speed=5): # Доделать блокировку cтенам
     x1 = min(x1, x2)
     x2 = max(x1, x2)
-
     y1 = min(y1, y2)
     y2 = max(y1, y2)
-
-
     if x1 == x2:
-        visota = y1 < playr.y + zonah < y2 + zonah
-        if playr_xy > 0:
-            shirina = x1 + speed > playr.x + zonaw > x2 - 10
-        else: 
-            shirina =  x2 + 15 < playr.x + speed < x1 + 20     
-        return shirina and visota
-
+        x2 = x2 + 20
     else:
-        shirina = x1 + speed < playr.x + zonaw < x2 + zonaw
-        if playr_xy > 0:
-            visota = y1 + speed > playr.y + zonah> y2 - 10
-        else: 
-            visota = y1 + 15 < playr.y + speed < y2 + 20
+        y2 = y2 + 20
+    print(x1, playr.x, x, x2 )
+    
+    if x1 + speed - zonaw < playr.x + x < x2 and y1 + speed - zonah < playr.y + y < y2:
+        return False
+    return True
 
-        print(shirina, visota, playr.x, playr.y)
-        return shirina and visota
+
+            
+
+
+
+
 
 
 def pl_moving(x,y):
-    stena_l = not ogran(l_l_v[0] + 10, l_l_n[1], l_l_n[0] + 10, l_l_v[1] + 10, x, y)
-    stena_r = not ogran(r_r_v[0] - 10, r_r_n[1], r_r_v[0] - 10, r_r_v[1] + 10, x, y)
+    stena_l = ogran(l_l_v[0], l_l_n[1], l_l_n[0], l_l_v[1], x, y)
+    #stena_r = not ogran(r_r_v[0] - 10, r_r_n[1], r_r_v[0] - 10, r_r_v[1] + 10, x, y)
 
-    if 0 < x + playr.x < 721 - w and stena_l and stena_r:
+    if 0 < x + playr.x < 721 - w and stena_l: #'''and stena_r'''
         playr.x += x
 
-    stena_v = not ogran(l_l_v[0], r_r_v[1], r_r_v[0], l_l_v[1], x, y)
+    #stena_v = not ogran(l_l_v[0], r_r_v[1], r_r_v[0], l_l_v[1], x, y)
     #stena_n = not ogran(l_l_v[0], r_r_n[1], r_r_v[0], l_l_n[1], y) прочитай послание на 31 строке
 
-    if 0 < y + playr.y < 721 - w and stena_v and '''stena_n прочитай послание на 31 строке''':
+    if 0 < y + playr.y < 721 - w and stena_l: # '''and stena_v and stena_n прочитай послание на 31 строке'''
         playr.y += y
 
 keys={'W': False, 'A': False, 'S': False, 'D': False}
