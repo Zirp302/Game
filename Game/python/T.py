@@ -21,7 +21,7 @@ HP = sh.Rectangle(playr.x, playr.y + h, HP_playr * HP_One, 15, color=(255,0,0), 
 @wind.event
 def on_mouse_press(x,y,button,modifiers):
     print(f"x = {x}, y = {y}")
-print(9)
+
 
 LeftNiz_X = wind_width / 2 - 120
 LeftNiz_Y =  wind_height / 2 - 120
@@ -75,7 +75,7 @@ def ogran(x1, y1, x2, y2, x=0, y=0, zonaw=w, zonah=h, speed=5): # Доделат
     else:
         y1 -= 10
         y2 += 10
-    print(x1, playr.x, x, x2 )
+    
     
     if x1 - zonaw < playr.x + x < x2 and y1 - zonah < playr.y + y < y2:
         return False
