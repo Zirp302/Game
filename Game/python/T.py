@@ -1,3 +1,4 @@
+from Objekts import Pl
 import pyglet
 import time
 from pyglet import shapes as sh
@@ -7,14 +8,19 @@ from pyglet.window.key import *
 #это чтобы писать названия клавиш не указывая функцию key
 # wind is a window object
 
+
 wind_width, wind_height = (720, 720)
 wind = pyglet.window.Window(width=wind_width, height=wind_height, caption="gameOnPyglet")
 w, h = (50, 100)
 pl = pyglet.graphics.Batch()
-playr = sh.Rectangle(330, 330, w, h, color=(54, 136, 181), batch=pl)
+playr = Pl(x=361, y=361, width=50, height=100, color=(54, 136, 181), batch=pl)
 HP_playr = 5
 HP_One = w / HP_playr
 HP = sh.Rectangle(playr.x, playr.y + h, HP_playr * HP_One, 15, color=(255,0,0), batch=pl)
+
+
+
+
 
 
 
@@ -147,13 +153,13 @@ def Damag(dt, HP_One=HP_One):
 
 def update(dt, speed=5):
     if keys['W']:
-        pl_moving(0, speed)
+        playr.pl_moving(0, speed)
     if keys['S']:
-        pl_moving(0, -speed)
+        playr.pl_moving(0, -speed)
     if keys['A']:
-        pl_moving(-speed, 0)
+        playr.pl_moving(-speed, 0)
     if keys['D']:
-        pl_moving(speed, 0)
+        playr.pl_moving(speed, 0)
 
 #кстати чтобы определить цвет я использую https://colorscheme.ru/color-names.html
 
@@ -161,7 +167,7 @@ def update(dt, speed=5):
 @wind.event
 def on_draw():
     wind.clear()
-    pl.draw()
+    playr.draw()
     dom.draw()
 
 pyglet.clock.schedule_interval(update, 1/60)
