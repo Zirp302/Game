@@ -20,10 +20,9 @@ class Pl:
             self.playr.x += x
         if 0 < y + self.playr.y < 721 - self.width:
             self.playr.y += y
+    #Прорисовка происходит ТОЛЬКО в функции с названием on_draw 
 
 
-    def draw(self):
-        self.playr.draw()
-    
-
-
+class Zombi:
+    def __init__(self, x, y, w, h, col={}):
+        
