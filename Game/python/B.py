@@ -5,17 +5,15 @@ import random
 # доки пайглета https://pyglet.readthedocs.io/en/latest/programming_guide/shapes.html
 #это чтобы писать названия клавиш не указывая функцию key
 # wind is a window object
-
+from Objects import Zombi
 xp=100
+isSpawn=True
 #Сори но это хп персонажа я не мог не реализовать хп если есть зомби
 wind = pyglet.window.Window(width=720,height=720,caption="gameOnPyglet")
 #могут ли зомби появляться
-isZombSpawn=True
-spawnSpeed=1/5
 #Скорость появления зомбей попробуй изменить число на какое нибудь оч маленькое по типу 1/60 и тд
 w = 30
 h = 30
-zombies = {}
 drawInfuncs=[]
 text = pyglet.graphics.Batch()
 playr = sh.Rectangle(331, 331, w, h, color=(54, 136, 181))
@@ -25,7 +23,7 @@ xpB=pyglet.text.Label(str(xp),20,690,color=(255,0,0),batch=text)
 @wind.event
 def on_mouse_press(x,y,button,modifiers):
     print(f"x = {x}, y = {y}")
-
+defaultZomb=Zombi()
 
 class OutOfXpError(Exception):
     pass
@@ -92,49 +90,6 @@ wall_niz_right = sh.Line(100, 100, 100, 200, thickness=20, batch=dom)
 wall_right_verh = sh.Line(100, 100, 100, 200, thickness=20, batch=dom)
 wall_right_niz = sh.Line(100, 100, 100, 200, thickness=20, batch=dom)"""
 
-def spawn(dt,isSpawn):
-    if isSpawn:
-        #зомби спавнятся на краю карты значит одна из координат должна быть равна нулю или 720
-        coord=random.randint(0,720)
-        coord1=random.choice((0,720))
-        global zombies
-        if random.randint(0,1) == 0:
-            #print(1,coord,coord1)
-            zombies[(sh.Rectangle(coord,coord1,25,25,(21,110,100),batch=zombi))] = 100
-        else:
-            #print(2,coord1,coord)
-            #зомбей справа  и сверху видно не было поэтому я думал что спaвн почему то не работает
-            zombies[(sh.Rectangle(coord1,coord,25,25,(21,110,100),batch=zombi))] = 100
-        #значение в хэш таблице это хр зомби
-
-
-zombSpeed=1
-def zombMoving(dt):
-        if zombies:
-    #зачем я создаю функции подо все что происходит? Так надо
-            for zombis in zombies.keys():
-                if playr.x > zombis.x:
-                    zombis.x+=zombSpeed
-                elif playr.x < zombis.x:
-                    zombis.x=zombis.x-zombSpeed
-                else:
-                    pass
-                if playr.y > zombis.y:
-                    zombis.y+=zombSpeed
-                elif playr.y < zombis.y:
-                    zombis.y=zombis.y-zombSpeed
-
-
-
-
-def zombAttack(dt):
-    #это можно было сделать и в функции zombMoving но нет надо ведь нагрузить комп кучей бесполезных функций
-    if zombies:
-        for i in zombies:
-            if i.x in list(range(playr.x-10,playr.x+10)) and i.y in list(range(playr.y-10,playr.y+10)):
-                    xpB.text = str(int(xpB.text)-10)
-                    if int(xpB.text)==0:
-                        raise OutOfXpError
 
 
 def ogran(x1, y1, x2, y2, x, y, zonaw=w, zonah=h, speed=5): # Доделать блокировку cтенам
@@ -213,9 +168,9 @@ def on_draw():
     zombi.draw()
     text.draw()
 
-pyglet.clock.schedule_interval(spawn,spawnSpeed,isZombSpawn)
-pyglet.clock.schedule_interval(zombMoving,1/20)
+pyglet.clock.schedule_interval(defaultZomb.spawn(),defaultZomb.spawSpeed,)
+pyglet.clock.schedule_interval(defaultZomb.moving,1/20)
 #передвижения зомбей с обновлением каждые 1/4 секунды может уже не 1/4 
 pyglet.clock.schedule_interval(update,1/60)
-pyglet.clock.schedule_interval(zombAttack,1/2)
+pyglet.clock.schedule_interval(defaultZomb.attack,1/2)
 pyglet.app.run()
