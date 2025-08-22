@@ -123,17 +123,17 @@ def Damag(dt, HP_One=HP_One):
             dm = False"""
 
 
-keyss = key.KeyStateHandler()
-wind.push_handlers(keyss)
+keys = key.KeyStateHandler()
+wind.push_handlers(keys)
 
 def update(dt, speed=5):
-    if keyss[key.W]:
+    if keys[key.W]:
         playr.pl_moving(0, speed)
-    if keyss[key.S]:
+    if keys[key.S]:
         playr.pl_moving(0, -speed)
-    if keyss[key.A]:
+    if keys[key.A]:
         playr.pl_moving(-speed, 0)
-    if keyss[key.D]:
+    if keys[key.D]:
         playr.pl_moving(speed, 0)
 
 #кстати чтобы определить цвет я использую https://colorscheme.ru/color-names.html
