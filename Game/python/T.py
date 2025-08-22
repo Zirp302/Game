@@ -1,4 +1,4 @@
-from Objekts import Pl
+from Game.python.Objects import Pl
 import pyglet
 import time
 from pyglet import shapes as sh
