@@ -1,9 +1,10 @@
 from Objekts import Pl
+import keyboard as k
 import pyglet
 import time
 from pyglet import shapes as sh
 from pyglet.window.key import *
-
+from pyglet.window import key
 # доки пайглета https://pyglet.readthedocs.io/en/latest/programming_guide/shapes.html
 #это чтобы писать названия клавиш не указывая функцию key
 # wind is a window object
@@ -14,9 +15,6 @@ wind = pyglet.window.Window(width=wind_width, height=wind_height, caption="gameO
 w, h = (50, 100)
 pl = pyglet.graphics.Batch()
 playr = Pl(x=361, y=361, width=50, height=100, color=(54, 136, 181), batch=pl)
-HP_playr = 5
-HP_One = w / HP_playr
-HP = sh.Rectangle(playr.x, playr.y + h, HP_playr * HP_One, 15, color=(255,0,0), batch=pl)
 
 
 
@@ -87,7 +85,7 @@ def ogran(x1, y1, x2, y2, x=0, y=0, zonaw=w, zonah=h, speed=5): # Доделат
         return False
     return True
 dm = False
-
+"""
 def pl_moving(x,y):
     stena_l = ogran(left_S[0], left_S[1], left_S[2], left_S[3], x, y)
     stena_r = ogran(right_S[0], right_S[1], right_S[2], right_S[3], x, y)
@@ -103,35 +101,9 @@ def pl_moving(x,y):
         HP.x += x
     if 0 < y + playr.y < 721 - w and avanpost :
         playr.y += y
-        HP.y += y
+        HP.y += y"""
 
-keys={'W': False, 'A': False, 'S': False, 'D': False}
-
-
-
-@wind.event
-def on_key_press(symbol, modifiers):
-    if symbol == W:
-        keys['W'] = True
-    elif symbol == A:
-        keys['A'] = True
-    elif symbol == S:
-        keys['S'] = True
-    elif symbol == D:
-        keys['D'] = True
-
-
-@wind.event
-def on_key_release(symbol, modifiers):
-    if symbol == W:
-        keys['W'] = False
-    elif symbol == A:
-        keys['A'] = False
-    elif symbol == S:
-        keys['S'] = False
-    elif symbol == D:
-        keys['D'] = False
-
+"""
 time_kd = 0
 def Damag(dt, HP_One=HP_One):
     global dm
@@ -148,17 +120,20 @@ def Damag(dt, HP_One=HP_One):
             playr.x, playr.y = (360, 360)
             HP.x, HP.y = (360, 360 + 100)
             HP.width = playr.width
-            dm = False
+            dm = False"""
 
+
+keyss = key.KeyStateHandler()
+wind.push_handlers(keyss)
 
 def update(dt, speed=5):
-    if keys['W']:
+    if keyss[key.W]:
         playr.pl_moving(0, speed)
-    if keys['S']:
+    if keyss[key.S]:
         playr.pl_moving(0, -speed)
-    if keys['A']:
+    if keyss[key.A]:
         playr.pl_moving(-speed, 0)
-    if keys['D']:
+    if keyss[key.D]:
         playr.pl_moving(speed, 0)
 
 #кстати чтобы определить цвет я использую https://colorscheme.ru/color-names.html
@@ -171,5 +146,5 @@ def on_draw():
     dom.draw()
 
 pyglet.clock.schedule_interval(update, 1/60)
-pyglet.clock.schedule_interval(Damag, 1/60, HP_One)
+"""pyglet.clock.schedule_interval(Damag, 1/60, HP_One)"""
 pyglet.app.run()
