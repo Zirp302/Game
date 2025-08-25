@@ -14,10 +14,8 @@ from pyglet.window import key
 wind_width, wind_height = (720, 720)
 wind = pyglet.window.Window(width=wind_width, height=wind_height, caption="gameOnPyglet")
 width, height = (50, 100)
-pl = pyglet.graphics.Batch()
-playr = Pl(x=361, y=361, width=50, height=100, color=(54, 136, 181), batch=pl)
-HP = playr.HP()
-playr = playr.playr
+playr = Pl().playr
+HP = Pl().HP()
 print(HP)
 
 @wind.event
@@ -68,7 +66,7 @@ wall_left = sh.Line(left_S[0], left_S[1], left_S[2], left_S[3], thickness=Shir_S
 wall_right = sh.Line(right_S[0], right_S[1], right_S[2], right_S[3], thickness=Shir_S, batch=dom)
 wall_verh = sh.Line(verh_S[0], verh_S[1], verh_S[2], verh_S[3], thickness=Shir_S, batch=dom)
 wall_niz = sh.Line(niz_S[0], niz_S[1], niz_S[2], niz_S[3], thickness=Shir_S, batch=dom) 
-shipi = sh.Rectangle(200, 200, 20, 20, color=(111,111,111), batch=pl)
+shipi = sh.Rectangle(200, 200, 20, 20, color=(111,111,111), batch=dom)
 
 def ogran(x1, y1, x2, y2, x=0, y=0, zonaw=width, zonah=height, speed=5): # Доделать блокировку cтенам
     if x1 == x2:
@@ -142,7 +140,7 @@ def update(dt, speed=5):
 @wind.event
 def on_draw():
     wind.clear()
-    pl.draw()
+    Pl.draw()
     dom.draw()
 
 pyglet.clock.schedule_interval(update, 1/60)

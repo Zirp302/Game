@@ -1,41 +1,25 @@
 from pyglet import shapes as sh
-from pyglet.window.key import *
-import Uprav
-class Pl:
-    def __init__(self,batch, x=100, y=100, width=10, height=10, color={125,254,88}):
 from Uprav import Uprav
-
+import pyglet
 
 class Pl:
     # Создание самого игрока
-    playr = None
-    def __init__(self, x, y, width, height, color, batch):
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
-        self.color = color
-        self.batch = batch
-        Pl.playr = sh.Rectangle(x, y, width, height, color, batch=batch)
-        
+    x=361
+    y=361
+    width=50
+    height=100
+    color=(54, 136, 181)
+    pl = pyglet.graphics.Batch()
+    def __init__(self):
+        self.playr = sh.Rectangle(Pl.x, Pl.y, Pl.width, Pl.height, Pl.color, batch=Pl.pl)
 
     # HP игрока
     def HP(self):
-        playr = Pl.playr
         HP_playr = 5
-        HP_One = self.width / HP_playr
-        HP = sh.Rectangle(self.playr.x, self.playr.y + self.height, HP_playr * HP_One, 15, color=(255,0,0), batch=self.batch)
-        key = Uprav(x_speed, y_speed, self.playr, HP, self.width)
-
-    def pl_moving(self, x, y):
-        if 0 < x + self.playr.x < 721 - self.width:
-            self.playr.x += x
-        if 0 < y + self.playr.y < 721 - self.width:
-            self.playr.y += y
-
+        HP_One = Pl.width / HP_playr
         Polosa = HP_playr * HP_One # Полоска HP
-        return sh.Rectangle(playr.x, playr.y + self.height, Polosa, 15, color=(255,0,0), batch=self.batch)
+        return sh.Rectangle(Pl.x, Pl.y + Pl.height, Polosa, 15, color=(255,0,0), batch=Pl.pl)
 
-    def draw(self):
-        Pl.playr.draw()
+    def draw():
+        Pl.pl.draw()
 
