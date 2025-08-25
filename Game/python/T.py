@@ -1,4 +1,5 @@
 from Objekts import Pl
+from Uprav import Uprav
 import keyboard as k
 import pyglet
 import time
@@ -12,15 +13,12 @@ from pyglet.window import key
 
 wind_width, wind_height = (720, 720)
 wind = pyglet.window.Window(width=wind_width, height=wind_height, caption="gameOnPyglet")
-w, h = (50, 100)
+width, height = (50, 100)
 pl = pyglet.graphics.Batch()
 playr = Pl(x=361, y=361, width=50, height=100, color=(54, 136, 181), batch=pl)
-
-
-
-
-
-
+HP = playr.HP()
+playr = playr.playr
+print(HP)
 
 @wind.event
 def on_mouse_press(x,y,button,modifiers):
@@ -72,7 +70,7 @@ wall_verh = sh.Line(verh_S[0], verh_S[1], verh_S[2], verh_S[3], thickness=Shir_S
 wall_niz = sh.Line(niz_S[0], niz_S[1], niz_S[2], niz_S[3], thickness=Shir_S, batch=dom) 
 shipi = sh.Rectangle(200, 200, 20, 20, color=(111,111,111), batch=pl)
 
-def ogran(x1, y1, x2, y2, x=0, y=0, zonaw=w, zonah=h, speed=5): # Доделать блокировку cтенам
+def ogran(x1, y1, x2, y2, x=0, y=0, zonaw=width, zonah=height, speed=5): # Доделать блокировку cтенам
     if x1 == x2:
         x1 -= 10
         x2 += 10
@@ -126,15 +124,17 @@ def Damag(dt, HP_One=HP_One):
 keys = key.KeyStateHandler()
 wind.push_handlers(keys)
 
+
+
 def update(dt, speed=5):
     if keys[key.W]:
-        playr.pl_moving(0, speed)
+        Uprav(0, speed, playr, HP, width)
     if keys[key.S]:
-        playr.pl_moving(0, -speed)
+        Uprav(0, -speed, playr, HP, width)
     if keys[key.A]:
-        playr.pl_moving(-speed, 0)
+        Uprav(-speed, 0, playr, HP, width)
     if keys[key.D]:
-        playr.pl_moving(speed, 0)
+        Uprav(speed, 0, playr, HP, width)
 
 #кстати чтобы определить цвет я использую https://colorscheme.ru/color-names.html
 
@@ -142,7 +142,7 @@ def update(dt, speed=5):
 @wind.event
 def on_draw():
     wind.clear()
-    playr.draw()
+    pl.draw()
     dom.draw()
 
 pyglet.clock.schedule_interval(update, 1/60)

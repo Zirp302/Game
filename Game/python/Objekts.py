@@ -3,6 +3,13 @@ from pyglet.window.key import *
 import Uprav
 class Pl:
     def __init__(self,batch, x=100, y=100, width=10, height=10, color={125,254,88}):
+from Uprav import Uprav
+
+
+class Pl:
+    # Создание самого игрока
+    playr = None
+    def __init__(self, x, y, width, height, color, batch):
         self.x = x
         self.y = y
         self.width = width
@@ -26,6 +33,8 @@ class Pl:
         if 0 < y + self.playr.y < 721 - self.width:
             self.playr.y += y
 
+        Polosa = HP_playr * HP_One # Полоска HP
+        return sh.Rectangle(playr.x, playr.y + self.height, Polosa, 15, color=(255,0,0), batch=self.batch)
 
     def draw(self):
         Pl.playr.draw()

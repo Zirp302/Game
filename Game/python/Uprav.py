@@ -16,3 +16,5 @@ class Uprav:
         if 0 < y + playr.y < 721 - width:
             playr.y += y
             HP.y += y
+            
+    #   Проверка кнопок для передвижения
