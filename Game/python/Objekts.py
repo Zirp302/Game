@@ -2,7 +2,7 @@ import pyglet
 import time
 from pyglet import shapes as sh
 from pyglet.window.key import *
-
+import Uprav
 class Pl:
     def __init__(self,batch, x=100, y=100, width=10, height=10, color={125,254,88}):
         self.x = x
