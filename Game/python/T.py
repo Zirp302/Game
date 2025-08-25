@@ -14,9 +14,9 @@ from pyglet.window import key
 wind_width, wind_height = (720, 720)
 wind = pyglet.window.Window(width=wind_width, height=wind_height, caption="gameOnPyglet")
 width, height = (50, 100)
-playr = Pl().playr
-HP = Pl().HP()
-print(HP)
+pl = Pl()
+playr = pl.playr()
+HP = pl.HP()
 
 @wind.event
 def on_mouse_press(x,y,button,modifiers):
@@ -121,8 +121,6 @@ def Damag(dt, HP_One=HP_One):
 
 keys = key.KeyStateHandler()
 wind.push_handlers(keys)
-
-
 
 def update(dt, speed=5):
     if keys[key.W]:

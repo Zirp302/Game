@@ -10,8 +10,9 @@ class Pl:
     height=100
     color=(54, 136, 181)
     pl = pyglet.graphics.Batch()
-    def __init__(self):
+    def playr(self):
         self.playr = sh.Rectangle(Pl.x, Pl.y, Pl.width, Pl.height, Pl.color, batch=Pl.pl)
+        return self.playr
 
     # HP игрока
     def HP(self):
