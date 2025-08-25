@@ -16,11 +16,74 @@ class Pl:
 
     # HP игрока
     def HP(self):
-        HP_playr = 5
-        HP_One = Pl.width / HP_playr
-        Polosa = HP_playr * HP_One # Полоска HP
-        return sh.Rectangle(Pl.x, Pl.y + Pl.height, Polosa, 15, color=(255,0,0), batch=Pl.pl)
+        self.HP_playr = 5
+        self.HP_One = Pl.width / self.HP_playr
+        self.Polosa = self.HP_playr * self.HP_One # Полоска HP
+        self.HP = sh.Rectangle(Pl.x, Pl.y + Pl.height, self.Polosa, 15, color=(255,0,0), batch=Pl.pl)
+        return self.HP
 
     def draw():
         Pl.pl.draw()
+
+
+class Stena:
+    wind_width, wind_height = (720, 720)
+    LeftNiz_X = wind_width / 2 - 120
+    LeftNiz_Y =  wind_height / 2 - 120
+    LeftVerh_X = wind_width / 2 - 120
+    LeftVerh_Y =  wind_height / 2 + 120
+
+    RightNiz_X = wind_width / 2 + 120
+    RightNiz_Y =  wind_height / 2 - 120
+    RightVerh_X = wind_width / 2 + 120
+    RightVerh_Y =  wind_height / 2 + 120
+
+    Shir_S = 20
+    left_S = (
+        LeftNiz_X, 
+        LeftNiz_Y - Shir_S / 2,
+        LeftVerh_X,
+        LeftVerh_Y + Shir_S / 2
+    )
+    right_S = (
+        RightNiz_X, 
+        RightNiz_Y - Shir_S / 2,
+        RightVerh_X, 
+        RightVerh_Y + Shir_S / 2
+    )
+    verh_S = (
+        LeftVerh_X - Shir_S / 2, 
+        LeftVerh_Y, 
+        RightVerh_X + Shir_S / 2,
+        RightVerh_Y
+    )
+    niz_S = (
+        LeftNiz_X + 120 - Shir_S / 2,
+        LeftNiz_Y, 
+        RightNiz_X + Shir_S / 2,
+        RightNiz_Y
+    )
+    
+    dom = pyglet.graphics.Batch()
+
+    def __init__(self):
+        self.wall_left = sh.Line(Stena.left_S[0], Stena.left_S[1], 
+                                Stena.left_S[2], Stena.left_S[3], 
+                                thickness=Stena.Shir_S, batch=Stena.dom)
+
+        self.wall_right = sh.Line(Stena.right_S[0], Stena.right_S[1], 
+                                Stena.right_S[2], Stena.right_S[3], 
+                                thickness=Stena.Shir_S, batch=Stena.dom)
+
+        self.wall_verh = sh.Line(Stena.verh_S[0], Stena.verh_S[1], 
+                                Stena.verh_S[2], Stena.verh_S[3],
+                                thickness=Stena.Shir_S, batch=Stena.dom)
+
+        self.wall_niz = sh.Line(Stena.niz_S[0], Stena.niz_S[1], 
+                                Stena.niz_S[2], Stena.niz_S[3], 
+                                thickness=Stena.Shir_S, batch=Stena.dom) 
+        self.shipi = sh.Rectangle(200, 200, 20, 20, color=(111,111,111), batch=Stena.dom)
+
+    def draw(self):
+        Stena.dom.draw()
 

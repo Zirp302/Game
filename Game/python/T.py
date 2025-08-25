@@ -1,4 +1,4 @@
-from Objekts import Pl
+from Objekts import Pl, Stena
 from Uprav import Uprav
 import keyboard as k
 import pyglet
@@ -22,7 +22,7 @@ HP = pl.HP()
 def on_mouse_press(x,y,button,modifiers):
     print(f"x = {x}, y = {y}")
 
-
+'''
 LeftNiz_X = wind_width / 2 - 120
 LeftNiz_Y =  wind_height / 2 - 120
 LeftVerh_X = wind_width / 2 - 120
@@ -59,16 +59,17 @@ niz_S = (
     RightNiz_X + Shir_S / 2,
     RightNiz_Y
 )
+'''
 
-
-dom = pyglet.graphics.Batch()
+"""dom = pyglet.graphics.Batch()
 wall_left = sh.Line(left_S[0], left_S[1], left_S[2], left_S[3], thickness=Shir_S, batch=dom)
 wall_right = sh.Line(right_S[0], right_S[1], right_S[2], right_S[3], thickness=Shir_S, batch=dom)
 wall_verh = sh.Line(verh_S[0], verh_S[1], verh_S[2], verh_S[3], thickness=Shir_S, batch=dom)
 wall_niz = sh.Line(niz_S[0], niz_S[1], niz_S[2], niz_S[3], thickness=Shir_S, batch=dom) 
-shipi = sh.Rectangle(200, 200, 20, 20, color=(111,111,111), batch=dom)
+shipi = sh.Rectangle(200, 200, 20, 20, color=(111,111,111), batch=dom)"""
 
-def ogran(x1, y1, x2, y2, x=0, y=0, zonaw=width, zonah=height, speed=5): # Доделать блокировку cтенам
+
+"""def ogran(x1, y1, x2, y2, x=0, y=0, zonaw=width, zonah=height, speed=5): # Доделать блокировку cтенам
     if x1 == x2:
         x1 -= 10
         x2 += 10
@@ -79,8 +80,8 @@ def ogran(x1, y1, x2, y2, x=0, y=0, zonaw=width, zonah=height, speed=5): # До�
     
     if x1 - zonaw < playr.x + x < x2 and y1 - zonah < playr.y + y < y2:
         return False
-    return True
-dm = False
+    return True"""
+
 """
 def pl_moving(x,y):
     stena_l = ogran(left_S[0], left_S[1], left_S[2], left_S[3], x, y)
@@ -98,8 +99,11 @@ def pl_moving(x,y):
     if 0 < y + playr.y < 721 - w and avanpost :
         playr.y += y
         HP.y += y"""
-
 """
+dm = False
+
+
+
 time_kd = 0
 def Damag(dt, HP_One=HP_One):
     global dm
@@ -132,14 +136,12 @@ def update(dt, speed=5):
     if keys[key.D]:
         Uprav(speed, 0, playr, HP, width)
 
-#кстати чтобы определить цвет я использую https://colorscheme.ru/color-names.html
-
 
 @wind.event
 def on_draw():
     wind.clear()
+    Stena().draw()
     Pl.draw()
-    dom.draw()
 
 pyglet.clock.schedule_interval(update, 1/60)
 """pyglet.clock.schedule_interval(Damag, 1/60, HP_One)"""
