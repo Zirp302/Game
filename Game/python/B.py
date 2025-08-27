@@ -2,10 +2,10 @@ import pyglet
 from pyglet import shapes as sh
 from pyglet.window.key import *
 import random
+from Objects import *
 # доки пайглета https://pyglet.readthedocs.io/en/latest/programming_guide/shapes.html
 #это чтобы писать названия клавиш не указывая функцию key
-# wind is a window object
-from Objects import Zombi
+# wind is a window
 xp=100
 isSpawn=True
 #Сори но это хп персонажа я не мог не реализовать хп если есть зомби
@@ -16,8 +16,6 @@ w = 30
 h = 30
 drawInfuncs=[]
 text = pyglet.graphics.Batch()
-playr = sh.Rectangle(331, 331, w, h, color=(54, 136, 181))
-zombi = pyglet.graphics.Batch()
 xpB=pyglet.text.Label(str(xp),20,690,color=(255,0,0),batch=text)
 #Почему хрb? Я сам не знаю
 @wind.event
@@ -25,8 +23,7 @@ def on_mouse_press(x,y,button,modifiers):
     print(f"x = {x}, y = {y}")
 defaultZomb=Zombi()
 
-class OutOfXpError(Exception):
-    pass
+
 
 
 l_l_v = (240, 480)
@@ -163,12 +160,12 @@ def update(dt, speed=5):
 def on_draw():
     wind.clear()
     #кстати чтобы определить цвет я использую https://colorscheme.ru/color-names.html
-    playr.draw()
+    playr.playr.draw()
     dom.draw()
-    zombi.draw()
+    defaultZomb.batch.draw()
     text.draw()
 
-pyglet.clock.schedule_interval(defaultZomb.spawn(),defaultZomb.spawSpeed,)
+pyglet.clock.schedule_interval(defaultZomb.spawn,defaultZomb.spawSpeed)
 pyglet.clock.schedule_interval(defaultZomb.moving,1/20)
 #передвижения зомбей с обновлением каждые 1/4 секунды может уже не 1/4 
 pyglet.clock.schedule_interval(update,1/60)

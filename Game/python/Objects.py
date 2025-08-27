@@ -4,21 +4,23 @@ from pyglet import shapes as sh
 from pyglet.window.key import *
 from random import randint as r
 import random
-from B import OutOfXpError
+class OutOfXpError(Exception):
+    pass
 zombies={}
-xpB=100
+xp=100
+text=pyglet.graphics.Batch()
+xpB=pyglet.text.Label(str(xp),20,690,color=(255,0,0),batch=text)
 spawnSpeed=1/2
 zombiBat=pyglet.graphics.Batch()
 #Если объекты для прорисовки не добавить во что то глобальное то они не прорисуются
 class Pl:
-    def __init__(self,batch, x=100, y=100, width=10, height=10, color={125,254,88}):
+    def __init__(self, x=100, y=100, width=10, height=10, color={54,136,181}):
         self.x = x
         self.y = y
         self.width = width
         self.height = height
         self.color = color
-        self.batch = batch 
-        self.playr = sh.Rectangle(x, y, width, height, color, batch=batch)
+        self.playr = sh.Rectangle(x, y, width, height, color,)
     
 
 
@@ -31,7 +33,7 @@ class Pl:
 
 playr=Pl()
 class Zombi:
-    def __init__(self, batch, w=10, h=10, col = {21, 110, 100}, type=None, xp=100, speed=1, spawnSpeed=1/2):
+    def __init__(self, batch=zombiBat, w=10, h=10, col = {21, 110, 100}, type=None, xp=100, speed=1, spawnSpeed=1/2):
         #Мне лень писать self
         #Но я напишу
         #type это тип зомби
@@ -41,7 +43,7 @@ class Zombi:
         self.batch=batch
         self.speed=speed
         self.spawSpeed=spawnSpeed
-    def spawn(dt,isSpawn):
+    def spawn(dt=2,isSpawn=True):
         if isSpawn:
             global zombiBat
             #зомби спавнятся на краю карты значит одна из координат должна быть равна нулю или 720
@@ -56,7 +58,7 @@ class Zombi:
                 #зомбей справа  и сверху видно не было поэтому я думал что спaвн почему то не работает
                 zombies[(sh.Rectangle(coord1,coord,25,25,(21,110,100),batch=zombiBat))] = 100
             #значение в хэш таблице это хр зомби
-    def moving(self,dt):
+    def moving(self,dt=1/60):
             if zombies:
                 global playr
         #зачем я создаю функции подо все что происходит? Так надо
@@ -71,11 +73,12 @@ class Zombi:
                         zombis.y+=self.speed
                     elif playr.y < zombis.y:
                         zombis.y=zombis.y-self.speed
-    def attack(dt):
+    def attack(dt=1/2,trash=None):
         #это можно было сделать и в функции zombMoving но нет надо ведь нагрузить комп кучей бесполезных функций
         if zombies:
             for i in zombies:
                 if i.x in list(range(playr.x-10,playr.x+10)) and i.y in list(range(playr.y-10,playr.y+10)):
+                        global xpB
                         xpB.text = str(int(xpB.text)-10)
                         if int(xpB.text)==0:
                             raise OutOfXpError
