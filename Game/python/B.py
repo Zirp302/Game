@@ -2,7 +2,7 @@ import pyglet
 from pyglet import shapes as sh
 from pyglet.window.key import *
 import random
-from Objects import *
+from Objects import Zombi,Pl
 # доки пайглета https://pyglet.readthedocs.io/en/latest/programming_guide/shapes.html
 #это чтобы писать названия клавиш не указывая функцию key
 # wind is a window
@@ -15,16 +15,13 @@ wind = pyglet.window.Window(width=720,height=720,caption="gameOnPyglet")
 w = 30
 h = 30
 drawInfuncs=[]
-text = pyglet.graphics.Batch()
-xpB=pyglet.text.Label(str(xp),20,690,color=(255,0,0),batch=text)
 #Почему хрb? Я сам не знаю
 @wind.event
 def on_mouse_press(x,y,button,modifiers):
     print(f"x = {x}, y = {y}")
-defaultZomb=Zombi()
-
-
-
+playr=Pl()
+defaultZomb=Zombi(playr=playr)
+MiniBoss=Zombi(playr=playr,w=25,h=25,type="big",xp=1000,speed=0.2,spawnSpeed=3,damage=30)
 
 l_l_v = (240, 480)
 l_l_n = (240, 240)
@@ -163,7 +160,7 @@ def on_draw():
     playr.playr.draw()
     dom.draw()
     defaultZomb.batch.draw()
-    text.draw()
+    playr.xp.draw()
 
 pyglet.clock.schedule_interval(defaultZomb.spawn,defaultZomb.spawSpeed)
 pyglet.clock.schedule_interval(defaultZomb.moving,1/20)

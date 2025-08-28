@@ -7,21 +7,21 @@ import random
 class OutOfXpError(Exception):
     pass
 zombies={}
-xp=100
-text=pyglet.graphics.Batch()
-xpB=pyglet.text.Label(str(xp),20,690,color=(255,0,0),batch=text)
 spawnSpeed=1/2
 zombiBat=pyglet.graphics.Batch()
+xpp=100
+xp=pyglet.text.Label(str(xpp),20,690,color=(255,0,0))
+
 #Если объекты для прорисовки не добавить во что то глобальное то они не прорисуются
 class Pl:
-    def __init__(self, x=100, y=100, width=10, height=10, color={54,136,181}):
+    def __init__(self, x=100, y=100, width=10, height=10, color={54,136,181},xp=100):
         self.x = x
         self.y = y
-        self.width = width
-        self.height = height
+        self.w = width
+        self.h = height
         self.color = color
-        self.playr = sh.Rectangle(x, y, width, height, color,)
-    
+        self.playr = sh.Rectangle(x, y, width, height, color)
+        self.xp=pyglet.text.Label(str(xp),20,690,color=(255,0,0))
 
 
     def pl_moving(self, x, y):
@@ -31,18 +31,20 @@ class Pl:
             self.playr.y += y
     #Прорисовка происходит ТОЛЬКО в функции с названием on_draw 
 
-playr=Pl()
 class Zombi:
-    def __init__(self, batch=zombiBat, w=10, h=10, col = {21, 110, 100}, type=None, xp=100, speed=1, spawnSpeed=1/2):
+    def __init__(self,playr, batch=zombiBat, w=10, h=10, col = {21, 110, 100}, type=None, xp=100, speed=1, spawnSpeed=1/2,damage=10):
         #Мне лень писать self
         #Но я напишу
         #type это тип зомби
         self.w=w
+        self.h=h
         self.col=col
         self.xp=xp
         self.batch=batch
         self.speed=speed
         self.spawSpeed=spawnSpeed
+        self.damage=damage
+        self.playr=playr
     def spawn(dt=2,isSpawn=True):
         if isSpawn:
             global zombiBat
@@ -60,26 +62,26 @@ class Zombi:
             #значение в хэш таблице это хр зомби
     def moving(self,dt=1/60):
             if zombies:
-                global playr
         #зачем я создаю функции подо все что происходит? Так надо
                 for zombis in zombies.keys():
-                    if playr.x > zombis.x:
+                    if self.playr.x > zombis.x:
                         zombis.x+=self.speed
-                    elif playr.x < zombis.x:
+                    elif self.playr.x < zombis.x:
                         zombis.x=zombis.x-self.speed
                     else:
                         pass
-                    if playr.y > zombis.y:
+                    if self.playr.y > zombis.y:
                         zombis.y+=self.speed
-                    elif playr.y < zombis.y:
+                    elif self.playr.y < zombis.y:
                         zombis.y=zombis.y-self.speed
-    def attack(dt=1/2,trash=None):
+    def attack(self,dt=1/2,trash=None):
         #это можно было сделать и в функции zombMoving но нет надо ведь нагрузить комп кучей бесполезных функций
         if zombies:
             for i in zombies:
-                if i.x in list(range(playr.x-10,playr.x+10)) and i.y in list(range(playr.y-10,playr.y+10)):
-                        global xpB
-                        xpB.text = str(int(xpB.text)-10)
-                        if int(xpB.text)==0:
+                minpx,minpy,maxpx,maxpy=self.playr.x,self.playr.y,self.playr.x+self.playr.w,self.playr.y+self.playr.h
+                minzx,maxzx,minzy,maxzy=i.x,i.y,i.x+self.w,i.y+self.h
+                if (minpx<=maxzx and (minpy>=minzy or maxpy<=maxzy)) or (maxpx>=minzx and (minpy>=minzy or maxpy<=maxzy)) or (minpy<=maxzy and (minpx>=minzx or maxpx<=maxzx)) or (minpy>=maxzy and (minpx>=minzx or maxpx<=maxzx)):
+                        global text
+                        xp.text = str(int(xp.text)-self.damage)
+                        if int(xp.text)==0:
                             raise OutOfXpError
-        
