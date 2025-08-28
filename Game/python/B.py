@@ -21,7 +21,7 @@ def on_mouse_press(x,y,button,modifiers):
     print(f"x = {x}, y = {y}")
 playr=Pl()
 defaultZomb=Zombi(playr=playr)
-MiniBoss=Zombi(playr=playr,w=50,h=50,type="big",xp=1000,speed=0.2,spawnSpeed=3,damage=50)
+MiniBoss=Zombi(playr=playr,w=25,h=25,type="big",xp=1000,speed=0.2,spawnSpeed=3,damage=30)
 
 l_l_v = (240, 480)
 l_l_n = (240, 240)
@@ -144,15 +144,14 @@ def on_key_release(symbol, modifiers):
 
 def update(dt, speed=5):
     if keys['W']:
-        pl_moving(0, speed)
+        playr.pl_moving(0, speed)
     if keys['S']:
-        pl_moving(0, -speed)
+        playr.pl_moving(0, -speed)
     if keys['A']:
-        pl_moving(-speed, 0)
+        playr.pl_moving(-speed, 0)
     if keys['D']:
         playr.pl_moving(speed, 0)
-    #global defaultZomb
-    #defaultZomb=Zombi(playr)
+    defaultZomb.playr=playr
 
 
 @wind.event
@@ -163,14 +162,10 @@ def on_draw():
     dom.draw()
     defaultZomb.batch.draw()
     playr.xp.draw()
-    MiniBoss.batch.draw()
-MiniBoss.spawn()
-#pyglet.clock.schedule_interval(defaultZomb.spawn,defaultZomb.spawSpeed)
-pyglet.clock.schedule_interval(MiniBoss.moving,1/20)
-
+defaultZomb.spawn()
 pyglet.clock.schedule_interval(defaultZomb.spawn,defaultZomb.spawSpeed)
 pyglet.clock.schedule_interval(defaultZomb.moving,1/20)
 #передвижения зомбей с обновлением каждые 1/4 секунды может уже не 1/4 
 pyglet.clock.schedule_interval(update,1/60)
-pyglet.clock.schedule_interval(MiniBoss.attack,1/2)
+pyglet.clock.schedule_interval(defaultZomb.attack,1/2)
 pyglet.app.run()
