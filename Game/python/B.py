@@ -144,13 +144,14 @@ def on_key_release(symbol, modifiers):
 
 def update(dt, speed=5):
     if keys['W']:
-        pl_moving(0, speed)
+        playr.pl_moving(0, speed)
     if keys['S']:
-        pl_moving(0, -speed)
+        playr.pl_moving(0, -speed)
     if keys['A']:
-        pl_moving(-speed, 0)
+        playr.pl_moving(-speed, 0)
     if keys['D']:
-        pl_moving(speed, 0)
+        playr.pl_moving(speed, 0)
+    defaultZomb.playr=playr
 
 
 @wind.event
@@ -161,7 +162,7 @@ def on_draw():
     dom.draw()
     defaultZomb.batch.draw()
     playr.xp.draw()
-
+defaultZomb.spawn()
 pyglet.clock.schedule_interval(defaultZomb.spawn,defaultZomb.spawSpeed)
 pyglet.clock.schedule_interval(defaultZomb.moving,1/20)
 #передвижения зомбей с обновлением каждые 1/4 секунды может уже не 1/4 

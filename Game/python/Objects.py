@@ -9,12 +9,10 @@ class OutOfXpError(Exception):
 zombies={}
 spawnSpeed=1/2
 zombiBat=pyglet.graphics.Batch()
-xpp=100
-xp=pyglet.text.Label(str(xpp),20,690,color=(255,0,0))
 
 #Если объекты для прорисовки не добавить во что то глобальное то они не прорисуются
 class Pl:
-    def __init__(self, x=100, y=100, width=10, height=10, color={54,136,181},xp=100):
+    def __init__(self, x=100, y=100, width=25, height=25, color={54,136,181}, xp=100):
         self.x = x
         self.y = y
         self.w = width
@@ -25,9 +23,9 @@ class Pl:
 
 
     def pl_moving(self, x, y):
-        if 0 < x + self.playr.x < 721 - self.width:
+        if 0 < x + self.playr.x < 721 - self.w:
             self.playr.x += x
-        if 0 < y + self.playr.y < 721 - self.width:
+        if 0 < y + self.playr.y < 721 - self.w:
             self.playr.y += y
     #Прорисовка происходит ТОЛЬКО в функции с названием on_draw 
 
@@ -78,10 +76,12 @@ class Zombi:
         #это можно было сделать и в функции zombMoving но нет надо ведь нагрузить комп кучей бесполезных функций
         if zombies:
             for i in zombies:
-                minpx,minpy,maxpx,maxpy=self.playr.x,self.playr.y,self.playr.x+self.playr.w,self.playr.y+self.playr.h
-                minzx,maxzx,minzy,maxzy=i.x,i.y,i.x+self.w,i.y+self.h
-                if (minpx<=maxzx and (minpy>=minzy or maxpy<=maxzy)) or (maxpx>=minzx and (minpy>=minzy or maxpy<=maxzy)) or (minpy<=maxzy and (minpx>=minzx or maxpx<=maxzx)) or (minpy>=maxzy and (minpx>=minzx or maxpx<=maxzx)):
-                        global text
-                        xp.text = str(int(xp.text)-self.damage)
-                        if int(xp.text)==0:
+                #minpx,minpy,maxpx,maxpy=self.playr.x,self.playr.y,self.playr.x+self.playr.w,self.playr.y+self.playr.h
+                #minzx,maxzx,minzy,maxzy=i.x,i.y,i.x+self.w,i.y+self.h
+                #if (minpx<=maxzx and (minpy>=minzy or maxpy<=maxzy)) or (maxpx>=minzx and (minpy>=minzy or maxpy<=maxzy)) or (minpy<=maxzy and (minpx>=minzx or maxpx<=maxzx)) or (minpy>=maxzy and (minpx>=minzx or maxpx<=maxzx)):
+                        #print(minpx,maxpx,minpy,maxpy)
+                        #print(minzx,maxzx,minpy,maxzy)
+                    if self.playr.x==i.x and self.playr.y==i.y:
+                        self.playr.xp.text = str(int(self.playr.xp.text)-self.damage)
+                        if int(self.playr.xp.text)==0:
                             raise OutOfXpError
