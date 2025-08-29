@@ -25,8 +25,10 @@ class Pl:
     def pl_moving(self, x, y):
         if 0 < x + self.playr.x < 721 - self.w:
             self.playr.x += x
+            self.x += x
         if 0 < y + self.playr.y < 721 - self.w:
             self.playr.y += y
+            self.y += y
     #Прорисовка происходит ТОЛЬКО в функции с названием on_draw 
 
 class Zombi:
@@ -43,7 +45,7 @@ class Zombi:
         self.spawSpeed=spawnSpeed
         self.damage=damage
         self.playr=playr
-    def spawn(dt=2,isSpawn=True):
+    def spawn(self,dt=2,isSpawn=True):
         if isSpawn:
             global zombiBat
             #зомби спавнятся на краю карты значит одна из координат должна быть равна нулю или 720
@@ -52,16 +54,17 @@ class Zombi:
             global zombies
             if r(0,1) == 0:
                 #print(1,coord,coord1)
-                zombies[(sh.Rectangle(coord,coord1,25,25,(21,110,100),batch=zombiBat))] = 100
+                zombies[(sh.Rectangle(coord,coord1,self.w,self.h,self.col,self.batch))] = 100
             else:
                 #print(2,coord1,coord)
                 #зомбей справа  и сверху видно не было поэтому я думал что спaвн почему то не работает
-                zombies[(sh.Rectangle(coord1,coord,25,25,(21,110,100),batch=zombiBat))] = 100
+                zombies[(sh.Rectangle(coord1,coord,self.w,self.h,self.col,self.batch))] = 100
             #значение в хэш таблице это хр зомби
     def moving(self,dt=1/60):
             if zombies:
         #зачем я создаю функции подо все что происходит? Так надо
                 for zombis in zombies.keys():
+                    print
                     if self.playr.x > zombis.x:
                         zombis.x+=self.speed
                     elif self.playr.x < zombis.x:
@@ -83,5 +86,5 @@ class Zombi:
                         #print(minzx,maxzx,minpy,maxzy)
                     if self.playr.x==i.x and self.playr.y==i.y:
                         self.playr.xp.text = str(int(self.playr.xp.text)-self.damage)
-                        if int(self.playr.xp.text)==0:
+                        if int(self.playr.xp.text)<=0:
                             raise OutOfXpError
