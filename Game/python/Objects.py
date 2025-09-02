@@ -8,7 +8,6 @@ class OutOfXpError(Exception):
     pass
 zombies={}
 spawnSpeed=1/2
-zombiBat=pyglet.graphics.Batch()
 
 #Если объекты для прорисовки не добавить во что то глобальное то они не прорисуются
 class Pl:
@@ -30,9 +29,9 @@ class Pl:
             self.playr.y += y
             self.y += y
     #Прорисовка происходит ТОЛЬКО в функции с названием on_draw 
-
+bat=pyglet.graphics.Batch()
 class Zombi:
-    def __init__(self,playr, batch=zombiBat, w=10, h=10, col = {21, 110, 100}, type=None, xp=100, speed=1, spawnSpeed=1/2,damage=10):
+    def __init__(self,playr, batch=bat, w=10, h=10, col = {21, 110, 100}, type=None, xp=100, speed=1, spawnSpeed=1/2, damage=10, attackSpeed=1/2):
         #Мне лень писать self
         #Но я напишу
         #type это тип зомби
@@ -42,12 +41,12 @@ class Zombi:
         self.xp=xp
         self.batch=batch
         self.speed=speed
-        self.spawSpeed=spawnSpeed
+        self.spawnSpeed=spawnSpeed
         self.damage=damage
         self.playr=playr
+        self.attackSpeed=attackSpeed
     def spawn(self,dt=2,isSpawn=True):
         if isSpawn:
-            global zombiBat
             #зомби спавнятся на краю карты значит одна из координат должна быть равна нулю или 720
             coord=r(0,720)
             coord1=random.choice((0,720))
@@ -64,7 +63,6 @@ class Zombi:
             if zombies:
         #зачем я создаю функции подо все что происходит? Так надо
                 for zombis in zombies.keys():
-                    print
                     if self.playr.x > zombis.x:
                         zombis.x+=self.speed
                     elif self.playr.x < zombis.x:
@@ -84,7 +82,7 @@ class Zombi:
                 #if (minpx<=maxzx and (minpy>=minzy or maxpy<=maxzy)) or (maxpx>=minzx and (minpy>=minzy or maxpy<=maxzy)) or (minpy<=maxzy and (minpx>=minzx or maxpx<=maxzx)) or (minpy>=maxzy and (minpx>=minzx or maxpx<=maxzx)):
                         #print(minpx,maxpx,minpy,maxpy)
                         #print(minzx,maxzx,minpy,maxzy)
-                    if self.playr.x==i.x and self.playr.y==i.y:
-                        self.playr.xp.text = str(int(self.playr.xp.text)-self.damage)
-                        if int(self.playr.xp.text)<=0:
+                    if self.playr.x == i.x and self.playr.y == i.y:
+                        self.playr.xp.text = str(int(self.playr.xp.text) - self.damage)
+                        if int(self.playr.xp.text) <= 0:
                             raise OutOfXpError
