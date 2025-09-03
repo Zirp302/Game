@@ -9,10 +9,12 @@ class OutOfXpError(Exception):
 zombies={}
 spawnSpeed=1/2
 zombiBat=pyglet.graphics.Batch()
+xpp=100
+xp=pyglet.text.Label(str(xpp),20,690,color=(255,0,0))
 
 #Если объекты для прорисовки не добавить во что то глобальное то они не прорисуются
 class Pl:
-    def __init__(self, x=100, y=100, width=25, height=25, color={54,136,181}, xp=100):
+    def __init__(self, x=100, y=100, width=10, height=10, color={54,136,181},xp=100):
         self.x = x
         self.y = y
         self.w = width
@@ -23,7 +25,7 @@ class Pl:
 
 
     def pl_moving(self, x, y):
-        if 0 < x + self.playr.x < 721 - self.w:
+        if 0 < x + self.playr.x < 721 - self.width:
             self.playr.x += x
             self.x += x
         if 0 < y + self.playr.y < 721 - self.w:

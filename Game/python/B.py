@@ -144,11 +144,11 @@ def on_key_release(symbol, modifiers):
 
 def update(dt, speed=5):
     if keys['W']:
-        playr.pl_moving(0, speed)
+        pl_moving(0, speed)
     if keys['S']:
-        playr.pl_moving(0, -speed)
+        pl_moving(0, -speed)
     if keys['A']:
-        playr.pl_moving(-speed, 0)
+        pl_moving(-speed, 0)
     if keys['D']:
         playr.pl_moving(speed, 0)
     #global defaultZomb
@@ -167,6 +167,9 @@ def on_draw():
 MiniBoss.spawn()
 #pyglet.clock.schedule_interval(defaultZomb.spawn,defaultZomb.spawSpeed)
 pyglet.clock.schedule_interval(MiniBoss.moving,1/20)
+
+pyglet.clock.schedule_interval(defaultZomb.spawn,defaultZomb.spawSpeed)
+pyglet.clock.schedule_interval(defaultZomb.moving,1/20)
 #передвижения зомбей с обновлением каждые 1/4 секунды может уже не 1/4 
 pyglet.clock.schedule_interval(update,1/60)
 pyglet.clock.schedule_interval(MiniBoss.attack,1/2)
