@@ -59,11 +59,13 @@ class Zombi:
                 #print(2,coord1,coord)
                 #зомбей справа  и сверху видно не было поэтому я думал что спaвн почему то не работает
                 zombies[(sh.Rectangle(coord1,coord,self.w,self.h,self.col,self.batch))] = 100
+                print(coord1,coord,self.col)
             #значение в хэш таблице это хр зомби
     def moving(self,dt=1/60):
+            #зачем я создаю функции подо все что происходит? Так надо
             if zombies:
-        #зачем я создаю функции подо все что происходит? Так надо
                 for zombis in zombies.keys():
+                    #print(zombis.x,zombis.y)
                     if self.playr.x > zombis.x:
                         zombis.x+=self.speed
                     elif self.playr.x < zombis.x:
@@ -74,7 +76,7 @@ class Zombi:
                         zombis.y+=self.speed
                     elif self.playr.y < zombis.y:
                         zombis.y=zombis.y-self.speed
-    def attack(self,dt=1/2,trash=None):
+    def attack(self,dt=1/2):
         #это можно было сделать и в функции zombMoving но нет надо ведь нагрузить комп кучей бесполезных функций
         if zombies:
             for i in zombies:
@@ -83,7 +85,8 @@ class Zombi:
                 #if (minpx<=maxzx and (minpy>=minzy or maxpy<=maxzy)) or (maxpx>=minzx and (minpy>=minzy or maxpy<=maxzy)) or (minpy<=maxzy and (minpx>=minzx or maxpx<=maxzx)) or (minpy>=maxzy and (minpx>=minzx or maxpx<=maxzx)):
                         #print(minpx,maxpx,minpy,maxpy)
                         #print(minzx,maxzx,minpy,maxzy)
-                    if self.playr.x == i.x and self.playr.y == i.y:
+                    if int(self.playr.x) in range(int(i.x),int(i.x)+5) and int(self.playr.y) in range(int(i.y),int(i.y)+5):
+                        print("hit!")
                         self.playr.xp.text = str(int(self.playr.xp.text) - self.damage)
                         if int(self.playr.xp.text) <= 0:
                             raise OutOfXpError

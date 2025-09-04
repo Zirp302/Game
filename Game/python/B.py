@@ -2,7 +2,7 @@ import pyglet
 from pyglet import shapes as sh
 from pyglet.window.key import *
 import random
-from Objects import Zombi,Pl
+from Objects import Zombi,Pl,bat,zombies
 # доки пайглета https://pyglet.readthedocs.io/en/latest/programming_guide/shapes.html
 #это чтобы писать названия клавиш не указывая функцию key
 # wind is a window
@@ -163,11 +163,12 @@ def on_draw():
     dom.draw()
     defaultZomb.batch.draw()
     MiniBoss.batch.draw()
+    bat.draw()
     playr.xp.draw()
 #pyglet.clock.schedule_interval(defaultZomb.spawn,defaultZomb.spawSpeed)
 for i in zombs:
-    pyglet.clock.schedule_interval(i.spawn, i.spawnSpeed)
-    pyglet.clock.schedule_interval(i.moving, i.speed)
+    #pyglet.clock.schedule_interval(i.spawn, i.spawnSpeed)
+    pyglet.clock.schedule_interval(i.moving, 1/60)
     pyglet.clock.schedule_interval(i.attack, i.attackSpeed)
 #передвижения зомбей с обновлением каждые 1/4 секунды может уже не 1/4 
 pyglet.clock.schedule_interval(update,1/60)

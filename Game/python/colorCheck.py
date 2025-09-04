@@ -2,9 +2,10 @@ from pyglet import shapes
 import pyglet
 from pyglet.window.key import *
 col=pyglet.text.Label("0, 0, 0")
-krug=shapes.Circle(0,0,10,color=[0,0,0])
+b=pyglet.graphics.Batch()
+krug=shapes.Circle(0,0,10,color=[0,0,0],batch=b)
 window=pyglet.window.Window(width=720, height=720)
-@window.event
+'''@window.event
 def on_key_press(symbol,modifiers):
     if LEFT == symbol and modifiers != MOD_CTRL:
         krug.x -= 1
@@ -30,9 +31,9 @@ def on_key_press(symbol,modifiers):
 @window.event
 def on_mouse_press(x,y,symbol,modifiers):
     col.x=x
-    col.y=y
+    col.y=y'''
 @window.event
 def on_draw():
     window.clear()
-    krug.draw()
+    b.draw()
 pyglet.app.run()
