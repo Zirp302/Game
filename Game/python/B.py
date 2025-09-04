@@ -153,6 +153,7 @@ def update(dt, speed=5):
         playr.pl_moving(-speed, 0)
     if keys['D']:
         playr.pl_moving(speed, 0)
+    defaultZomb.playr=playr
 defaultZomb.spawn()
 
 @wind.event

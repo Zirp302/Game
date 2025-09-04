@@ -31,7 +31,7 @@ class Pl:
     #Прорисовка происходит ТОЛЬКО в функции с названием on_draw 
 bat=pyglet.graphics.Batch()
 class Zombi:
-    def __init__(self,playr, batch=bat, w=10, h=10, col = {21, 110, 100}, type=None, xp=100, speed=1, spawnSpeed=1/2, damage=10, attackSpeed=1/2):
+    def __init__(self,playr, w=10, h=10, col = (21, 110, 100), type=None, xp=100, speed=1, spawnSpeed=1/2, damage=10, attackSpeed=1/2):
         #Мне лень писать self
         #Но я напишу
         #type это тип зомби
@@ -39,7 +39,7 @@ class Zombi:
         self.h=h
         self.col=col
         self.xp=xp
-        self.batch=batch
+        self.batch=pyglet.graphics.Batch()
         self.speed=speed
         self.spawnSpeed=spawnSpeed
         self.damage=damage
@@ -53,12 +53,12 @@ class Zombi:
             global zombies
             if not r(0,1):
                 #print(1,coord,coord1)
-                zombies[(sh.Rectangle(coord,coord1,self.w,self.h,self.col,self.batch))] = 100
+                zombies[sh.Rectangle(coord,coord1,self.w,self.h,self.col,self.batch)] = 100
                 print(coord,coord1,self.col)
             else:
                 #print(2,coord1,coord)
                 #зомбей справа  и сверху видно не было поэтому я думал что спaвн почему то не работает
-                zombies[(sh.Rectangle(coord1,coord,self.w,self.h,self.col,self.batch))] = 100
+                zombies[sh.Rectangle(coord1,coord,self.w,self.h,self.col,self.batch)] = 100
                 print(coord1,coord,self.col)
             #значение в хэш таблице это хр зомби
     def moving(self,dt=1/60):
