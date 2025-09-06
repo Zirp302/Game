@@ -58,20 +58,16 @@ def avanpost(xM, yM):
 
 def update(dt, speed=5):
     if keys[key.W]:
-        x_moving = 0
-        y_moving = speed
+        x_moving, y_moving = 0, speed
         U.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))
     if keys[key.S]:
-        x_moving = 0
-        y_moving = -speed
+        x_moving, y_moving = 0, -speed
         U.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))
     if keys[key.A]:
-        x_moving = -speed
-        y_moving = 0
+        x_moving, y_moving = -speed, 0
         U.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))
     if keys[key.D]:
-        x_moving = speed
-        y_moving = 0
+        x_moving, y_moving = speed, 0
         U.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))
 
 
