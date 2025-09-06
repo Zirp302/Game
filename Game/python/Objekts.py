@@ -1,16 +1,18 @@
 from pyglet import shapes as sh
-from Uprav import Uprav
 import pyglet
+"""
+Файл для создания обектов и их вывода пряма тут 
+"""
 
 class Pl:
-    # Создание самого игрока
-    x=361
-    y=361
+    # Характеристеки самого игрока
+    x=360
+    y=360
     width=50
     height=100
     color=(54, 136, 181)
     pl = pyglet.graphics.Batch()
-    def playr(self):
+    def playr(self): #Создание и отображение игрока
         self.playr = sh.Rectangle(Pl.x, Pl.y, Pl.width, Pl.height, Pl.color, batch=Pl.pl)
         return self.playr
 
@@ -22,11 +24,11 @@ class Pl:
         self.HP = sh.Rectangle(Pl.x, Pl.y + Pl.height, self.Polosa, 15, color=(255,0,0), batch=Pl.pl)
         return self.HP
 
-    def draw():
-        Pl.pl.draw()
+    def draw(): # Отрисовка пакета данных с игроком и его полоской так как они должны передвигаться одновременно и одинаково
+        Pl.pl.draw() 
 
 
-class Stena:
+class Stena: # Характеристики стен для их отображения
     wind_width, wind_height = (720, 720)
     LeftNiz_X = wind_width / 2 - 120
     LeftNiz_Y =  wind_height / 2 - 120
@@ -64,9 +66,9 @@ class Stena:
         RightNiz_Y
     )
     
-    dom = pyglet.graphics.Batch()
+    dom = pyglet.graphics.Batch() # Пакет данных со всеми стенами
 
-    def __init__(self):
+    def __init__(self): # Отображение стен (смотри на названия какая это стена)
         self.wall_left = sh.Line(Stena.left_S[0], Stena.left_S[1], 
                                 Stena.left_S[2], Stena.left_S[3], 
                                 thickness=Stena.Shir_S, batch=Stena.dom)
@@ -84,6 +86,6 @@ class Stena:
                                 thickness=Stena.Shir_S, batch=Stena.dom) 
         self.shipi = sh.Rectangle(200, 200, 20, 20, color=(111,111,111), batch=Stena.dom)
 
-    def draw(self):
+    def draw(self): # Пакет для отображения стен
         Stena.dom.draw()
 
