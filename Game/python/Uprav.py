@@ -26,7 +26,7 @@ class Uprav:
             self.playr.y += y
             self.HP.y += y
 
-    #   Даёт стенам фозможность останавливать тела
+    #   Даёт стенам возможность останавливать тела
     def ogran(self, x1, y1, x2, y2, x=0, y=0, speed=5): 
         if x1 == x2:
             x1 -= 10
@@ -39,5 +39,4 @@ class Uprav:
         if x1 - Pl.width < self.playr.x + x < x2 and y1 - Pl.height < self.playr.y + y < y2:
             return False
         return True
-    
     
