@@ -26,6 +26,14 @@ class Uprav:
             self.playr.y += y
             self.HP.y += y
 
+    #   Проверка на нахождение в объекте
+    def proverca(self, x1, y1, x2, y2, x, y):
+        X = x1 - Pl.width < self.playr.x + x < x2
+        Y = y1 - Pl.height < self.playr.y + y < y2
+        if X and Y:
+            return False
+        return True
+    
     #   Даёт стенам возможность останавливать тела
     def ogran(self, x1, y1, x2, y2, x=0, y=0, speed=5): 
         if x1 == x2:
@@ -36,7 +44,7 @@ class Uprav:
             y1 -= 10
             y2 += 10
             x1, x2 = min(x1, x2), max(x1, x2)
-        if x1 - Pl.width < self.playr.x + x < x2 and y1 - Pl.height < self.playr.y + y < y2:
-            return False
-        return True
+        return self.proverca(x1, y1, x2, y2, x, y)
+    
+    
     
