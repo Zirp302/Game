@@ -117,6 +117,7 @@ class Zombi:
         self.spawSpeed=spawnSpeed
         self.damage=damage
         self.playr=playr
+
     def spawn(dt=2,isSpawn=True):
         if isSpawn:
             global zombiBat
@@ -126,12 +127,13 @@ class Zombi:
             global zombies
             if r(0,1) == 0:
                 #print(1,coord,coord1)
-                zombies[(sh.Rectangle(coord,coord1,25,25,(21,110,100),batch=zombiBat))] = 100
+                zombies[(sh.Rectangle(coord, coord1, 25, 25, (21,110,100), batch=zombiBat))] = 100
             else:
                 #print(2,coord1,coord)
                 #зомбей справа  и сверху видно не было поэтому я думал что спaвн почему то не работает
-                zombies[(sh.Rectangle(coord1,coord,25,25,(21,110,100),batch=zombiBat))] = 100
+                zombies[(sh.Rectangle(coord1,coord, 25, 25, (21, 110, 100), batch=zombiBat))] = 100
             #значение в хэш таблице это хр зомби
+
     def moving(self,dt=1/60):
             if zombies:
         #зачем я создаю функции подо все что происходит? Так надо
@@ -146,6 +148,7 @@ class Zombi:
                         zombis.y+=self.speed
                     elif self.playr.y < zombis.y:
                         zombis.y=zombis.y-self.speed
+
     def attack(self,dt=1/2,trash=None):
         #это можно было сделать и в функции zombMoving но нет надо ведь нагрузить комп кучей бесполезных функций
         if zombies:
