@@ -23,6 +23,7 @@ class Pl:
     height=100
     color=(54, 136, 181)
     pl = pyglet.graphics.Batch()
+    xp=pyglet.text.Label()
     def playr(self): #Создание и отображение игрока
         self.playr = sh.Rectangle(Pl.x, Pl.y, Pl.width, Pl.height, Pl.color, batch=Pl.pl)
         return self.playr
