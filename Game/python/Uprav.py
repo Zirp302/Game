@@ -26,25 +26,41 @@ class Uprav:
             self.playr.y += y
             self.HP.y += y
 
+    
+    
+    #   Даёт стенам возможность останавливать тела
+    def line(self, x1, y1, x2, y2, x, y, speed=5): 
+        if x1 == x2:
+            x1 -= 10
+            x2 += 10
+            y1, y2 = min(y1, y2), max(y1, y2)
+            return x1, y1, x2, y2
+        else:
+            y1 -= 10
+            y2 += 10
+            x1, x2 = min(x1, x2), max(x1, x2)
+            return x1, y1, x2, y2
+
+    def rectangle(self, x1, y1, width, height, x, y, speed=5):
+        x2 = x1 + width
+        y2 = y1 + height
+        return x2, y2
+        
+    
     #   Проверка на нахождение в объекте
-    def proverca(self, x1, y1, x2, y2, x, y):
+    def ogran_line(self, x1, y1, x2, y2, x=0, y=0):
+        x1, y1, x2, y2 = self.line(x1, y1, x2, y2, x, y)
         X = x1 - Pl.width < self.playr.x + x < x2
         Y = y1 - Pl.height < self.playr.y + y < y2
         if X and Y:
             return False
         return True
     
-    #   Даёт стенам возможность останавливать тела
-    def ogran(self, x1, y1, x2, y2, x=0, y=0, speed=5): 
-        if x1 == x2:
-            x1 -= 10
-            x2 += 10
-            y1, y2 = min(y1, y2), max(y1, y2)
-        else:
-            y1 -= 10
-            y2 += 10
-            x1, x2 = min(x1, x2), max(x1, x2)
-        return self.proverca(x1, y1, x2, y2, x, y)
-    
-    
+    def ogran_rectangle(self, x1, y1, width, height, x=0, y=0):
+        x2, y2 = self.rectangle(x1, y1, width, height, x, y)
+        X = x1 - Pl.width < self.playr.x + x < x2
+        Y = y1 - Pl.height < self.playr.y + y < y2
+        if X and Y:
+            return False
+        return True
     
