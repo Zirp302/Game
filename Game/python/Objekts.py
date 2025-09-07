@@ -6,11 +6,18 @@ import pyglet
 
 class Pl:
     # Характеристеки самого игрока
-    x=360
-    y=360
-    width=50
-    height=100
-    color=(54, 136, 181)
+    x = 340
+    y = 330
+    width = 50
+    height = 100
+    color = (54, 136, 181)
+
+    # Характеристики здаровья
+    HP_playr = 5               # Количество здоровья
+    HP_One = width / HP_playr  # Длина одной еденице здаровья
+    Polosa = HP_playr * HP_One # Полоска HP
+
+    # Пакет для обединения HP и playr
     pl = pyglet.graphics.Batch()
     def playr(self): #Создание и отображение игрока
         self.playr = sh.Rectangle(Pl.x, Pl.y, Pl.width, Pl.height, Pl.color, batch=Pl.pl)
@@ -18,10 +25,7 @@ class Pl:
 
     # HP игрока
     def HP(self):
-        self.HP_playr = 5
-        self.HP_One = Pl.width / self.HP_playr
-        self.Polosa = self.HP_playr * self.HP_One # Полоска HP
-        self.HP = sh.Rectangle(Pl.x, Pl.y + Pl.height, self.Polosa, 15, color=(255,0,0), batch=Pl.pl)
+        self.HP = sh.Rectangle(Pl.x, Pl.y + Pl.height, Pl.Polosa, 15, color=(255,0,0), batch=Pl.pl)
         return self.HP
 
     def draw(): # Отрисовка пакета данных с игроком и его полоской так как они должны передвигаться одновременно и одинаково
