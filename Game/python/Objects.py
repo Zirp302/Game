@@ -17,13 +17,12 @@ zombiBat=pyglet.graphics.Batch()
 
 class Pl:
     # Характеристеки самого игрока
-    x=360,
-    y=360,
-    width=50,
-    height=100,
-    color=(54, 136, 181),
-    pl = pyglet.graphics.Batch(),
-    xp=pyglet.text.Label()
+    x=360
+    y=360
+    width=50
+    height=100
+    color=(54, 136, 181)
+    pl = pyglet.graphics.Batch()
     def playr(self): #Создание и отображение игрока
         self.playr = sh.Rectangle(Pl.x, Pl.y, Pl.width, Pl.height, Pl.color, batch=Pl.pl)
         return self.playr
@@ -128,11 +127,11 @@ class Zombi:
             global zombies
             if r(0,1) == 0:
                 #print(1,coord,coord1)
-                zombies[(sh.Rectangle(coord, coord1, 25, 25, (21,110,100), batch=zombiBat))] = 100
+                zombies[(sh.Rectangle(coord,coord1,25,25,(21,110,100),batch=zombiBat))] = 100
             else:
                 #print(2,coord1,coord)
                 #зомбей справа  и сверху видно не было поэтому я думал что спaвн почему то не работает
-                zombies[(sh.Rectangle(coord1,coord, 25, 25, (21, 110, 100), batch=zombiBat))] = 100
+                zombies[(sh.Rectangle(coord1,coord,25,25,(21,110,100),batch=zombiBat))] = 100
             #значение в хэш таблице это хр зомби
 
     def moving(self,dt=1/60):
@@ -149,7 +148,7 @@ class Zombi:
                         zombis.y+=self.speed
                     elif self.playr.y < zombis.y:
                         zombis.y=zombis.y-self.speed
-
+                        
     def attack(self,dt=1/2,trash=None):
         #это можно было сделать и в функции zombMoving но нет надо ведь нагрузить комп кучей бесполезных функций
         if zombies:
