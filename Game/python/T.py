@@ -62,10 +62,10 @@ U = Uprav(playr, HP, width)
 S = Stena()
 
 def avanpost(xM, yM):
-    stena_l = U.ogran(S.left_S[0], S.left_S[1], S.left_S[2], S.left_S[3], xM, yM)
-    stena_r = U.ogran(S.right_S[0], S.right_S[1], S.right_S[2], S.right_S[3], xM, yM)
-    stena_v = U.ogran(S.verh_S[0], S.verh_S[1], S.verh_S[2], S.verh_S[3], xM, yM)
-    stena_n = U.ogran(S.niz_S[0], S.niz_S[1], S.niz_S[2], S.niz_S[3], xM, yM)
+    stena_l = U.ogran_line(S.left_S[0], S.left_S[1], S.left_S[2], S.left_S[3], xM, yM)
+    stena_r = U.ogran_line(S.right_S[0], S.right_S[1], S.right_S[2], S.right_S[3], xM, yM)
+    stena_v = U.ogran_line(S.verh_S[0], S.verh_S[1], S.verh_S[2], S.verh_S[3], xM, yM)
+    stena_n = U.ogran_line(S.niz_S[0], S.niz_S[1], S.niz_S[2], S.niz_S[3], xM, yM)
 
     return stena_v and stena_n and stena_l and stena_r
 
