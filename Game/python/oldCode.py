@@ -162,7 +162,8 @@ def on_draw():
     dom.draw()
     defaultZomb.batch.draw()
     playr.xp.draw()
-defaultZomb.spawn()
+#defaultZomb.spawn()
+
 pyglet.clock.schedule_interval(defaultZomb.spawn,defaultZomb.spawSpeed)
 pyglet.clock.schedule_interval(defaultZomb.moving,1/20)
 #передвижения зомбей с обновлением каждые 1/4 секунды может уже не 1/4 
