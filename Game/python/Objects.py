@@ -16,27 +16,34 @@ zombiBat=pyglet.graphics.Batch()
 """
 
 class Pl:
+    def __init__(self, x=100, y=100, width=25, height=25, color={54,136,181}, xp=100, harXp=5):
+        self.x = x
+        self.y = y
+        self.w = width
+        self.h = height
+        self.color = color
+        self.xp=pyglet.text.Label(str(xp),20,690,color=(255,0,0))
+        self.pl=pyglet.graphics.Batch()
+        self.harXp=harXp
+        self.playr = sh.Rectangle(self.x, self.y, self.w, self.h, self.color, batch=self.pl)
+        self.HP_playr = 5
+        self.HP_One = self.w / self.harXp
+        self.Polosa = self.HP_playr * self.HP_One # Полоска HP
+        self.HP = sh.Rectangle(self.x, self.y + self.h, self.Polosa, 15, color=(255,0,0), batch=self.pl)
     # Характеристеки самого игрока
-    x=360
-    y=360
-    width=50
-    height=100
-    color=(54, 136, 181)
-    pl = pyglet.graphics.Batch()
-    def playr(self): #Создание и отображение игрока
-        self.playr = sh.Rectangle(Pl.x, Pl.y, Pl.width, Pl.height, Pl.color, batch=Pl.pl)
+    def player(self): #Создание и отображение игрока
         return self.playr
 
     # HP игрока
-    def HP(self):
+    def HarXp(self):
         self.HP_playr = 5
-        self.HP_One = Pl.width / self.HP_playr
+        self.HP_One = self.w / self.harXp
         self.Polosa = self.HP_playr * self.HP_One # Полоска HP
-        self.HP = sh.Rectangle(Pl.x, Pl.y + Pl.height, self.Polosa, 15, color=(255,0,0), batch=Pl.pl)
+        self.HP = sh.Rectangle(self.x, self.y + self.h, self.Polosa, 15, color=(255,0,0), batch=self.pl)
         return self.HP
 
-    def draw(): # Отрисовка пакета данных с игроком и его полоской так как они должны передвигаться одновременно и одинаково
-        Pl.pl.draw() 
+    def draw(self): # Отрисовка пакета данных с игроком и его полоской так как они должны передвигаться одновременно и одинаково
+        self.pl.draw() 
 
 
 class Stena: # Характеристики стен для их отображения
@@ -104,7 +111,7 @@ class Stena: # Характеристики стен для их отображ�
 
 
 class Zombi:
-    def __init__(self,playr, batch=zombiBat, w=10, h=10, col = {21, 110, 100}, type=None, xp=100, speed=1, spawnSpeed=1/2,damage=10):
+    def __init__(self, playr, batch=zombiBat, w=10, h=10, col = {21, 110, 100}, type=None, xp=100, speed=1, spawnSpeed=1/2,damage=10):
         #Мне лень писать self
         #Но я напишу
         #type это тип зомби
@@ -159,6 +166,46 @@ class Zombi:
                         #print(minpx,maxpx,minpy,maxpy)
                         #print(minzx,maxzx,minpy,maxzy)
                     if self.playr.x==i.x and self.playr.y==i.y:
-                        self.playr.xp.text = str(int(self.playr.xp.text)-self.damage)
-                        if int(self.playr.xp.text)==0:
+                        #self.playr.xp.text = str(int(self.playr.xp.text)-self.damage)
+                        self.playr.HP.width -= self.playr.HP_One
+                        #if int(self.playr.xp.text)==0:
+                        if self.playr.HP.width <= 0:
                             raise OutOfXpError
+                    
+
+
+
+bat = pyglet.graphics.Batch()
+mugs = {}
+class Ognestrel:
+    def __init__(self, playr, phot="ognestrel.png", damag=10, mugsNum=10, mugsType="common", type=None, isP=True, bat=bat):
+        self.ognTypes={}
+        if not type or type not in self.ognTypes:
+            self.damag = damag
+            self.mugsNum = mugsNum
+            self.mugsType = mugsType
+            self.playr = playr
+            #photo = pyglet.image.load(phot, open(phot, "br"))
+            self.pist = pyglet.shapes.Line(playr.x, playr.y+6, playr.x-10, playr.y+6,2)
+            #pyglet.sprite.Sprite(photo, playr.x, playr.y+3)
+            self.x = playr.x
+            self.y = playr.y+6
+            self.x2 = playr.x-10
+            self.y2 = playr.y 
+            self.isP = isP
+            self.bat=bat
+    
+
+    def shot(self):
+        global mugs
+        global bat
+        if self.x > self.x2:
+            mug = pyglet.shapes.Line(self.x2, self.y, self.x2 + 3, self.y, color = [200, 236, 100], batch = bat)
+            mugs[mug] = (-0.5, 0)
+            return mug
+    
+
+    def pulaMoving(self, dt):
+        for i in mugs:
+            i.x += mugs[i][0]
+            i.y += mugs[i][1]

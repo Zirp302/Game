@@ -2,7 +2,7 @@ import pyglet
 from pyglet import shapes as sh
 from pyglet.window.key import *
 from pyglet.window import key
-from Uprav import Uprav
+from Uprav import playrUprav
 import random
 from Objects import Zombi,Pl, Stena
 # доки пайглета https://pyglet.readthedocs.io/en/latest/programming_guide/shapes.html
@@ -14,8 +14,7 @@ isSpawn=True
 wind_width, wind_height = (720, 720)
 wind = pyglet.window.Window(width=wind_width, height=wind_height, caption="gameOnPyglet")
 width, height = (50, 100)
-playr = Pl().playr()
-HP = Pl().HP()
+playr = Pl()
 #могут ли зомби появляться
 #Скорость появления зомбей попробуй изменить число на какое нибудь оч маленькое по типу 1/60 и тд
 w = 30
@@ -58,7 +57,7 @@ def Damag(dt, HP_One=HP.HP_One):
 
 keys = key.KeyStateHandler()
 wind.push_handlers(keys)
-U = Uprav(playr, HP, width)
+U = playrUprav(playr, playr)
 S = Stena()
 
 def avanpost(xM, yM):
@@ -90,7 +89,7 @@ def update(dt, speed=5):
 def on_draw():
     wind.clear()
     Stena().draw()
-    Pl.draw()
+    playr.draw()
     #кстати чтобы определить цвет я использую https://colorscheme.ru/color-names.html
     defaultZomb.batch.draw()
 defaultZomb.spawn()

@@ -5,26 +5,22 @@ from pyglet.window.key import *
 from Objects import Pl, Stena
 
 
-class Uprav:
+class playrUprav:
     #   Доделать блокировку cтенам
-    def __init__(self, playr, HP, width):
+    def __init__(self, playr, HP):
         self.playr = playr
         self.HP = HP
-        self.width = width
 
     #   Передвижеие игрока и его полоски жизни
     def pl_moving(self, x, y, avanpost):
-        self.x = x
-        self.y = y
-        self.playr = self.playr
-        self.HP = self.HP
-        self.width = self.width
-        if 0 < x + self.playr.x < 721 - self.width and avanpost:
-            self.playr.x += x
-            self.HP.x += x
-        if 0 < y + self.playr.y < 721 - self.width and avanpost:
-            self.playr.y += y
-            self.HP.y += y
+        if (0 < x + self.playr.x < 721 - self.playr.w) and avanpost:
+            self.playr.playr.x += x
+            self.playr.x = self.playr.playr.x
+            self.playr.HP.x += x
+        if (0 < y + self.playr.y < 721 - self.playr.w) and avanpost:
+            self.playr.playr.y += y
+            self.playr.y = self.playr.playr.y
+            self.playr.HP.y += y
 
     #   Даёт стенам возможность останавливать тела
     def line(self, x1, y1, x2, y2, x, y, speed=5): 
@@ -48,16 +44,16 @@ class Uprav:
     #   Проверка на нахождение в объекте
     def ogran_line(self, x1, y1, x2, y2, x=0, y=0):
         x1, y1, x2, y2 = self.line(x1, y1, x2, y2, x, y)
-        X = x1 - Pl.width < self.playr.x + x < x2
-        Y = y1 - Pl.height < self.playr.y + y < y2
+        X = x1 - self.playr.w < self.playr.x + x < x2
+        Y = y1 - self.playr.h < self.playr.y + y < y2
         if X and Y:
             return False
         return True
     
     def ogran_rectangle(self, x1, y1, width, height, x=0, y=0):
         x2, y2 = self.rectangle(x1, y1, width, height, x, y)
-        X = x1 - Pl.width < self.playr.x + x < x2
-        Y = y1 - Pl.height < self.playr.y + y < y2
+        X = x1 - self.playr.w < self.playr.x + x < x2
+        Y = y1 - self.playr.h < self.playr.y + y < y2
         if X and Y:
             return False
         return True

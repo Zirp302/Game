@@ -1,15 +1,21 @@
 import pyglet
 from pyglet import shapes as sh
 from pyglet.window.key import *
+from pyglet.window import key
+from Uprav import playrUprav
 import random
-from Objects import Zombi,Pl
+from Objects import Zombi, Pl, Stena, Ognestrel
 # доки пайглета https://pyglet.readthedocs.io/en/latest/programming_guide/shapes.html
 #это чтобы писать названия клавиш не указывая функцию key
 # wind is a window
 xp=100
 isSpawn=True
 #Сори но это хп персонажа я не мог не реализовать хп если есть зомби
-wind = pyglet.window.Window(width=720,height=720,caption="gameOnPyglet")
+wind_width, wind_height = (720, 720)
+wind = pyglet.window.Window(width=wind_width, height=wind_height, caption="gameOnPyglet")
+width, height = (50, 100)
+playr = Pl()
+pist=Ognestrel(playr)
 #могут ли зомби появляться
 #Скорость появления зомбей попробуй изменить число на какое нибудь оч маленькое по типу 1/60 и тд
 w = 30
@@ -19,149 +25,74 @@ drawInfuncs=[]
 @wind.event
 def on_mouse_press(x,y,button,modifiers):
     print(f"x = {x}, y = {y}")
-playr=Pl()
 defaultZomb=Zombi(playr=playr)
 MiniBoss=Zombi(playr=playr,w=25,h=25,type="big",xp=1000,speed=0.2,spawnSpeed=3,damage=30)
 
-l_l_v = (240, 480)
-l_l_n = (240, 240)
-r_r_v = (480, 480)
-r_r_n = (480, 240)
-
-Shir_S = 20
-left_S = (
-    min(l_l_v[0], l_l_n[0]), 
-    min(l_l_n[1], l_l_v[1]) - Shir_S / 2,
-    max(l_l_v[0], l_l_n[0]),
-    max(l_l_n[1], l_l_v[1]) + Shir_S / 2
-)
-right_S = (
-    min(r_r_v[0], r_r_n[0]), 
-    min(r_r_v[1], r_r_n[1]) - Shir_S / 2,
-    max(r_r_v[0], r_r_n[0]), 
-    max(r_r_v[1], r_r_n[1]) + Shir_S / 2
-)
-verh_S = (
-    min(r_r_v[0], l_l_v[0]) - Shir_S / 2, 
-    min(r_r_v[1], l_l_v[1]), 
-    max(r_r_v[0], l_l_v[0]) + Shir_S / 2,
-    max(r_r_v[1], l_l_v[1])
-)
-niz_S = (
-    min(r_r_n[0], l_l_n[0]) + 120 - Shir_S / 2, 
-    min(r_r_n[1], l_l_n[1]), 
-    max(r_r_n[0], l_l_n[0]) + Shir_S / 2, 
-    max(r_r_n[1], l_l_n[1])
-)
-
-
-dom = pyglet.graphics.Batch()
-wall_verh_left = sh.Line(
-    left_S[0], left_S[1], 
-    left_S[2], left_S[3], 
-    thickness=Shir_S, batch=dom
-)
-wall_verh_right = sh.Line(
-    right_S[0], right_S[1], 
-    right_S[2], right_S[3], 
-    thickness=Shir_S, batch=dom
-)
-wall_left_verh = sh.Line(
-    verh_S[0], verh_S[1], 
-    verh_S[2], verh_S[3], 
-    thickness=Shir_S, batch=dom
-)
-wall_left_niz = sh.Line(
-    niz_S[0], niz_S[1], 
-    niz_S[2], niz_S[3], 
-    thickness=Shir_S, batch=dom
-) 
-
-""" Ворота. Не доделано
-wall_niz_left = sh.Line(100, 100, 100, 200, thickness=20, batch=dom)
-wall_niz_right = sh.Line(100, 100, 100, 200, thickness=20, batch=dom)
-
-wall_right_verh = sh.Line(100, 100, 100, 200, thickness=20, batch=dom)
-wall_right_niz = sh.Line(100, 100, 100, 200, thickness=20, batch=dom)"""
-
-
-
-def ogran(x1, y1, x2, y2, x, y, zonaw=w, zonah=h, speed=5): # Доделать блокировку cтенам
-    if x1 == x2:
-        x1 -= 10
-        x2 += 10
-    else:
-        y1 -= 10
-        y2 += 10
-    #print(x1, playr.x, x, x2 )
-    
-    if x1 + speed - zonaw < playr.x + x < x2 and y1 + speed - zonah < playr.y + y < y2:
-        return False
-    return True
-
-
-def pl_moving(x,y):
-    stena_l = ogran(left_S[0], left_S[1], left_S[2], left_S[3], x, y)
-    stena_r = ogran(right_S[0], right_S[1], right_S[2], right_S[3], x, y)
-    stena_v = ogran(verh_S[0], verh_S[1], verh_S[2], verh_S[3], x, y)
-    stena_n = ogran(niz_S[0], niz_S[1], niz_S[2], niz_S[3], x, y) # прочитай послание на 31 строке
-
-    avanpost = stena_v and stena_n and stena_l and stena_r
-
-    if 0 < x + playr.x < 721 - w and avanpost:
-        playr.x += x
-
-    
-    if 0 < y + playr.y < 721 - w and avanpost : # '''прочитай послание на 31 строке'''
-        playr.y += y
-
-keys={'W': False, 'A': False, 'S': False, 'D': False}
-@wind.event
-def on_key_press(symbol, modifiers):
-    if symbol == W:
-        keys['W'] = True
-    elif symbol == A:
-        keys['A'] = True
-    elif symbol == S:
-        keys['S'] = True
-    elif symbol == D:
-        keys['D'] = True
 
 
 @wind.event
-def on_key_release(symbol, modifiers):
-    if symbol == W:
-        keys['W'] = False
-    elif symbol == A:
-        keys['A'] = False
-    elif symbol == S:
-        keys['S'] = False
-    elif symbol == D:
-        keys['D'] = False
-    
+def on_mouse_press(x,y,button,modifiers):
+    print(f"x = {x}, y = {y}")
+
+'''
+dm = False
+time_kd = 1
+
+def Damag(dt, HP_One=HP.HP_One):
+    global dm
+    global time_kd
+    t = time.time()
+    kd = t - time_kd
+
+    if dm and kd > 1:
+        print(time_kd, t, kd)
+        time_kd = t
+        cd = 0
+        HP.width -= HP_One
+        if HP.width == 0:
+            playr.x, playr.y = (360, 360)
+            HP.x, HP.y = (360, 360 + 100)
+            HP.width = playr.width
+            dm = False'''
 
 
+keys = key.KeyStateHandler()
+wind.push_handlers(keys)
+U = playrUprav(playr, playr)
+S = Stena()
+
+def avanpost(xM, yM):
+    stena_l = U.ogran_line(S.left_S[0], S.left_S[1], S.left_S[2], S.left_S[3], xM, yM)
+    stena_r = U.ogran_line(S.right_S[0], S.right_S[1], S.right_S[2], S.right_S[3], xM, yM)
+    stena_v = U.ogran_line(S.verh_S[0], S.verh_S[1], S.verh_S[2], S.verh_S[3], xM, yM)
+    stena_n = U.ogran_line(S.niz_S[0], S.niz_S[1], S.niz_S[2], S.niz_S[3], xM, yM)
+
+    return stena_v and stena_n and stena_l and stena_r
 
 def update(dt, speed=5):
-    if keys['W']:
-        playr.pl_moving(0, speed)
-    if keys['S']:
-        playr.pl_moving(0, -speed)
-    if keys['A']:
-        playr.pl_moving(-speed, 0)
-    if keys['D']:
-        playr.pl_moving(speed, 0)
-    defaultZomb.playr=playr
+    if keys[key.W]:
+        x_moving, y_moving = 0, speed
+        U.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))
+    if keys[key.S]:
+        x_moving, y_moving = 0, -speed
+        U.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))
+    if keys[key.A]:
+        x_moving, y_moving = -speed, 0
+        U.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))
+    if keys[key.D]:
+        x_moving, y_moving = speed, 0
+        U.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))
+
+
 
 
 @wind.event
 def on_draw():
     wind.clear()
+    Stena().draw()
+    playr.draw()
     #кстати чтобы определить цвет я использую https://colorscheme.ru/color-names.html
-    playr.playr.draw()
-    dom.draw()
     defaultZomb.batch.draw()
-    playr.xp.draw()
 defaultZomb.spawn()
 pyglet.clock.schedule_interval(defaultZomb.spawn,defaultZomb.spawSpeed)
 pyglet.clock.schedule_interval(defaultZomb.moving,1/20)
