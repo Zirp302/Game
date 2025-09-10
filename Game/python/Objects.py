@@ -163,13 +163,13 @@ class Zombi:
         #это можно было сделать и в функции zombMoving но нет надо ведь нагрузить комп кучей бесполезных функций
         if zombies:
             for i in zombies:
-                x, y, x1, x2 = self.playr.x, self.playr.y, self.playr.x + self.playr.w, self.playr.y + self.playr.h
+                x, y, x1, y1 = self.playr.x, self.playr.y, self.playr.x + self.playr.w, self.playr.y + self.playr.h
                 zx, zx1, zy, zy1 = i.x, i.y, i.x + self.w, i.y + self.h
                 #if (minpx<=maxzx and (minpy>=minzy or maxpy<=maxzy)) or (maxpx>=minzx and (minpy>=minzy or maxpy<=maxzy)) or (minpy<=maxzy and (minpx>=minzx or maxpx<=maxzx)) or (minpy>=maxzy and (minpx>=minzx or maxpx<=maxzx)):
                         #print(minpx,maxpx,minpy,maxpy)
                         #print(minzx,maxzx,minpy,maxzy)
                     #if self.playr.x==i.x and self.playr.y==i.y:
-                if x1 >= zx and 
+                if ((zy1 >= y1 > zy) or (zy1 >= y > zy)) and ((zx1 >= x1 > zx) or (zx1 >= x > zx)):
                         #self.playr.xp.text = str(int(self.playr.xp.text)-self.damage)
                         self.playr.HP.width -= self.playr.HP_One
                         #if int(self.playr.xp.text)==0:
