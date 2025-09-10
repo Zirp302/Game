@@ -16,7 +16,7 @@ zombiBat=pyglet.graphics.Batch()
 """
 
 class Pl:
-    def __init__(self, x=100, y=100, width=25, height=25, color={54,136,181}, xp=100, harXp=5):
+    def __init__(self, x=100, y=100, width=25, height=25, color={54,136,181}, xp=100, harXp=5, speed=5):
         self.x = x
         self.y = y
         self.w = width
@@ -26,10 +26,11 @@ class Pl:
         self.pl=pyglet.graphics.Batch()
         self.harXp=harXp
         self.playr = sh.Rectangle(self.x, self.y, self.w, self.h, self.color, batch=self.pl)
-        self.HP_playr = 5
+        self.HP_playr = 100
         self.HP_One = self.w / self.harXp
         self.Polosa = self.HP_playr * self.HP_One # Полоска HP
         self.HP = sh.Rectangle(self.x, self.y + self.h, self.Polosa, 15, color=(255,0,0), batch=self.pl)
+        self.speed = speed
     # Характеристеки самого игрока
     def player(self): #Создание и отображение игрока
         return self.playr
@@ -111,7 +112,7 @@ class Stena: # Характеристики стен для их отображ�
 
 
 class Zombi:
-    def __init__(self, playr, batch=zombiBat, w=10, h=10, col = {21, 110, 100}, type=None, xp=100, speed=1, spawnSpeed=1/2,damage=10):
+    def __init__(self, playr,plrUprv, batch=zombiBat, w=10, h=10, col = {21, 110, 100}, type=None, xp=100, speed=1, spawnSpeed=1/2, damage=10):
         #Мне лень писать self
         #Но я напишу
         #type это тип зомби
@@ -124,6 +125,8 @@ class Zombi:
         self.spawSpeed=spawnSpeed
         self.damage=damage
         self.playr=playr
+        self.plrUpr=plrUprv
+
 
     def spawn(dt=2,isSpawn=True):
         if isSpawn:
@@ -160,12 +163,13 @@ class Zombi:
         #это можно было сделать и в функции zombMoving но нет надо ведь нагрузить комп кучей бесполезных функций
         if zombies:
             for i in zombies:
-                #minpx,minpy,maxpx,maxpy=self.playr.x,self.playr.y,self.playr.x+self.playr.w,self.playr.y+self.playr.h
-                #minzx,maxzx,minzy,maxzy=i.x,i.y,i.x+self.w,i.y+self.h
+                x, y, x1, x2 = self.playr.x, self.playr.y, self.playr.x + self.playr.w, self.playr.y + self.playr.h
+                zx, zx1, zy, zy1 = i.x, i.y, i.x + self.w, i.y + self.h
                 #if (minpx<=maxzx and (minpy>=minzy or maxpy<=maxzy)) or (maxpx>=minzx and (minpy>=minzy or maxpy<=maxzy)) or (minpy<=maxzy and (minpx>=minzx or maxpx<=maxzx)) or (minpy>=maxzy and (minpx>=minzx or maxpx<=maxzx)):
                         #print(minpx,maxpx,minpy,maxpy)
                         #print(minzx,maxzx,minpy,maxzy)
-                    if self.playr.x==i.x and self.playr.y==i.y:
+                    #if self.playr.x==i.x and self.playr.y==i.y:
+                if x1 >= zx and 
                         #self.playr.xp.text = str(int(self.playr.xp.text)-self.damage)
                         self.playr.HP.width -= self.playr.HP_One
                         #if int(self.playr.xp.text)==0:

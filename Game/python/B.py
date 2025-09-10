@@ -8,14 +8,15 @@ from Objects import Zombi, Pl, Stena, Ognestrel
 # доки пайглета https://pyglet.readthedocs.io/en/latest/programming_guide/shapes.html
 #это чтобы писать названия клавиш не указывая функцию key
 # wind is a window
-xp=100
 isSpawn=True
 #Сори но это хп персонажа я не мог не реализовать хп если есть зомби
 wind_width, wind_height = (720, 720)
 wind = pyglet.window.Window(width=wind_width, height=wind_height, caption="gameOnPyglet")
 width, height = (50, 100)
 playr = Pl()
-pist=Ognestrel(playr)
+xp=100
+Uprav = playrUprav(playr,playr.HP)
+pist = Ognestrel(playr)
 #могут ли зомби появляться
 #Скорость появления зомбей попробуй изменить число на какое нибудь оч маленькое по типу 1/60 и тд
 w = 30
@@ -25,8 +26,8 @@ drawInfuncs=[]
 @wind.event
 def on_mouse_press(x,y,button,modifiers):
     print(f"x = {x}, y = {y}")
-defaultZomb=Zombi(playr=playr)
-MiniBoss=Zombi(playr=playr,w=25,h=25,type="big",xp=1000,speed=0.2,spawnSpeed=3,damage=30)
+defaultZomb=Zombi(playr=playr, plrUprv=Uprav)
+MiniBoss=Zombi(playr=playr,plrUprv=Uprav, w=25, h=25, type="big", xp=1000, speed=0.2, spawnSpeed=3, damage=30)
 
 
 
@@ -58,30 +59,30 @@ def Damag(dt, HP_One=HP.HP_One):
 
 keys = key.KeyStateHandler()
 wind.push_handlers(keys)
-U = playrUprav(playr, playr)
 S = Stena()
 
 def avanpost(xM, yM):
-    stena_l = U.ogran_line(S.left_S[0], S.left_S[1], S.left_S[2], S.left_S[3], xM, yM)
-    stena_r = U.ogran_line(S.right_S[0], S.right_S[1], S.right_S[2], S.right_S[3], xM, yM)
-    stena_v = U.ogran_line(S.verh_S[0], S.verh_S[1], S.verh_S[2], S.verh_S[3], xM, yM)
-    stena_n = U.ogran_line(S.niz_S[0], S.niz_S[1], S.niz_S[2], S.niz_S[3], xM, yM)
+    stena_l = Uprav.ogran_line(S.left_S[0], S.left_S[1], S.left_S[2], S.left_S[3], xM, yM)
+    stena_r = Uprav.ogran_line(S.right_S[0], S.right_S[1], S.right_S[2], S.right_S[3], xM, yM)
+    stena_v = Uprav.ogran_line(S.verh_S[0], S.verh_S[1], S.verh_S[2], S.verh_S[3], xM, yM)
+    stena_n = Uprav.ogran_line(S.niz_S[0], S.niz_S[1], S.niz_S[2], S.niz_S[3], xM, yM)
 
     return stena_v and stena_n and stena_l and stena_r
+
 
 def update(dt, speed=5):
     if keys[key.W]:
         x_moving, y_moving = 0, speed
-        U.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))
+        Uprav.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))
     if keys[key.S]:
         x_moving, y_moving = 0, -speed
-        U.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))
+        Uprav.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))
     if keys[key.A]:
         x_moving, y_moving = -speed, 0
-        U.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))
+        Uprav.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))
     if keys[key.D]:
         x_moving, y_moving = speed, 0
-        U.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))
+        Uprav.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))
 
 
 
@@ -98,5 +99,5 @@ pyglet.clock.schedule_interval(defaultZomb.spawn,defaultZomb.spawSpeed)
 pyglet.clock.schedule_interval(defaultZomb.moving,1/20)
 #передвижения зомбей с обновлением каждые 1/4 секунды может уже не 1/4 
 pyglet.clock.schedule_interval(update,1/60)
-pyglet.clock.schedule_interval(defaultZomb.attack,1/2)
+pyglet.clock.schedule_interval(defaultZomb.attack,1)
 pyglet.app.run()
