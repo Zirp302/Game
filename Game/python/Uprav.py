@@ -27,9 +27,7 @@ class Uprav:
             self.playr.y += y
             self.HP.y += y
 
-    
-    
-    #   Проверка линий
+        #   Проверка линий
     def line(self, x1, y1, x2, y2, x, y, speed=5): 
         if x1 == x2:
             x1 -= 10
@@ -42,6 +40,7 @@ class Uprav:
             x1, x2 = min(x1, x2), max(x1, x2)
             return x1, y1, x2, y2
         
+    # Ограничение прохаждение через линии
     def ogran_line(self, x1, y1, x2, y2, x=0, y=0):
         # Переназначение переменных согласно функции line
         x1, y1, x2, y2 = self.line(x1, y1, x2, y2, x, y) 
@@ -50,8 +49,9 @@ class Uprav:
         if X and Y:
             return False
         return True
-
-    def damag_rectangle(self, x1, y1, width, height, x=0, y=0):
+    
+    # Получение урона при прохаждение через линии
+    def damag_line(self, x1, y1, width, height, x=0, y=0):
         # Переназначение переменных согласно функции rectangle
         x1, y1, x2, y2 = self.line(x1, y1, x2, y2, x, y) 
         X = x1 - Pl.width < self.playr.x + x < x2
@@ -75,6 +75,7 @@ class Uprav:
         y2 = y1 + height
         return x2, y2
     
+    # Ограничение прохаждение через прямоуглоьники
     def ogran_rectangle(self, x1, y1, width, height, x=0, y=0):
         # Переназначение переменных согласно функции rectangle
         x2, y2 = self.rectangle(x1, y1, width, height, x, y)
@@ -84,6 +85,7 @@ class Uprav:
             return False
         return True
     
+    # Получение урона при прохаждение через прямоуглоьники
     def damag_rectangle(self, x1, y1, width, height, x=0, y=0):
         # Переназначение переменных согласно функции rectangle
         x2, y2 = self.rectangle(x1, y1, width, height, x, y)
@@ -101,7 +103,3 @@ class Uprav:
                 self.playr.y = Pl.y
                 self.HP.x = Pl.x
                 self.HP.y = Pl.y + Pl.height
-
-
-
-    
