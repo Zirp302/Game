@@ -45,20 +45,19 @@ def Damag(dt, HP_One=HP.HP_One):
 
 keys = key.KeyStateHandler()
 wind.push_handlers(keys)
-U = Uprav(playr, HP, width)
-S = Stena()
+S = Stena(playr, HP, width)
 
 def avanpost(x_moving, y_moving):
-    stena_l = U.ogran_line(S.left_S[0], S.left_S[1], 
+    stena_l = S.ogran_line(S.left_S[0], S.left_S[1], 
                             S.left_S[2], S.left_S[3], 
                             x_moving, y_moving)
-    stena_r = U.ogran_line(S.right_S[0],S.right_S[1], 
+    stena_r = S.ogran_line(S.right_S[0],S.right_S[1], 
                             S.right_S[2],S.right_S[3], 
                             x_moving, y_moving)
-    stena_v = U.ogran_line(S.verh_S[0], S.verh_S[1], 
+    stena_v = S.ogran_line(S.verh_S[0], S.verh_S[1], 
                             S.verh_S[2], S.verh_S[3], 
                             x_moving, y_moving)
-    stena_n = U.ogran_line(S.niz_S[0], S.niz_S[1], 
+    stena_n = S.ogran_line(S.niz_S[0], S.niz_S[1], 
                             S.niz_S[2], S.niz_S[3], 
                             x_moving, y_moving)
 
@@ -67,9 +66,10 @@ def avanpost(x_moving, y_moving):
 '''def damag(x1, y1, width, height):'''
 
 
+U = Uprav(playr, HP, width)
 
 def update(dt, speed=5):
-    U.damag_rectangle(200, 200, 20, 20)
+    S.damag_rectangle(200, 200, 20, 20)
     if keys[key.W]:
         x_moving, y_moving = 0, speed
         U.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))
@@ -87,7 +87,7 @@ def update(dt, speed=5):
 @wind.event
 def on_draw():
     wind.clear()
-    Stena().draw()
+    S.draw()
     Pl.draw()
 
 pyglet.clock.schedule_interval(update, 1/60)

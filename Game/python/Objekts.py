@@ -1,11 +1,12 @@
 from pyglet import shapes as sh
+import time
 import pyglet
 """
 Файл для создания обектов и их вывода пряма тут 
 """
 
 class Pl:
-    # Характеристеки самого игрока
+    # Характеристеки игрока
     x = 340
     y = 330
     width = 50
@@ -32,64 +33,114 @@ class Pl:
         Pl.pl.draw() 
 
 
-class Stena: # Характеристики стен для их отображения
-    wind_width, wind_height = (720, 720)
-    LeftNiz_X = wind_width / 2 - 120
-    LeftNiz_Y =  wind_height / 2 - 120
-    LeftVerh_X = wind_width / 2 - 120
-    LeftVerh_Y =  wind_height / 2 + 120
-
-    RightNiz_X = wind_width / 2 + 120
-    RightNiz_Y =  wind_height / 2 - 120
-    RightVerh_X = wind_width / 2 + 120
-    RightVerh_Y =  wind_height / 2 + 120
-
+class Stena: 
+    # Характеристики стен для их отображения 
+    left_S = (240, 230, 240, 490)
+    right_S = (480, 230, 480, 490)
+    niz_S = (350, 240, 490, 240)
+    verh_S = (230, 480, 490, 480)
+    # Ширина стен
     Shir_S = 20
-    left_S = (
-        LeftNiz_X, 
-        LeftNiz_Y - Shir_S / 2,
-        LeftVerh_X,
-        LeftVerh_Y + Shir_S / 2
-    )
-    right_S = (
-        RightNiz_X, 
-        RightNiz_Y - Shir_S / 2,
-        RightVerh_X, 
-        RightVerh_Y + Shir_S / 2
-    )
-    verh_S = (
-        LeftVerh_X - Shir_S / 2, 
-        LeftVerh_Y, 
-        RightVerh_X + Shir_S / 2,
-        RightVerh_Y
-    )
-    niz_S = (
-        LeftNiz_X + 120 - Shir_S / 2,
-        LeftNiz_Y, 
-        RightNiz_X + Shir_S / 2,
-        RightNiz_Y
-    )
-    
-    dom = pyglet.graphics.Batch() # Пакет данных со всеми стенами
+    # Пакет данных со всеми стенами
+    dom = pyglet.graphics.Batch() 
 
-    def __init__(self): # Отображение стен (смотри на названия какая это стена)
-        self.wall_left = sh.Line(Stena.left_S[0], Stena.left_S[1], 
+    #   Отображение стен (смотри на названия)
+    def __init__(self, playr, HP, width): 
+        self.playr = playr
+        self.time = 0
+        self.HP = HP
+        self.width = width
+        self.left_wall = sh.Line(Stena.left_S[0], Stena.left_S[1], 
                                 Stena.left_S[2], Stena.left_S[3], 
                                 thickness=Stena.Shir_S, batch=Stena.dom)
 
-        self.wall_right = sh.Line(Stena.right_S[0], Stena.right_S[1], 
+        self.right_wall = sh.Line(Stena.right_S[0], Stena.right_S[1], 
                                 Stena.right_S[2], Stena.right_S[3], 
                                 thickness=Stena.Shir_S, batch=Stena.dom)
 
-        self.wall_verh = sh.Line(Stena.verh_S[0], Stena.verh_S[1], 
+        self.verh_wall = sh.Line(Stena.verh_S[0], Stena.verh_S[1], 
                                 Stena.verh_S[2], Stena.verh_S[3],
                                 thickness=Stena.Shir_S, batch=Stena.dom)
 
-        self.wall_niz = sh.Line(Stena.niz_S[0], Stena.niz_S[1], 
+        self.niz_wall = sh.Line(Stena.niz_S[0], Stena.niz_S[1], 
                                 Stena.niz_S[2], Stena.niz_S[3], 
                                 thickness=Stena.Shir_S, batch=Stena.dom) 
         self.shipi = sh.Rectangle(200, 200, 20, 20, color=(111,111,111), batch=Stena.dom)
 
-    def draw(self): # Пакет для отображения стен
+    #   Проверка линий
+    def line(self, x1, y1, x2, y2, x, y, speed=5): 
+        if x1 == x2:
+            x1 -= 10
+            x2 += 10
+            y1, y2 = min(y1, y2), max(y1, y2)
+            return x1, y1, x2, y2
+        else:
+            y1 -= 10
+            y2 += 10
+            x1, x2 = min(x1, x2), max(x1, x2)
+            return x1, y1, x2, y2
+        
+    #   Ограничение прохаждение через линии
+    def ogran_line(self, x1, y1, x2, y2, x=0, y=0):
+        x1, y1, x2, y2 = self.line(x1, y1, x2, y2, x, y) # Переназначение переменных через функцию line
+        X = x1 - Pl.width < self.playr.x + x < x2
+        Y = y1 - Pl.height < self.playr.y + y < y2
+        if X and Y:
+            return False
+        return True
+    
+    #   Получение урона при прохаждение через линии
+    def damag_line(self, x1, y1, width, height, x=0, y=0):
+        x1, y1, x2, y2 = self.line(x1, y1, x2, y2, x, y)  # Переназначение переменных через функцию line
+        X = x1 - Pl.width < self.playr.x + x < x2
+        Y = y1 - Pl.height < self.playr.y + y < y2
+        kd = 1.25
+        time1 = time.time()
+        if X and Y and time1 - self.time > kd:
+            self.time = time1
+            print(time1, self.time)
+            self.HP.width -= Pl.HP_One
+            if self.HP.width <= 0:
+                self.HP.width = Pl.width
+                self.playr.x = Pl.x
+                self.playr.y = Pl.y
+                self.HP.x = Pl.x
+                self.HP.y = Pl.y + Pl.height
+
+    #   Проверка прямоугольников
+    def rectangle(self, x1, y1, width, height, x, y, speed=5):
+        x2 = x1 + width
+        y2 = y1 + height
+        return x2, y2
+    
+    #   Ограничение прохаждение через прямоуглоьники
+    def ogran_rectangle(self, x1, y1, width, height, x=0, y=0):
+        x2, y2 = self.rectangle(x1, y1, width, height, x, y) # Переназначение переменных через функцию rectangle
+        X = x1 - Pl.width < self.playr.x + x < x2
+        Y = y1 - Pl.height < self.playr.y + y < y2
+        if X and Y:
+            return False
+        return True
+    
+    #   Получение урона при прохаждение через прямоуглоьники
+    def damag_rectangle(self, x1, y1, width, height, x=0, y=0):
+        x2, y2 = self.rectangle(x1, y1, width, height, x, y) # Переназначение переменных через функцию rectangle
+        X = x1 - Pl.width < self.playr.x + x < x2
+        Y = y1 - Pl.height < self.playr.y + y < y2
+        kd = 1.25
+        time1 = time.time()
+        if X and Y and time1 - self.time > kd:
+            self.time = time1
+            print(time1, self.time)
+            self.HP.width -= Pl.HP_One
+            if self.HP.width <= 0:
+                self.HP.width = Pl.width
+                self.playr.x = Pl.x
+                self.playr.y = Pl.y
+                self.HP.x = Pl.x
+                self.HP.y = Pl.y + Pl.height
+
+    #   Функция для отображения стен
+    def draw(self): 
         Stena.dom.draw()
 
