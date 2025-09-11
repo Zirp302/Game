@@ -169,15 +169,18 @@ class Zombi:
         if zombies:
             for i in zombies:
                 x, y, x1, y1 = self.playr.x, self.playr.y, self.playr.x + self.playr.w, self.playr.y + self.playr.h
-                zx, zy, zx1, zy1 = i.x, i.y, i.x + self.w, i.y + self.h
+                zx, zy, zx1, zy1 = i.x, i.y, i.x + i.width, i.y + i.height
                 print((zy1 , y1 , zy), (zy1 , y , zy), (zx1 , x1 , zx), (zx1 , x , zx))
                 print(((zy1 >= y1 > zy), (zy1 >= y > zy)), ((zx1 >= x1 > zx), (zx1 >= x > zx)))
+                print(x,y,x1,y1)
+                print(zx,zy,zx1,zy1)
                 #if (minpx<=maxzx and (minpy>=minzy or maxpy<=maxzy)) or (maxpx>=minzx and (minpy>=minzy or maxpy<=maxzy)) or (minpy<=maxzy and (minpx>=minzx or maxpx<=maxzx)) or (minpy>=maxzy and (minpx>=minzx or maxpx<=maxzx)):
                         #print(minpx,maxpx,minpy,maxpy)
                         #print(minzx,maxzx,minpy,maxzy)
                     #if self.playr.x==i.x and self.playr.y==i.y:
                         #self.playr.xp.text = str(int(self.playr.xp.text)-self.damage)
-                if Physics.entering_kollision(self.playr, i):
+                if ((zy1 >= y1 > zy) or (zy1 >= y > zy)) and ((zx1 >= x1 > zx) or (zx1 >= x > zx)):
+                        print("yes we gonna think about two chairs")
                         self.playr.HP.width -= self.playr.HP_One
                         #if int(self.playr.xp.text)==0:
                         if self.playr.HP.width <= 0:
@@ -300,10 +303,8 @@ class Physics():
                 playr.HP.x = playr.x
                 playr.HP.y = playr.y + playr.h
     def entering_kollision(playr, object):
-        x, y, x1, y1 = playr.x, playr.y, playr.x + playr.w, playr.y + playr.h
+        x, y, x1, y1 = playr.x, playr.y, playr.x + playr.width, playr.y + playr.height
         zx, zx1, zy, zy1 = object.x, object.y, object.x + object.width, object.y + object.height
         if ((zy1 >= y1 >= zy) or (zy1 >= y >= zy)) and ((zx1 >= x1 >= zx) or (zx1 >= x >= zx)):
-            print((zy1 >= y1 > zy), (zy1 >= y > zy), (zx1 >= x1 > zx), (zx1 >= x > zx))
-            print(((zy1 , y1 , zy) , (zy1 , y , zy)) and ((zx1 , x1 , zx) or (zx1 , x , zx)))
             return True
         return False
