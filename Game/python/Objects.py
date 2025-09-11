@@ -302,7 +302,8 @@ class Physics():
     def entering_kollision(playr, object):
         x, y, x1, y1 = playr.x, playr.y, playr.x + playr.w, playr.y + playr.h
         zx, zx1, zy, zy1 = object.x, object.y, object.x + object.width, object.y + object.height
-        if ((zy1 >= y1 > zy) or (zy1 >= y > zy)) and ((zx1 >= x1 > zx) or (zx1 >= x > zx)):
+        if ((zy1 >= y1 >= zy) or (zy1 >= y >= zy)) and ((zx1 >= x1 >= zx) or (zx1 >= x >= zx)):
             print((zy1 >= y1 > zy), (zy1 >= y > zy), (zx1 >= x1 > zx), (zx1 >= x > zx))
+            print(((zy1 , y1 , zy) , (zy1 , y , zy)) and ((zx1 , x1 , zx) or (zx1 , x , zx)))
             return True
         return False
