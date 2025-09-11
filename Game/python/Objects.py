@@ -16,7 +16,7 @@ zombiBat=pyglet.graphics.Batch()
 """
 
 class Pl:
-    def __init__(self, x=100, y=100, width=25, height=25, color={54,136,181}, xp=100, harXp=5):
+    def __init__(self, x=100, y=100, width=25, height=25, color={54,136,181}, xp=100, harXp=5, speed=5):
         self.x = x
         self.y = y
         self.w = width
@@ -26,10 +26,12 @@ class Pl:
         self.pl=pyglet.graphics.Batch()
         self.harXp=harXp
         self.playr = sh.Rectangle(self.x, self.y, self.w, self.h, self.color, batch=self.pl)
-        self.HP_playr = 5
+        self.HP_playr = harXp
         self.HP_One = self.w / self.harXp
         self.Polosa = self.HP_playr * self.HP_One # Полоска HP
         self.HP = sh.Rectangle(self.x, self.y + self.h, self.Polosa, 15, color=(255,0,0), batch=self.pl)
+        self.speed = speed
+        self.phys = Physics()
     # Характеристеки самого игрока
     def player(self): #Создание и отображение игрока
         return self.playr
@@ -111,7 +113,7 @@ class Stena: # Характеристики стен для их отображ�
 
 
 class Zombi:
-    def __init__(self, playr, batch=zombiBat, w=10, h=10, col = {21, 110, 100}, type=None, xp=100, speed=1, spawnSpeed=1/2,damage=10):
+    def __init__(self, playr,plrUprv, batch=zombiBat, w=10, h=10, col = {21, 110, 100}, type=None, xp=100, speed=1, spawnSpeed=1/2, damage=10):
         #Мне лень писать self
         #Но я напишу
         #type это тип зомби
@@ -124,6 +126,8 @@ class Zombi:
         self.spawSpeed=spawnSpeed
         self.damage=damage
         self.playr=playr
+        self.plrUpr=plrUprv
+        self.phys=Physics()
 
     def spawn(dt=2,isSpawn=True):
         if isSpawn:
@@ -155,18 +159,25 @@ class Zombi:
                         zombis.y+=self.speed
                     elif self.playr.y < zombis.y:
                         zombis.y=zombis.y-self.speed
+    def test(self, x, y, w, h):
+        zombies[sh.Rectangle(x, y, w, h, color=self.col, batch=zombiBat)] = 100
+
+
                         
-    def attack(self,dt=1/2,trash=None):
+    def attack(self, dt=1/2, trash=None):
         #это можно было сделать и в функции zombMoving но нет надо ведь нагрузить комп кучей бесполезных функций
         if zombies:
             for i in zombies:
-                #minpx,minpy,maxpx,maxpy=self.playr.x,self.playr.y,self.playr.x+self.playr.w,self.playr.y+self.playr.h
-                #minzx,maxzx,minzy,maxzy=i.x,i.y,i.x+self.w,i.y+self.h
+                x, y, x1, y1 = self.playr.x, self.playr.y, self.playr.x + self.playr.w, self.playr.y + self.playr.h
+                zx, zy, zx1, zy1 = i.x, i.y, i.x + self.w, i.y + self.h
+                print((zy1 , y1 , zy), (zy1 , y , zy), (zx1 , x1 , zx), (zx1 , x , zx))
+                print(((zy1 >= y1 > zy), (zy1 >= y > zy)), ((zx1 >= x1 > zx), (zx1 >= x > zx)))
                 #if (minpx<=maxzx and (minpy>=minzy or maxpy<=maxzy)) or (maxpx>=minzx and (minpy>=minzy or maxpy<=maxzy)) or (minpy<=maxzy and (minpx>=minzx or maxpx<=maxzx)) or (minpy>=maxzy and (minpx>=minzx or maxpx<=maxzx)):
                         #print(minpx,maxpx,minpy,maxpy)
                         #print(minzx,maxzx,minpy,maxzy)
-                    if self.playr.x==i.x and self.playr.y==i.y:
+                    #if self.playr.x==i.x and self.playr.y==i.y:
                         #self.playr.xp.text = str(int(self.playr.xp.text)-self.damage)
+                if Physics.entering_kollision(self.playr, i):
                         self.playr.HP.width -= self.playr.HP_One
                         #if int(self.playr.xp.text)==0:
                         if self.playr.HP.width <= 0:
@@ -209,3 +220,89 @@ class Ognestrel:
         for i in mugs:
             i.x += mugs[i][0]
             i.y += mugs[i][1]
+
+
+
+class Physics():
+    def line(x1, y1, x2, y2, x, y, speed=5): 
+        if x1 == x2:
+            x1 -= 10
+            x2 += 10
+            y1, y2 = min(y1, y2), max(y1, y2)
+            return x1, y1, x2, y2
+        else:
+            y1 -= 10
+            y2 += 10
+            x1, x2 = min(x1, x2), max(x1, x2)
+            return x1, y1, x2, y2
+        
+    # Ограничение прохаждение через линии
+    def ogran_line(self, playr, x1, y1, x2, y2, x=0, y=0):
+        # Переназначение переменных согласно функции line
+        x1, y1, x2, y2 = self.line(x1, y1, x2, y2, x, y) 
+        X = x1 - playr.w < playr.x + x < x2
+        Y = y1 - playr.h < playr.y + y < y2
+        if X and Y:
+            return False
+        return True
+    
+    # Получение урона при прохаждение через линии
+    def damag_line(self, playr, x1, y1, width, height, x=0, y=0):
+        # Переназначение переменных согласно функции rectangle
+        x1, y1, x2, y2 = self.line(x1, y1, x2, y2, x, y) 
+        X = x1 - playr.w < playr.x + x < x2
+        Y = y1 - playr.h < playr.y + y < y2
+        kd = 1.25
+        time1 = time.time()
+        if X and Y and time1 - self.time > kd:
+            self.time = time1
+            print(time1, self.time)
+            self.HP.width -= self.playr.HP_One
+            if self.HP.width <= 0:
+                self.HP.width = self.playr.w
+                self.playr.x = self.playr.x
+                self.playr.y = self.playr.y
+                self.HP.x = self.playr.x
+                self.HP.y = self.playr.y + self.playr.h
+
+    # Проверка прямоугольников
+    def rectangle(self, x1, y1, width, height, x, y, speed=5):
+        x2 = x1 + width
+        y2 = y1 + height
+        return x2, y2
+    
+    # Ограничение прохаждение через прямоуглоьники
+    def ogran_rectangle(playr, x1, y1, width, height, x=0, y=0):
+        # Переназначение переменных согласно функции rectangle
+        x2, y2 = x1 + width, x2 + height
+        X = x1 - playr.w < playr.x + x < x2
+        Y = y1 - playr.h < playr.y + y < y2
+        if X and Y:
+            return False
+        return True
+    
+    # Получение урона при прохаждение через прямоуглоьники
+    def damag_rectangle(self, playr, x1, y1, width, height, x=0, y=0):
+        # Переназначение переменных согласно функции rectangle
+        x2, y2 = self.rectangle(x1, y1, width, height, x, y)
+        X = x1 - playr.w < playr.x + x < x2
+        Y = y1 - playr.h < playr.y + y < y2
+        kd = 1.25
+        time1 = time.time()
+        if X and Y and time1 - self.time > kd:
+            self.time = time1
+            print(time1, self.time)
+            playr.HP.width -= playr.HP_One
+            if playr.HP.width <= 0:
+                playr.HP.width = playr.width
+                playr.playr.x = playr.x
+                playr.playr.y = playr.y
+                playr.HP.x = playr.x
+                playr.HP.y = playr.y + playr.h
+    def entering_kollision(playr, object):
+        x, y, x1, y1 = playr.x, playr.y, playr.x + playr.w, playr.y + playr.h
+        zx, zx1, zy, zy1 = object.x, object.y, object.x + object.width, object.y + object.height
+        if ((zy1 >= y1 > zy) or (zy1 >= y > zy)) and ((zx1 >= x1 > zx) or (zx1 >= x > zx)):
+            print((zy1 >= y1 > zy), (zy1 >= y > zy), (zx1 >= x1 > zx), (zx1 >= x > zx))
+            return True
+        return False

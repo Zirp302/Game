@@ -39,8 +39,8 @@ class playrUprav:
     def ogran_line(self, x1, y1, x2, y2, x=0, y=0):
         # Переназначение переменных согласно функции line
         x1, y1, x2, y2 = self.line(x1, y1, x2, y2, x, y) 
-        X = x1 - Pl.width < self.playr.x + x < x2
-        Y = y1 - Pl.height < self.playr.y + y < y2
+        X = x1 - self.playr.w < self.playr.x + x < x2
+        Y = y1 - self.playr.h < self.playr.y + y < y2
         if X and Y:
             return False
         return True
@@ -49,20 +49,20 @@ class playrUprav:
     def damag_line(self, x1, y1, width, height, x=0, y=0):
         # Переназначение переменных согласно функции rectangle
         x1, y1, x2, y2 = self.line(x1, y1, x2, y2, x, y) 
-        X = x1 - Pl.width < self.playr.x + x < x2
-        Y = y1 - Pl.height < self.playr.y + y < y2
+        X = x1 - self.playr.w < self.playr.x + x < x2
+        Y = y1 - self.playr.h < self.playr.y + y < y2
         kd = 1.25
         time1 = time.time()
         if X and Y and time1 - self.time > kd:
             self.time = time1
             print(time1, self.time)
-            self.HP.width -= Pl.HP_One
+            self.HP.width -= self.playr.HP_One
             if self.HP.width <= 0:
-                self.HP.width = Pl.width
-                self.playr.x = Pl.x
-                self.playr.y = Pl.y
-                self.HP.x = Pl.x
-                self.HP.y = Pl.y + Pl.height
+                self.HP.width = self.playr.w
+                self.playr.x = self.playr.x
+                self.playr.y = self.playr.y
+                self.HP.x = self.playr.x
+                self.HP.y = self.playr.y + self.playr.h
 
     # Проверка прямоугольников
     def rectangle(self, x1, y1, width, height, x, y, speed=5):
@@ -74,8 +74,8 @@ class playrUprav:
     def ogran_rectangle(self, x1, y1, width, height, x=0, y=0):
         # Переназначение переменных согласно функции rectangle
         x2, y2 = self.rectangle(x1, y1, width, height, x, y)
-        X = x1 - Pl.width < self.playr.x + x < x2
-        Y = y1 - Pl.height < self.playr.y + y < y2
+        X = x1 - self.playr.w < self.playr.x + x < x2
+        Y = y1 - self.playr.h < self.playr.y + y < y2
         if X and Y:
             return False
         return True
@@ -84,17 +84,17 @@ class playrUprav:
     def damag_rectangle(self, x1, y1, width, height, x=0, y=0):
         # Переназначение переменных согласно функции rectangle
         x2, y2 = self.rectangle(x1, y1, width, height, x, y)
-        X = x1 - Pl.width < self.playr.x + x < x2
-        Y = y1 - Pl.height < self.playr.y + y < y2
+        X = x1 - self.playr.w < self.playr.x + x < x2
+        Y = y1 - self.playr.h < self.playr.y + y < y2
         kd = 1.25
         time1 = time.time()
         if X and Y and time1 - self.time > kd:
             self.time = time1
             print(time1, self.time)
-            self.HP.width -= Pl.HP_One
+            self.HP.width -= self.playr.HP_One
             if self.HP.width <= 0:
-                self.HP.width = Pl.width
-                self.playr.x = Pl.x
-                self.playr.y = Pl.y
-                self.HP.x = Pl.x
-                self.HP.y = Pl.y + Pl.height
+                self.HP.width = self.playr.width
+                self.playr.x = self.playr.x
+                self.playr.y = self.playr.y
+                self.HP.x = self.playr.x
+                self.HP.y = self.playr.y + self.playr.h
