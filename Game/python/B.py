@@ -15,8 +15,8 @@ wind = pyglet.window.Window(width=wind_width, height=wind_height, caption="gameO
 width, height = (50, 100)
 playr = Pl()
 xp=100
-Uprav = playrUprav(playr,playr.HP)
 pist = Ognestrel(playr)
+Uprav = playrUprav(playr, playr.HP, pist)
 #могут ли зомби появляться
 #Скорость появления зомбей попробуй изменить число на какое нибудь оч маленькое по типу 1/60 и тд
 w = 30
@@ -84,6 +84,10 @@ def update(dt, speed=5):
     if keys[key.D]:
         x_moving, y_moving = speed, 0
         Uprav.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))
+    if keys[key.Q]:
+        pist.shot()
+    if keys[key.E]:
+        pist.recharge()
 
 
 
@@ -95,9 +99,14 @@ def on_draw():
     playr.draw()
     #кстати чтобы определить цвет я использую https://colorscheme.ru/color-names.html
     defaultZomb.batch.draw()
+    pist.bat.draw()
+    pist.pist.draw()
+    pist.mugsInLab.draw()
+    pist.AllmugsLab.draw()
 #defaultZomb.spawn()
-#pyglet.clock.schedule_interval(defaultZomb.spawn,defaultZomb.spawSpeed)
-#pyglet.clock.schedule_interval(defaultZomb.moving,1/20)
+pyglet.clock.schedule_interval(defaultZomb.spawn,defaultZomb.spawSpeed)
+pyglet.clock.schedule_interval(defaultZomb.moving,1/20)
+pyglet.clock.schedule_interval(pist.pulaMoving, 1/300)
 #передвижения зомбей с обновлением каждые 1/4 секунды может уже не 1/4 
 pyglet.clock.schedule_interval(update, 1/60)
 pyglet.clock.schedule_interval(defaultZomb.attack, 1)

@@ -170,10 +170,10 @@ class Zombi:
             for i in zombies:
                 x, y, x1, y1 = self.playr.x, self.playr.y, self.playr.x + self.playr.w, self.playr.y + self.playr.h
                 zx, zy, zx1, zy1 = i.x, i.y, i.x + i.width, i.y + i.height
-                print((zy1 , y1 , zy), (zy1 , y , zy), (zx1 , x1 , zx), (zx1 , x , zx))
-                print(((zy1 >= y1 > zy), (zy1 >= y > zy)), ((zx1 >= x1 > zx), (zx1 >= x > zx)))
-                print(x,y,x1,y1)
-                print(zx,zy,zx1,zy1)
+                #print((zy1 , y1 , zy), (zy1 , y , zy), (zx1 , x1 , zx), (zx1 , x , zx))
+                #print(((zy1 >= y1 > zy), (zy1 >= y > zy)), ((zx1 >= x1 > zx), (zx1 >= x > zx)))
+                #print(x,y,x1,y1)
+                #print(zx,zy,zx1,zy1)
                 #if (minpx<=maxzx and (minpy>=minzy or maxpy<=maxzy)) or (maxpx>=minzx and (minpy>=minzy or maxpy<=maxzy)) or (minpy<=maxzy and (minpx>=minzx or maxpx<=maxzx)) or (minpy>=maxzy and (minpx>=minzx or maxpx<=maxzx)):
                         #print(minpx,maxpx,minpy,maxpy)
                         #print(minzx,maxzx,minpy,maxzy)
@@ -192,11 +192,11 @@ class Zombi:
 bat = pyglet.graphics.Batch()
 mugs = {}
 class Ognestrel:
-    def __init__(self, playr, phot="ognestrel.png", damag=10, mugsNum=10, mugsType="common", type=None, isP=True, bat=bat):
+    def __init__(self, playr, phot="ognestrel.png", damag=10, MaxMugsNum=10, mugsType="common", type=None, isPist=True, bat=bat, mugsNow=100, kd=2):
         self.ognTypes={}
         if not type or type not in self.ognTypes:
             self.damag = damag
-            self.mugsNum = mugsNum
+            self.MaxMugsNum = MaxMugsNum
             self.mugsType = mugsType
             self.playr = playr
             #photo = pyglet.image.load(phot, open(phot, "br"))
@@ -206,25 +206,44 @@ class Ognestrel:
             self.y = playr.y+6
             self.x2 = playr.x-10
             self.y2 = playr.y 
-            self.isP = isP
-            self.bat=bat
-    
+            self.isPist = isPist
+            self.bat = bat
+            self.mugsNum = MaxMugsNum
+            self.AllmugsLab = pyglet.text.Label(str(mugsNow - MaxMugsNum), 650, 650, color=(255, 255, 0))
+            self.kd = 0.5
+            self.mugsInLab = pyglet.text.Label(str(MaxMugsNum) + "/" + str(MaxMugsNum), 650, 690, color=(255, 255, 0))
+            self.time = 0
 
+            
     def shot(self):
         global mugs
         global bat
-        if self.x > self.x2:
-            mug = pyglet.shapes.Line(self.x2, self.y, self.x2 + 3, self.y, color = [200, 236, 100], batch = bat)
+        if self.x > self.x2 and self.time <= time.time() and self.mugsNum !=0:
+            mug = pyglet.shapes.Line(self.x2, self.y, self.x2 + 4, self.y, color = [250, 250, 0], batch = bat)
+            now, space = self.mugsInLab.text.split("/")
+            self.mugsInLab.text = str(int(now) - 1) + "/" + space
+            self.mugsNum -= 1
             mugs[mug] = (-0.5, 0)
+            self.time = time.time() + self.kd
             return mug
     
 
     def pulaMoving(self, dt):
+        toDel=[]
         for i in mugs:
-            i.x += mugs[i][0]
-            i.y += mugs[i][1]
-
-
+            if not i.x in [720, 0] and not i.y in [720, 0]:
+                i.x += mugs[i][0]
+                i.y += mugs[i][1]
+            else:
+                toDel.append(i)
+        for i in toDel:
+            mugs.pop(i)
+    def recharge(self):
+        if self.MaxMugsNum <= int(self.AllmugsLab.text):
+            now = int(self.mugsInLab.text.split("/")[0])
+            self.AllmugsLab.text = str(int(self.AllmugsLab.text) - (self.MaxMugsNum - int(now)))
+            self.mugsNum = self.MaxMugsNum
+            self.mugsInLab.text = str(str(self.mugsNum) + "/" + self.mugsInLab.text.split("/")[1])
 
 class Physics():
     def line(x1, y1, x2, y2, x, y, speed=5): 
