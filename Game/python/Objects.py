@@ -192,7 +192,7 @@ class Zombi:
 bat = pyglet.graphics.Batch()
 mugs = {}
 class Ognestrel:
-    def __init__(self, playr, phot="ognestrel.png", damag=10, MaxMugsNum=10, mugsType="common", type=None, isPist=True, bat=bat, mugsNow=100, kd=2):
+    def __init__(self, playr, phot="ognestrel.png", damag=10, MaxMugsNum=10, mugsType="common", type=None, isPist=True, bat=bat, mugsNow=100, kd=0.5 ):
         self.ognTypes={}
         if not type or type not in self.ognTypes:
             self.damag = damag
@@ -210,7 +210,7 @@ class Ognestrel:
             self.bat = bat
             self.mugsNum = MaxMugsNum
             self.AllmugsLab = pyglet.text.Label(str(mugsNow - MaxMugsNum), 650, 650, color=(255, 255, 0))
-            self.kd = 0.5
+            self.kd = kd
             self.mugsInLab = pyglet.text.Label(str(MaxMugsNum) + "/" + str(MaxMugsNum), 650, 690, color=(255, 255, 0))
             self.time = 0
 
