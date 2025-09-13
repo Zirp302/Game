@@ -80,7 +80,13 @@ class Stena:
             y2 += 10
             x1, x2 = min(x1, x2), max(x1, x2)
             return x1, y1, x2, y2
-        
+
+    #   Проверка прямоугольников
+    def rectangle(self, x1, y1, width, height, x, y, speed=5):
+        x2 = x1 + width
+        y2 = y1 + height
+        return x2, y2
+
     #   Ограничение прохаждение через линии
     def ogran_line(self, x1, y1, x2, y2, x=0, y=0):
         x1, y1, x2, y2 = self.line(x1, y1, x2, y2, x, y) # Переназначение переменных через функцию line
@@ -89,8 +95,17 @@ class Stena:
         if X and Y:
             return False
         return True
+
+    #   Ограничение прохаждение через прямоуглоьники
+    def ogran_rectangle(self, x1, y1, width, height, x=0, y=0):
+        x2, y2 = self.rectangle(x1, y1, width, height, x, y) # Переназначение переменных через функцию rectangle
+        X = x1 - Pl.width < self.playr.x + x < x2
+        Y = y1 - Pl.height < self.playr.y + y < y2
+        if X and Y:
+            return False
+        return True
     
-    #   Получение урона при прохаждение через линии
+    #   Получение урона при нахождении в линии
     def damag_line(self, x1, y1, width, height, x=0, y=0):
         x1, y1, x2, y2 = self.line(x1, y1, x2, y2, x, y)  # Переназначение переменных через функцию line
         X = x1 - Pl.width < self.playr.x + x < x2
@@ -108,22 +123,7 @@ class Stena:
                 self.HP.x = Pl.x
                 self.HP.y = Pl.y + Pl.height
 
-    #   Проверка прямоугольников
-    def rectangle(self, x1, y1, width, height, x, y, speed=5):
-        x2 = x1 + width
-        y2 = y1 + height
-        return x2, y2
-    
-    #   Ограничение прохаждение через прямоуглоьники
-    def ogran_rectangle(self, x1, y1, width, height, x=0, y=0):
-        x2, y2 = self.rectangle(x1, y1, width, height, x, y) # Переназначение переменных через функцию rectangle
-        X = x1 - Pl.width < self.playr.x + x < x2
-        Y = y1 - Pl.height < self.playr.y + y < y2
-        if X and Y:
-            return False
-        return True
-    
-    #   Получение урона при прохаждение через прямоуглоьники
+    #   Получение урона при нахождении в прямоуглоьнике
     def damag_rectangle(self, x1, y1, width, height, x=0, y=0):
         x2, y2 = self.rectangle(x1, y1, width, height, x, y) # Переназначение переменных через функцию rectangle
         X = x1 - Pl.width < self.playr.x + x < x2
