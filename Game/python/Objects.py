@@ -169,15 +169,18 @@ class Zombi:
         if zombies:
             for i in zombies:
                 x, y, x1, y1 = self.playr.x, self.playr.y, self.playr.x + self.playr.w, self.playr.y + self.playr.h
-                zx, zy, zx1, zy1 = i.x, i.y, i.x + self.w, i.y + self.h
-                print((zy1 , y1 , zy), (zy1 , y , zy), (zx1 , x1 , zx), (zx1 , x , zx))
-                print(((zy1 >= y1 > zy), (zy1 >= y > zy)), ((zx1 >= x1 > zx), (zx1 >= x > zx)))
+                zx, zy, zx1, zy1 = i.x, i.y, i.x + i.width, i.y + i.height
+                #print((zy1 , y1 , zy), (zy1 , y , zy), (zx1 , x1 , zx), (zx1 , x , zx))
+                #print(((zy1 >= y1 > zy), (zy1 >= y > zy)), ((zx1 >= x1 > zx), (zx1 >= x > zx)))
+                #print(x,y,x1,y1)
+                #print(zx,zy,zx1,zy1)
                 #if (minpx<=maxzx and (minpy>=minzy or maxpy<=maxzy)) or (maxpx>=minzx and (minpy>=minzy or maxpy<=maxzy)) or (minpy<=maxzy and (minpx>=minzx or maxpx<=maxzx)) or (minpy>=maxzy and (minpx>=minzx or maxpx<=maxzx)):
                         #print(minpx,maxpx,minpy,maxpy)
                         #print(minzx,maxzx,minpy,maxzy)
                     #if self.playr.x==i.x and self.playr.y==i.y:
                         #self.playr.xp.text = str(int(self.playr.xp.text)-self.damage)
-                if Physics.entering_kollision(self.playr, i):
+                if ((zy1 >= y1 > zy) or (zy1 >= y > zy)) and ((zx1 >= x1 > zx) or (zx1 >= x > zx)):
+                        print("yes we gonna think about two chairs")
                         self.playr.HP.width -= self.playr.HP_One
                         #if int(self.playr.xp.text)==0:
                         if self.playr.HP.width <= 0:
@@ -189,40 +192,82 @@ class Zombi:
 bat = pyglet.graphics.Batch()
 mugs = {}
 class Ognestrel:
-    def __init__(self, playr, phot="ognestrel.png", damag=10, mugsNum=10, mugsType="common", type=None, isP=True, bat=bat):
+    def __init__(self, playr, phot="ognestrel.png", damag=10, MaxMugsNum=10, mugsType="common", type=None, isPist=True, bat=bat, mugsNow=100, kd=0.5):
         self.ognTypes={}
         if not type or type not in self.ognTypes:
             self.damag = damag
-            self.mugsNum = mugsNum
+            self.MaxMugsNum = MaxMugsNum
             self.mugsType = mugsType
             self.playr = playr
             #photo = pyglet.image.load(phot, open(phot, "br"))
-            self.pist = pyglet.shapes.Line(playr.x, playr.y+6, playr.x-10, playr.y+6,2)
+            self.pist = pyglet.shapes.Line(playr.x, playr.y + 6, playr.x - 10, playr.y + 6,2)
             #pyglet.sprite.Sprite(photo, playr.x, playr.y+3)
             self.x = playr.x
             self.y = playr.y+6
             self.x2 = playr.x-10
-            self.y2 = playr.y 
-            self.isP = isP
-            self.bat=bat
-    
+            self.y2 = playr.y + 6.2 
+            self.isPist = isPist
+            self.bat = bat
+            self.mugsNum = MaxMugsNum
+            self.AllmugsLab = pyglet.text.Label(str(mugsNow - MaxMugsNum), 650, 650, color=(255, 255, 0))
+            self.kd = kd
+            self.mugsInLab = pyglet.text.Label(str(MaxMugsNum) + "/" + str(MaxMugsNum), 650, 690, color=(255, 255, 0))
+            self.time = 0
 
+            
     def shot(self):
         global mugs
         global bat
-        if self.x > self.x2:
-            mug = pyglet.shapes.Line(self.x2, self.y, self.x2 + 3, self.y, color = [200, 236, 100], batch = bat)
+        if self.x > self.x2 and self.time <= time.time() and self.mugsNum !=0:
+            mug = pyglet.shapes.Rectangle(self.x2, self.y, 4, 2, color = [250, 250, 0], batch = bat)
+            now, space = self.mugsInLab.text.split("/")
+            self.mugsInLab.text = str(int(now) - 1) + "/" + space
+            self.mugsNum -= 1
             mugs[mug] = (-0.5, 0)
+            self.time = time.time() + self.kd
             return mug
-    
 
     def pulaMoving(self, dt):
+        self.toDel=[]
         for i in mugs:
-            i.x += mugs[i][0]
-            i.y += mugs[i][1]
-
-
-
+            try:
+                if not i.x in [720, 0] and not i.y in [720, 0]:
+                    i.x += mugs[i][0]
+                    i.y += mugs[i][1]
+                else:
+                    self.toDel.append(i)
+            except AttributeError:
+                continue
+        for i in self.toDel:
+            mugs.pop(i)
+            i.delete()
+    def recharge(self):
+        if self.MaxMugsNum <= int(self.AllmugsLab.text):
+            now = int(self.mugsInLab.text.split("/")[0])
+            self.AllmugsLab.text = str(int(self.AllmugsLab.text) - (self.MaxMugsNum - int(now)))
+            self.mugsNum = self.MaxMugsNum
+            self.mugsInLab.text = str(str(self.mugsNum) + "/" + self.mugsInLab.text.split("/")[1])
+    def damage(self, dt):
+        for i in mugs:
+            zombToDel = []
+            for ii in zombies:
+                x, y, x1, y1 = i.x, i.y, i.x + i.width, i.y + i.height
+                zx, zy, zx1, zy1 = ii.x, ii.y, ii.x + ii.width, ii.y + ii.height
+                if ((zy1 >= y1 > zy) or (zy1 >= y > zy)) and ((zx1 >= x1 > zx) or (zx1 >= x > zx)):
+                    zombies[ii] -= self.damag
+                    #self.toDel.append(i)
+                    if zombies[ii] <= 0:
+                        zombToDel.append(ii)
+                    i.delete()
+                    break
+            for ii in zombToDel:
+                zombies.pop(ii)
+                ii.delete()
+    def Rotat(self, keys):
+        if keys[RIGHT]:
+            if self.playr.x <= self.x <= self.playr.x + self.playr.h:
+                if self.playr.x == self.x:
+                    pass
 class Physics():
     def line(x1, y1, x2, y2, x, y, speed=5): 
         if x1 == x2:
@@ -300,9 +345,8 @@ class Physics():
                 playr.HP.x = playr.x
                 playr.HP.y = playr.y + playr.h
     def entering_kollision(playr, object):
-        x, y, x1, y1 = playr.x, playr.y, playr.x + playr.w, playr.y + playr.h
+        x, y, x1, y1 = playr.x, playr.y, playr.x + playr.width, playr.y + playr.height
         zx, zx1, zy, zy1 = object.x, object.y, object.x + object.width, object.y + object.height
-        if ((zy1 >= y1 > zy) or (zy1 >= y > zy)) and ((zx1 >= x1 > zx) or (zx1 >= x > zx)):
-            print((zy1 >= y1 > zy), (zy1 >= y > zy), (zx1 >= x1 > zx), (zx1 >= x > zx))
+        if ((zy1 >= y1 >= zy) or (zy1 >= y >= zy)) and ((zx1 >= x1 >= zx) or (zx1 >= x >= zx)):
             return True
         return False
