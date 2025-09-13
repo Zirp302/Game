@@ -110,4 +110,5 @@ pyglet.clock.schedule_interval(pist.pulaMoving, 1/300)
 #передвижения зомбей с обновлением каждые 1/4 секунды может уже не 1/4 
 pyglet.clock.schedule_interval(update, 1/60)
 pyglet.clock.schedule_interval(defaultZomb.attack, 1)
+pyglet.clock.schedule_interval(pist.damage,1/20)
 pyglet.app.run()

@@ -219,31 +219,50 @@ class Ognestrel:
         global mugs
         global bat
         if self.x > self.x2 and self.time <= time.time() and self.mugsNum !=0:
-            mug = pyglet.shapes.Line(self.x2, self.y, self.x2 + 4, self.y, color = [250, 250, 0], batch = bat)
+            mug = pyglet.shapes.Rectangle(self.x2, self.y, 4, 2, color = [250, 250, 0], batch = bat)
             now, space = self.mugsInLab.text.split("/")
             self.mugsInLab.text = str(int(now) - 1) + "/" + space
             self.mugsNum -= 1
             mugs[mug] = (-0.5, 0)
             self.time = time.time() + self.kd
             return mug
-    
 
     def pulaMoving(self, dt):
-        toDel=[]
+        self.toDel=[]
         for i in mugs:
-            if not i.x in [720, 0] and not i.y in [720, 0]:
-                i.x += mugs[i][0]
-                i.y += mugs[i][1]
-            else:
-                toDel.append(i)
-        for i in toDel:
+            try:
+                if not i.x in [720, 0] and not i.y in [720, 0]:
+                    i.x += mugs[i][0]
+                    i.y += mugs[i][1]
+                else:
+                    self.toDel.append(i)
+            except AttributeError:
+                continue
+        for i in self.toDel:
             mugs.pop(i)
+            i.delete()
     def recharge(self):
         if self.MaxMugsNum <= int(self.AllmugsLab.text):
             now = int(self.mugsInLab.text.split("/")[0])
             self.AllmugsLab.text = str(int(self.AllmugsLab.text) - (self.MaxMugsNum - int(now)))
             self.mugsNum = self.MaxMugsNum
             self.mugsInLab.text = str(str(self.mugsNum) + "/" + self.mugsInLab.text.split("/")[1])
+    def damage(self, dt):
+        for i in mugs:
+            zombToDel = []
+            for ii in zombies:
+                x, y, x1, y1 = i.x, i.y, i.x + i.width, i.y + i.height
+                zx, zy, zx1, zy1 = ii.x, ii.y, ii.x + ii.width, ii.y + ii.height
+                if ((zy1 >= y1 > zy) or (zy1 >= y > zy)) and ((zx1 >= x1 > zx) or (zx1 >= x > zx)):
+                    zombies[ii] -= self.damag
+                    #self.toDel.append(i)
+                    if zombies[ii] <= 0:
+                        zombToDel.append(ii)
+                    i.delete()
+                    break
+            for ii in zombToDel:
+                zombies.pop(ii)
+                ii.delete()
 
 class Physics():
     def line(x1, y1, x2, y2, x, y, speed=5): 
