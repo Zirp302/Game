@@ -52,19 +52,20 @@ class Stena:
         self.width = width
         self.left_wall = sh.Line(Stena.left_S[0], Stena.left_S[1], 
                                 Stena.left_S[2], Stena.left_S[3], 
-                                thickness=Stena.Shir_S, batch=Stena.dom)
-
+                                thickness=Stena.Shir_S, batch=Stena.dom
+        )
         self.right_wall = sh.Line(Stena.right_S[0], Stena.right_S[1], 
                                 Stena.right_S[2], Stena.right_S[3], 
-                                thickness=Stena.Shir_S, batch=Stena.dom)
-
+                                thickness=Stena.Shir_S, batch=Stena.dom
+        )
         self.verh_wall = sh.Line(Stena.verh_S[0], Stena.verh_S[1], 
                                 Stena.verh_S[2], Stena.verh_S[3],
-                                thickness=Stena.Shir_S, batch=Stena.dom)
-
+                                thickness=Stena.Shir_S, batch=Stena.dom
+        )
         self.niz_wall = sh.Line(Stena.niz_S[0], Stena.niz_S[1], 
                                 Stena.niz_S[2], Stena.niz_S[3], 
-                                thickness=Stena.Shir_S, batch=Stena.dom) 
+                                thickness=Stena.Shir_S, batch=Stena.dom
+        ) 
         self.shipi = sh.Rectangle(200, 200, 20, 20, color=(111,111,111), batch=Stena.dom)
 
     #   Проверка линий
@@ -143,4 +144,12 @@ class Stena:
     #   Функция для отображения стен
     def draw(self): 
         Stena.dom.draw()
+
+
+class Damag:
+    def __init__(self, playr, HP, width): 
+        self.playr = playr
+        self.time = 0
+        self.HP = HP
+        self.width = width
 
