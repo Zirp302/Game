@@ -51,12 +51,15 @@ def avanpost(x_moving, y_moving):
     stena_l = S.ogran_line(S.left_S[0], S.left_S[1], 
                             S.left_S[2], S.left_S[3], 
                             x_moving, y_moving)
+    
     stena_r = S.ogran_line(S.right_S[0],S.right_S[1], 
                             S.right_S[2],S.right_S[3], 
                             x_moving, y_moving)
+    
     stena_v = S.ogran_line(S.verh_S[0], S.verh_S[1], 
                             S.verh_S[2], S.verh_S[3], 
                             x_moving, y_moving)
+    
     stena_n = S.ogran_line(S.niz_S[0], S.niz_S[1], 
                             S.niz_S[2], S.niz_S[3], 
                             x_moving, y_moving)
