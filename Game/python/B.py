@@ -1,9 +1,9 @@
 import pyglet
 from pyglet import shapes as sh
 from pyglet.window.key import *
-from pyglet.window import key
 from Uprav import playrUprav
 import random
+from pyglet.window import key
 from Objects import Zombi, Pl, Stena, Ognestrel
 # доки пайглета https://pyglet.readthedocs.io/en/latest/programming_guide/shapes.html
 #это чтобы писать названия клавиш не указывая функцию key
@@ -72,22 +72,23 @@ def avanpost(xM, yM):
 
 
 def update(dt, speed=5):
-    if keys[key.W]:
+    if keys[W]:
         x_moving, y_moving = 0, speed
         Uprav.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))
-    if keys[key.S]:
+    if keys[S]:
         x_moving, y_moving = 0, -speed
         Uprav.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))
-    if keys[key.A]:
+    if keys[A]:
         x_moving, y_moving = -speed, 0
         Uprav.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))
-    if keys[key.D]:
+    if keys[D]:
         x_moving, y_moving = speed, 0
         Uprav.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))
-    if keys[key.Q]:
+    if keys[Q]:
         pist.shot()
-    if keys[key.E]:
+    if keys[E]:
         pist.recharge()
+    pist.Rotat(keys)
 
 
 

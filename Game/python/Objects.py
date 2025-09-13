@@ -192,7 +192,7 @@ class Zombi:
 bat = pyglet.graphics.Batch()
 mugs = {}
 class Ognestrel:
-    def __init__(self, playr, phot="ognestrel.png", damag=10, MaxMugsNum=10, mugsType="common", type=None, isPist=True, bat=bat, mugsNow=100, kd=0.5 ):
+    def __init__(self, playr, phot="ognestrel.png", damag=10, MaxMugsNum=10, mugsType="common", type=None, isPist=True, bat=bat, mugsNow=100, kd=0.5):
         self.ognTypes={}
         if not type or type not in self.ognTypes:
             self.damag = damag
@@ -200,12 +200,12 @@ class Ognestrel:
             self.mugsType = mugsType
             self.playr = playr
             #photo = pyglet.image.load(phot, open(phot, "br"))
-            self.pist = pyglet.shapes.Line(playr.x, playr.y+6, playr.x-10, playr.y+6,2)
+            self.pist = pyglet.shapes.Line(playr.x, playr.y + 6, playr.x - 10, playr.y + 6,2)
             #pyglet.sprite.Sprite(photo, playr.x, playr.y+3)
             self.x = playr.x
             self.y = playr.y+6
             self.x2 = playr.x-10
-            self.y2 = playr.y 
+            self.y2 = playr.y + 6.2 
             self.isPist = isPist
             self.bat = bat
             self.mugsNum = MaxMugsNum
@@ -263,7 +263,11 @@ class Ognestrel:
             for ii in zombToDel:
                 zombies.pop(ii)
                 ii.delete()
-
+    def Rotat(self, keys):
+        if keys[RIGHT]:
+            if self.playr.x <= self.x <= self.playr.x + self.playr.h:
+                if self.playr.x == self.x:
+                    pass
 class Physics():
     def line(x1, y1, x2, y2, x, y, speed=5): 
         if x1 == x2:
