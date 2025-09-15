@@ -19,17 +19,17 @@ class Pl:
     def __init__(self, x=100, y=100, width=25, height=25, color={54,136,181}, xp=100, harXp=5, speed=5):
         self.x = x
         self.y = y
-        self.w = width
-        self.h = height
+        self.width = width
+        self.height = height
         self.color = color
         self.xp=pyglet.text.Label(str(xp),20,690,color=(255,0,0))
         self.pl=pyglet.graphics.Batch()
         self.harXp=harXp
-        self.playr = sh.Rectangle(self.x, self.y, self.w, self.h, self.color, batch=self.pl)
+        self.playr = sh.Rectangle(self.x, self.y, self.width, self.height, self.color, batch=self.pl)
         self.HP_playr = harXp
-        self.HP_One = self.w / self.harXp
+        self.HP_One = self.width / self.harXp
         self.Polosa = self.HP_playr * self.HP_One # Полоска HP
-        self.HP = sh.Rectangle(self.x, self.y + self.h, self.Polosa, 15, color=(255,0,0), batch=self.pl)
+        self.HP = sh.Rectangle(self.x, self.y + self.height, self.Polosa, 15, color=(255,0,0), batch=self.pl)
         self.speed = speed
         self.phys = Physics()
     # Характеристеки самого игрока
@@ -39,9 +39,9 @@ class Pl:
     # HP игрока
     def HarXp(self):
         self.HP_playr = 5
-        self.HP_One = self.w / self.harXp
+        self.HP_One = self.width / self.harXp
         self.Polosa = self.HP_playr * self.HP_One # Полоска HP
-        self.HP = sh.Rectangle(self.x, self.y + self.h, self.Polosa, 15, color=(255,0,0), batch=self.pl)
+        self.HP = sh.Rectangle(self.x, self.y + self.height, self.Polosa, 15, color=(255,0,0), batch=self.pl)
         return self.HP
 
     def draw(self): # Отрисовка пакета данных с игроком и его полоской так как они должны передвигаться одновременно и одинаково
@@ -113,12 +113,12 @@ class Stena: # Характеристики стен для их отображ�
 
 
 class Zombi:
-    def __init__(self, playr,plrUprv, batch=zombiBat, w=10, h=10, col = {21, 110, 100}, type=None, xp=100, speed=1, spawnSpeed=1/2, damage=10):
+    def __init__(self, playr,plrUprv, batch=zombiBat, width=10, height=10, col = {21, 110, 100}, type=None, xp=100, speed=1, spawnSpeed=1/2, damage=10):
         #Мне лень писать self
         #Но я напишу
         #type это тип зомби
-        self.w=w
-        self.h=h
+        self.width=width
+        self.height=height
         self.col=col
         self.xp=xp
         self.batch=batch
@@ -159,8 +159,8 @@ class Zombi:
                         zombis.y+=self.speed
                     elif self.playr.y < zombis.y:
                         zombis.y=zombis.y-self.speed
-    def test(self, x, y, w, h):
-        zombies[sh.Rectangle(x, y, w, h, color=self.col, batch=zombiBat)] = 100
+    def test(self, x, y, width, height):
+        zombies[sh.Rectangle(x, y, width, height, color=self.col, batch=zombiBat)] = 100
 
 
                         
@@ -168,7 +168,7 @@ class Zombi:
         #это можно было сделать и в функции zombMoving но нет надо ведь нагрузить комп кучей бесполезных функций
         if zombies:
             for i in zombies:
-                x, y, x1, y1 = self.playr.x, self.playr.y, self.playr.x + self.playr.w, self.playr.y + self.playr.h
+                x, y, x1, y1 = self.playr.x, self.playr.y, self.playr.x + self.playr.width, self.playr.y + self.playr.height
                 zx, zy, zx1, zy1 = i.x, i.y, i.x + i.width, i.y + i.height
                 #print((zy1 , y1 , zy), (zy1 , y , zy), (zx1 , x1 , zx), (zx1 , x , zx))
                 #print(((zy1 >= y1 > zy), (zy1 >= y > zy)), ((zx1 >= x1 > zx), (zx1 >= x > zx)))
@@ -192,7 +192,7 @@ class Zombi:
 bat = pyglet.graphics.Batch()
 mugs = {}
 class Ognestrel:
-    def __init__(self, playr, phot="ognestrel.png", damag=10, MaxMugsNum=10, mugsType="common", type=None, isPist=True, bat=bat, mugsNow=100, kd=0.5 ):
+    def __init__(self, playr, phot="ognestrel.png", damag=10, MaxMugsNum=10, mugsType="common", type=None, isPist=True, bat=bat, mugsNow=100, kd=0.5, mugsWidth=4, mugsHeight=2):
         self.ognTypes={}
         if not type or type not in self.ognTypes:
             self.damag = damag
@@ -209,6 +209,8 @@ class Ognestrel:
             self.isPist = isPist
             self.bat = bat
             self.mugsNum = MaxMugsNum
+            self.mugsWidth = mugsWidth
+            self.mugsHeight = mugsHeight
             self.AllmugsLab = pyglet.text.Label(str(mugsNow - MaxMugsNum), 650, 650, color=(255, 255, 0))
             self.kd = kd
             self.mugsInLab = pyglet.text.Label(str(MaxMugsNum) + "/" + str(MaxMugsNum), 650, 690, color=(255, 255, 0))
@@ -219,7 +221,7 @@ class Ognestrel:
         global mugs
         global bat
         if self.x > self.x2 and self.time <= time.time() and self.mugsNum !=0:
-            mug = pyglet.shapes.Rectangle(self.x2, self.y, 4, 2, color = [250, 250, 0], batch = bat)
+            mug = pyglet.shapes.Rectangle(self.x2, self.y, self.mugsWidth, self.mugsHeight, color = [250, 250, 0], batch = bat)
             now, space = self.mugsInLab.text.split("/")
             self.mugsInLab.text = str(int(now) - 1) + "/" + space
             self.mugsNum -= 1
@@ -281,8 +283,8 @@ class Physics():
     def ogran_line(self, playr, x1, y1, x2, y2, x=0, y=0):
         # Переназначение переменных согласно функции line
         x1, y1, x2, y2 = self.line(x1, y1, x2, y2, x, y) 
-        X = x1 - playr.w < playr.x + x < x2
-        Y = y1 - playr.h < playr.y + y < y2
+        X = x1 - playr.width < playr.x + x < x2
+        Y = y1 - playr.height < playr.y + y < y2
         if X and Y:
             return False
         return True
@@ -291,8 +293,8 @@ class Physics():
     def damag_line(self, playr, x1, y1, width, height, x=0, y=0):
         # Переназначение переменных согласно функции rectangle
         x1, y1, x2, y2 = self.line(x1, y1, x2, y2, x, y) 
-        X = x1 - playr.w < playr.x + x < x2
-        Y = y1 - playr.h < playr.y + y < y2
+        X = x1 - playr.width < playr.x + x < x2
+        Y = y1 - playr.height < playr.y + y < y2
         kd = 1.25
         time1 = time.time()
         if X and Y and time1 - self.time > kd:
@@ -300,11 +302,11 @@ class Physics():
             print(time1, self.time)
             self.HP.width -= self.playr.HP_One
             if self.HP.width <= 0:
-                self.HP.width = self.playr.w
+                self.HP.width = self.playr.width
                 self.playr.x = self.playr.x
                 self.playr.y = self.playr.y
                 self.HP.x = self.playr.x
-                self.HP.y = self.playr.y + self.playr.h
+                self.HP.y = self.playr.y + self.playr.height
 
     # Проверка прямоугольников
     def rectangle(self, x1, y1, width, height, x, y, speed=5):
@@ -316,8 +318,8 @@ class Physics():
     def ogran_rectangle(playr, x1, y1, width, height, x=0, y=0):
         # Переназначение переменных согласно функции rectangle
         x2, y2 = x1 + width, x2 + height
-        X = x1 - playr.w < playr.x + x < x2
-        Y = y1 - playr.h < playr.y + y < y2
+        X = x1 - playr.width < playr.x + x < x2
+        Y = y1 - playr.height < playr.y + y < y2
         if X and Y:
             return False
         return True
@@ -326,8 +328,8 @@ class Physics():
     def damag_rectangle(self, playr, x1, y1, width, height, x=0, y=0):
         # Переназначение переменных согласно функции rectangle
         x2, y2 = self.rectangle(x1, y1, width, height, x, y)
-        X = x1 - playr.w < playr.x + x < x2
-        Y = y1 - playr.h < playr.y + y < y2
+        X = x1 - playr.width < playr.x + x < x2
+        Y = y1 - playr.height < playr.y + y < y2
         kd = 1.25
         time1 = time.time()
         if X and Y and time1 - self.time > kd:
@@ -339,7 +341,7 @@ class Physics():
                 playr.playr.x = playr.x
                 playr.playr.y = playr.y
                 playr.HP.x = playr.x
-                playr.HP.y = playr.y + playr.h
+                playr.HP.y = playr.y + playr.height
     def entering_kollision(playr, object):
         x, y, x1, y1 = playr.x, playr.y, playr.x + playr.width, playr.y + playr.height
         zx, zx1, zy, zy1 = object.x, object.y, object.x + object.width, object.y + object.height

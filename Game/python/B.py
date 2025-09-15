@@ -19,15 +19,15 @@ pist = Ognestrel(playr)
 Uprav = playrUprav(playr, playr.HP, pist)
 #могут ли зомби появляться
 #Скорость появления зомбей попробуй изменить число на какое нибудь оч маленькое по типу 1/60 и тд
-w = 30
-h = 30
+width = 30
+height = 30
 drawInfuncs=[]
 #Почему хрb? Я сам не знаю
 @wind.event
 def on_mouse_press(x,y,button,modifiers):
     print(f"x = {x}, y = {y}")
 defaultZomb=Zombi(playr=playr, plrUprv=Uprav)
-MiniBoss=Zombi(playr=playr,plrUprv=Uprav, w=25, h=25, type="big", xp=1000, speed=0.2, spawnSpeed=3, damage=30)
+MiniBoss=Zombi(playr=playr,plrUprv=Uprav, width=25, height=25, type="big", xp=1000, speed=0.2, spawnSpeed=3, damage=30)
 
 
 
