@@ -60,13 +60,13 @@ def Damag(dt, HP_One=HP.HP_One):
 
 keys = key.KeyStateHandler()
 wind.push_handlers(keys)
-S = Stena()
+walls = Stena()
 
 def avanpost(xM, yM):
-    stena_l = Uprav.ogran_line(S.left_S[0], S.left_S[1], S.left_S[2], S.left_S[3], xM, yM)
-    stena_r = Uprav.ogran_line(S.right_S[0], S.right_S[1], S.right_S[2], S.right_S[3], xM, yM)
-    stena_v = Uprav.ogran_line(S.verh_S[0], S.verh_S[1], S.verh_S[2], S.verh_S[3], xM, yM)
-    stena_n = Uprav.ogran_line(S.niz_S[0], S.niz_S[1], S.niz_S[2], S.niz_S[3], xM, yM)
+    stena_l = Uprav.ogran_line(walls.left_S[0], walls.left_S[1], walls.left_S[2], walls.left_S[3], xM, yM)
+    stena_r = Uprav.ogran_line(walls.right_S[0], walls.right_S[1], walls.right_S[2], walls.right_S[3], xM, yM)
+    stena_v = Uprav.ogran_line(walls.verh_S[0], walls.verh_S[1], walls.verh_S[2], walls.verh_S[3], xM, yM)
+    stena_n = Uprav.ogran_line(walls.niz_S[0], walls.niz_S[1], walls.niz_S[2], walls.niz_S[3], xM, yM)
 
     return stena_v and stena_n and stena_l and stena_r
 
