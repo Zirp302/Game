@@ -113,11 +113,11 @@ class Stena: # Характеристики стен для их отображ�
 
 
 class Zombi:
-    def __init__(self, playr, plrUprv, batch=zombiBat, w=10, height=10, col={21, 110, 100}, type=None, xp=100, speed=1, spawnSpeed=1/2, damage=10):
+    def __init__(self, playr, plrUprv, batch=zombiBat, width=10, height=10, col={21, 110, 100}, type=None, xp=100, speed=1, spawnSpeed=1/2, damage=10):
         #Мне лень писать self
         #Но я напишу
         #type это тип зомби
-        self.width = w
+        self.width = width
         self.height = height
         self.col = col
         self.xp = xp
@@ -166,7 +166,7 @@ class Zombi:
         #это можно было сделать и в функции zombMoving но нет надо ведь нагрузить комп кучей бесполезных функций? почитай чтонибудь про чистый код
         if zombies:
             for i in zombies:
-                x, y, x1, y1 = self.playr.x, self.playr.y, self.playr.x + self.playr.w, self.playr.y + self.playr.height
+                x, y, x1, y1 = self.playr.x, self.playr.y, self.playr.x + self.playr.width, self.playr.y + self.playr.height
                 zx, zy, zx1, zy1 = i.x, i.y, i.x + i.width, i.y + i.height
                 #print((zy1 , y1 , zy), (zy1 , y , zy), (zx1 , x1 , zx), (zx1 , x , zx))
                 #print(((zy1 >= y1 > zy), (zy1 >= y > zy)), ((zx1 >= x1 > zx), (zx1 >= x > zx)))
@@ -266,11 +266,24 @@ class Ognestrel:
             for ii in zombToDel:
                 zombies.pop(ii)
                 ii.delete()
-    def Rotat(self, keys):
+    """def Rotat(self, keys):
         if keys[RIGHT]:
             if self.playr.x <= self.x <= self.playr.x + self.playr.height:
                 if self.playr.x == self.x:
-                    pass
+                    self.x += 1
+                    self.pist.x += 1
+                elif self.playr.x + self.playr.width == self.x:
+                    self.x -= 1
+                    self.pist.x -= 1
+
+        if keys[LEFT]:
+            if self.playr.x <= self.x <= self.playr.x + self.playr.height:
+                if self.playr.x == self.x:
+                    self.x -= 1
+                    self.pist.x -= 1
+                elif self.playr.x + self.playr.width == self.x:
+                    self.x += 1
+                    self.pist.x += 1"""           
 class Physics():
     def line(x1, y1, x2, y2, x, y, speed=5): 
         if x1 == x2:

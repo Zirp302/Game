@@ -7,7 +7,7 @@ from pyglet.window import key
 from Objects import Zombi, Pl, Stena, Ognestrel
 # доки пайглета https://pyglet.readthedocs.io/en/latest/programming_guide/shapes.html
 #это чтобы писать названия клавиш не указывая функцию key
-# wind is a window   spawn
+# wind is a window
 isSpawn=True
 #Сори но это хп персонажа я не мог не реализовать хп если есть зомби
 wind_width, wind_height = (720, 720)
@@ -27,7 +27,7 @@ drawInfuncs=[]
 def on_mouse_press(x,y,button,modifiers):
     print(f"x = {x}, y = {y}")
 defaultZomb = Zombi(playr, Uprav)
-MiniBoss = Zombi(playr=playr,plrUprv=Uprav, w=25, h=25, type="big", xp=1000, speed=0.2, spawnSpeed=3, damage=30)
+MiniBoss = Zombi(playr=playr,plrUprv=Uprav, width=25, height=25, type="big", xp=1000, speed=0.2, spawnSpeed=3, damage=30)
 
 
 
@@ -88,7 +88,7 @@ def update(dt, speed=5):
         pist.shot()
     if keys[E]:
         pist.recharge()
-    pist.Rotat(keys)
+    #pist.Rotat(keys)
 
 
 

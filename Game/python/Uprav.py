@@ -14,7 +14,7 @@ class playrUprav:
 
     #   Передвижеие игрока и его полоски жизни
     def pl_moving(self, x, y, avanpost):
-        if 0 < x + self.playr.x < 721 - self.playr.w and avanpost:
+        if 0 < x + self.playr.x < 721 - self.playr.width and avanpost:
             self.playr.playr.x += x
             self.playr.x = self.playr.playr.x
             self.playr.HP.x += x
@@ -23,7 +23,7 @@ class playrUprav:
                 self.oruzhie.x += x
                 self.oruzhie.x2 += x
 
-        if 0 < y + self.playr.y < 721 - self.playr.w and avanpost:
+        if 0 < y + self.playr.y < 721 - self.playr.width and avanpost:
             self.playr.playr.y += y
             self.playr.y = self.playr.playr.y
             self.playr.HP.y += y
@@ -49,8 +49,8 @@ class playrUprav:
     def ogran_line(self, x1, y1, x2, y2, x=0, y=0):
         # Переназначение переменных согласно функции line
         x1, y1, x2, y2 = self.line(x1, y1, x2, y2, x, y) 
-        X = x1 - self.playr.w < self.playr.x + x < x2
-        Y = y1 - self.playr.h < self.playr.y + y < y2
+        X = x1 - self.playr.width < self.playr.x + x < x2
+        Y = y1 - self.playr.height < self.playr.y + y < y2
         if X and Y:
             return False
         return True
@@ -59,43 +59,8 @@ class playrUprav:
     def damag_line(self, x1, y1, width, height, x=0, y=0):
         # Переназначение переменных согласно функции rectangle
         x1, y1, x2, y2 = self.line(x1, y1, x2, y2, x, y) 
-        X = x1 - self.playr.w < self.playr.x + x < x2
-        Y = y1 - self.playr.h < self.playr.y + y < y2
-        kd = 1.25
-        time1 = time.time()
-        if X and Y and time1 - self.time > kd:
-            self.time = time1
-            print(time1, self.time)
-            self.HP.width -= self.playr.HP_One
-            if self.HP.width <= 0:
-                self.HP.width = self.playr.w
-                self.playr.x = self.playr.x
-                self.playr.y = self.playr.y
-                self.HP.x = self.playr.x
-                self.HP.y = self.playr.y + self.playr.h
-
-    # Проверка прямоугольников
-    def rectangle(self, x1, y1, width, height, x, y, speed=5):
-        x2 = x1 + width
-        y2 = y1 + height
-        return x2, y2
-    
-    # Ограничение прохаждение через прямоуглоьники
-    def ogran_rectangle(self, x1, y1, width, height, x=0, y=0):
-        # Переназначение переменных согласно функции rectangle
-        x2, y2 = self.rectangle(x1, y1, width, height, x, y)
-        X = x1 - self.playr.w < self.playr.x + x < x2
-        Y = y1 - self.playr.h < self.playr.y + y < y2
-        if X and Y:
-            return False
-        return True
-    
-    # Получение урона при прохаждение через прямоуглоьники
-    def damag_rectangle(self, x1, y1, width, height, x=0, y=0):
-        # Переназначение переменных согласно функции rectangle
-        x2, y2 = self.rectangle(x1, y1, width, height, x, y)
-        X = x1 - self.playr.w < self.playr.x + x < x2
-        Y = y1 - self.playr.h < self.playr.y + y < y2
+        X = x1 - self.playr.width < self.playr.x + x < x2
+        Y = y1 - self.playr.height < self.playr.y + y < y2
         kd = 1.25
         time1 = time.time()
         if X and Y and time1 - self.time > kd:
@@ -107,4 +72,39 @@ class playrUprav:
                 self.playr.x = self.playr.x
                 self.playr.y = self.playr.y
                 self.HP.x = self.playr.x
-                self.HP.y = self.playr.y + self.playr.h
+                self.HP.y = self.playr.y + self.playr.height
+
+    # Проверка прямоугольников
+    def rectangle(self, x1, y1, width, height, x, y, speed=5):
+        x2 = x1 + width
+        y2 = y1 + height
+        return x2, y2
+    
+    # Ограничение прохаждение через прямоуглоьники
+    def ogran_rectangle(self, x1, y1, width, height, x=0, y=0):
+        # Переназначение переменных согласно функции rectangle
+        x2, y2 = self.rectangle(x1, y1, width, height, x, y)
+        X = x1 - self.playr.width < self.playr.x + x < x2
+        Y = y1 - self.playr.height < self.playr.y + y < y2
+        if X and Y:
+            return False
+        return True
+    
+    # Получение урона при прохаждение через прямоуглоьники
+    def damag_rectangle(self, x1, y1, width, height, x=0, y=0):
+        # Переназначение переменных согласно функции rectangle
+        x2, y2 = self.rectangle(x1, y1, width, height, x, y)
+        X = x1 - self.playr.width < self.playr.x + x < x2
+        Y = y1 - self.playr.height < self.playr.y + y < y2
+        kd = 1.25
+        time1 = time.time()
+        if X and Y and time1 - self.time > kd:
+            self.time = time1
+            print(time1, self.time)
+            self.HP.width -= self.playr.HP_One
+            if self.HP.width <= 0:
+                self.HP.width = self.playr.width
+                self.playr.x = self.playr.x
+                self.playr.y = self.playr.y
+                self.HP.x = self.playr.x
+                self.HP.y = self.playr.y + self.playr.height
