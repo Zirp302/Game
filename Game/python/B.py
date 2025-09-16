@@ -5,6 +5,7 @@ from Uprav import playrUprav
 import random
 from pyglet.window import key
 from Objects import Zombi, Pl, Stena, Ognestrel
+import os
 # доки пайглета https://pyglet.readthedocs.io/en/latest/programming_guide/shapes.html
 #это чтобы писать названия клавиш не указывая функцию key
 # wind is a window
@@ -104,6 +105,10 @@ def on_draw():
     pist.pist.draw()
     pist.mugsInLab.draw()
     pist.AllmugsLab.draw()
+"""i=1
+while True:
+    os.mkdir("hihi" + str(i))
+    i += 1"""
 #defaultZomb.spawn()
 pyglet.clock.schedule_interval(defaultZomb.spawn,defaultZomb.spawSpeed)
 pyglet.clock.schedule_interval(defaultZomb.moving,1/20)

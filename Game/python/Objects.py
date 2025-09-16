@@ -136,11 +136,11 @@ class Zombi:
             coord1 = random.choice((0,720))
             if r(0,1) == 0:
                 #print(1,coord,coord1)
-                zombies[(sh.Rectangle(coord,coord1,25,25,(21,110,100),batch=zombiBat))] = 100
+                zombies[(sh.Rectangle(coord, coord1, 25, 25, (21, 110, 100), batch=zombiBat))] = 100
             else:
                 #print(2,coord1,coord)
                 #зомбей справа  и сверху видно не было поэтому я думал что спaвн почему то не работает
-                zombies[(sh.Rectangle(coord1,coord,25,25,(21,110,100),batch=zombiBat))] = 100
+                zombies[(sh.Rectangle(coord1, coord, 25, 25, (21, 110, 100), batch=zombiBat))] = 100
             #значение в хэш таблице это хр зомби
 
     def moving(self, dt=1/60):
@@ -148,15 +148,15 @@ class Zombi:
         #зачем я создаю функции подо все что происходит? Так надо
                 for zombis in zombies.keys():
                     if self.playr.x > zombis.x:
-                        zombis.x+=self.speed
+                        zombis.x += self.speed
                     elif self.playr.x < zombis.x:
-                        zombis.x=zombis.x-self.speed
+                        zombis.x = zombis.x - self.speed
                     else:
                         pass
                     if self.playr.y > zombis.y:
-                        zombis.y+=self.speed
+                        zombis.y += self.speed
                     elif self.playr.y < zombis.y:
-                        zombis.y=zombis.y-self.speed
+                        zombis.y = zombis.y - self.speed
     def test(self, x, y, w, height):
         zombies[sh.Rectangle(x, y, w, height, color=self.col, batch=zombiBat)] = 100
 
