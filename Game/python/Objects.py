@@ -136,11 +136,11 @@ class Zombi:
             coord1 = random.choice((0,720))
             if r(0,1) == 0:
                 #print(1,coord,coord1)
-                zombies[(sh.Rectangle(coord, coord1, self.width, self.height, (21, 110, 100), batch=zombiBat))] = sh.Rectangle(coord, coord1 + self.height, self.width, 4, batch=zombiBat, color=(255, 0, 0))
+                zombies[(sh.Rectangle(coord, coord1, self.width, self.height, (21, 110, 100), batch=zombiBat))] = (sh.Rectangle(coord, coord1 + self.height, self.width, 4, batch=zombiBat, color=(255, 0, 0)), self.width / self.xp)
             else:
                 #print(2,coord1,coord)
                 #зомбей справа  и сверху видно не было поэтому я думал что спaвн почему то не работает
-                zombies[(sh.Rectangle(coord1, coord, self.width, self.height, (21, 110, 100), batch=zombiBat))] = sh.Rectangle(coord1, coord + self.height, self.width, 4, batch=zombiBat, color=(255, 0, 0)), self.width / self.xp
+                zombies[(sh.Rectangle(coord1, coord, self.width, self.height, (21, 110, 100), batch=zombiBat))] = (sh.Rectangle(coord1, coord + self.height, self.width, 4, batch=zombiBat, color=(255, 0, 0)), self.width / self.xp)
             #значение в хэш таблице это хр зомби
 
     def moving(self, dt=1/60):
@@ -149,20 +149,20 @@ class Zombi:
                 for zombis in zombies:
                     if self.playr.x > zombis.x:
                         zombis.x += self.speed
-                        zombies[zombis].x += self.speed
+                        zombies[zombis][0].x += self.speed
                     elif self.playr.x < zombis.x:
                         zombis.x = zombis.x - self.speed
-                        zombies[zombis].x -= self.speed
+                        zombies[zombis][0].x -= self.speed
                     else:
                         pass
                     if self.playr.y > zombis.y:
                         zombis.y += self.speed
-                        zombies[zombis].y += self.speed
+                        zombies[zombis][0].y += self.speed
                     elif self.playr.y < zombis.y:
                         zombis.y = zombis.y - self.speed
-                        zombies[zombis].y -= self.speed
+                        zombies[zombis][0].y -= self.speed
     def test(self, x, y, width, height):
-        zombies[sh.Rectangle(x, y, width, height, color=self.col, batch=zombiBat)] = (sh.Rectangle(x, y + height, width, height, batch=zombiBat), self.width / 100)
+        zombies[sh.Rectangle(x, y, width, height, color=self.col, batch=zombiBat)] = (sh.Rectangle(x, y + height, width, 3, color=(255,0,0), batch=zombiBat), self.width / 100)
 
 
                         
@@ -186,11 +186,12 @@ class Zombi:
                         self.playr.HP.width -= self.playr.HP_One
                         #if int(self.playr.xp.text)==0:
                         if self.playr.HP.width <= 0:
-                            self.HP.width = Pl.width
-                            self.playr.x = Pl.x
-                            self.playr.y = Pl.y
-                            self.HP.x = Pl.x
-                            self.HP.y = Pl.y + Pl.height
+                            """self.HP.width = self.playr.width
+                            self.playr.x = self.playr.x
+                            self.playr.y = self.playr.y
+                            self.HP.x = self.playr.x
+                            self.HP.y = self.playr.y + self.playr.height"""
+                            raise OutOfXpError
                             
                     
 
@@ -262,9 +263,10 @@ class Ognestrel:
                 x, y, x1, y1 = i.x, i.y, i.x + i.width, i.y + i.height
                 zx, zy, zx1, zy1 = ii.x, ii.y, ii.x + ii.width, ii.y + ii.height
                 if ((zy1 >= y1 > zy) or (zy1 >= y > zy)) and ((zx1 >= x1 > zx) or (zx1 >= x > zx)):
-                    
+                    rest, xp = zombies[ii]
+                    rest.width -= xp * self.damag
                     #self.toDel.append(i)
-                    if zombies[ii] <= 0:
+                    if rest.width <= 0:
                         zombToDel.append(ii)
                     i.delete()
                     break
