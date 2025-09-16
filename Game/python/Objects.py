@@ -113,7 +113,7 @@ class Stena: # Характеристики стен для их отображ�
 
 
 class Zombi:
-    def __init__(self, playr, plrUprv, batch=zombiBat, width=10, height=10, col={21, 110, 100}, type=None, xp=100, speed=1, spawnSpeed=1/2, damage=10):
+    def __init__(self, playr, plrUprv, batch=zombiBat, width=35, height=35, col={21, 110, 100}, type=None, xp=100, speed=1, spawnSpeed=1/2, damage=10):
         #Мне лень писать self
         #Но я напишу
         #type это тип зомби
@@ -136,34 +136,38 @@ class Zombi:
             coord1 = random.choice((0,720))
             if r(0,1) == 0:
                 #print(1,coord,coord1)
-                zombies[(sh.Rectangle(coord, coord1, 25, 25, (21, 110, 100), batch=zombiBat))] = 100
+                zombies[(sh.Rectangle(coord, coord1, self.width, self.height, (21, 110, 100), batch=zombiBat))] = sh.Rectangle(coord, coord1 + self.height, self.width, 4, batch=zombiBat, color=(255, 0, 0))
             else:
                 #print(2,coord1,coord)
                 #зомбей справа  и сверху видно не было поэтому я думал что спaвн почему то не работает
-                zombies[(sh.Rectangle(coord1, coord, 25, 25, (21, 110, 100), batch=zombiBat))] = 100
+                zombies[(sh.Rectangle(coord1, coord, self.width, self.height, (21, 110, 100), batch=zombiBat))] = sh.Rectangle(coord1, coord + self.height, self.width, 4, batch=zombiBat, color=(255, 0, 0)), self.width / self.xp
             #значение в хэш таблице это хр зомби
 
     def moving(self, dt=1/60):
             if zombies:
         #зачем я создаю функции подо все что происходит? Так надо
-                for zombis in zombies.keys():
+                for zombis in zombies:
                     if self.playr.x > zombis.x:
                         zombis.x += self.speed
+                        zombies[zombis].x += self.speed
                     elif self.playr.x < zombis.x:
                         zombis.x = zombis.x - self.speed
+                        zombies[zombis].x -= self.speed
                     else:
                         pass
                     if self.playr.y > zombis.y:
                         zombis.y += self.speed
+                        zombies[zombis].y += self.speed
                     elif self.playr.y < zombis.y:
                         zombis.y = zombis.y - self.speed
-    def test(self, x, y, w, height):
-        zombies[sh.Rectangle(x, y, w, height, color=self.col, batch=zombiBat)] = 100
+                        zombies[zombis].y -= self.speed
+    def test(self, x, y, width, height):
+        zombies[sh.Rectangle(x, y, width, height, color=self.col, batch=zombiBat)] = (sh.Rectangle(x, y + height, width, height, batch=zombiBat), self.width / 100)
 
 
                         
     def attack(self, dt=1/2, trash=None):
-        #это можно было сделать и в функции zombMoving но нет надо ведь нагрузить комп кучей бесполезных функций? почитай чтонибудь про чистый код
+        #это можно было сделать и в функции zombMoving но нет надо ведь нагрузить комп кучей бесполезных функций
         if zombies:
             for i in zombies:
                 x, y, x1, y1 = self.playr.x, self.playr.y, self.playr.x + self.playr.width, self.playr.y + self.playr.height
@@ -239,6 +243,7 @@ class Ognestrel:
                     i.y += mugs[i][1]
                 else:
                     self.toDel.append(i)
+                    break
             except AttributeError:
                 continue
         for i in self.toDel:
@@ -257,7 +262,7 @@ class Ognestrel:
                 x, y, x1, y1 = i.x, i.y, i.x + i.width, i.y + i.height
                 zx, zy, zx1, zy1 = ii.x, ii.y, ii.x + ii.width, ii.y + ii.height
                 if ((zy1 >= y1 > zy) or (zy1 >= y > zy)) and ((zx1 >= x1 > zx) or (zx1 >= x > zx)):
-                    zombies[ii] -= self.damag
+                    
                     #self.toDel.append(i)
                     if zombies[ii] <= 0:
                         zombToDel.append(ii)
