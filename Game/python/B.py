@@ -89,7 +89,7 @@ def update(dt, speed=5):
         pist.shot()
     if keys[E]:
         pist.recharge()
-    #pist.Rotat(keys)
+    pist.Rotat(keys)
 
 
 
@@ -110,11 +110,11 @@ while True:
     os.mkdir("hihi" + str(i))
     i += 1"""
 #defaultZomb.spawn()
-pyglet.clock.schedule_interval(defaultZomb.spawn,defaultZomb.spawSpeed)
-pyglet.clock.schedule_interval(defaultZomb.moving,1/20)
-pyglet.clock.schedule_interval(pist.pulaMoving, 1/300)
+#pyglet.clock.schedule_interval(defaultZomb.spawn,defaultZomb.spawSpeed)
+#pyglet.clock.schedule_interval(defaultZomb.moving,1/20)
+pyglet.clock.schedule_interval(pist.pulaMoving, 1/3000)
 #передвижения зомбей с обновлением каждые 1/4 секунды может уже не 1/4 
 pyglet.clock.schedule_interval(update, 1/60)
-pyglet.clock.schedule_interval(defaultZomb.attack, 1)
-pyglet.clock.schedule_interval(pist.damage,1/20)
+#pyglet.clock.schedule_interval(defaultZomb.attack, 1)
+pyglet.clock.schedule_interval(pist.damage, 1/150)
 pyglet.app.run()

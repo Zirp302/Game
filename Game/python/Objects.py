@@ -16,7 +16,7 @@ zombiBat=pyglet.graphics.Batch()
 """
 
 class Pl:
-    def __init__(self, x=100, y=100, width=25, height=25, color={54,136,181}, xp=100, harXp=5, speed=5):
+    def __init__(self, x=100, y=100, width=30, height=30, color={54,136,181}, xp=100, harXp=5, speed=5):
         self.x = x
         self.y = y
         self.width = width
@@ -208,12 +208,12 @@ class Ognestrel:
             self.mugsType = mugsType
             self.playr = playr
             #photo = pyglet.image.load(phot, open(phot, "br"))
-            self.pist = pyglet.shapes.Line(playr.x, playr.y + 6, playr.x - 10, playr.y + 6,2)
+            self.pist = pyglet.shapes.Line(playr.x, playr.y + self.playr.height / 3, playr.x - 10, playr.y + self.playr.height / 3)
             #pyglet.sprite.Sprite(photo, playr.x, playr.y+3)
             self.x = playr.x
-            self.y = playr.y+6
-            self.x2 = playr.x-10
-            self.y2 = playr.y + 6.2 
+            self.y = playr.y + self.playr.height / 3
+            self.x2 = playr.x - 10
+            self.y2 = self.y
             self.isPist = isPist
             self.bat = bat
             self.mugsNum = MaxMugsNum
@@ -226,13 +226,24 @@ class Ognestrel:
     def shot(self):
         global mugs
         global bat
-        if self.x > self.x2 and self.time <= time.time() and self.mugsNum !=0:
-            mug = pyglet.shapes.Rectangle(self.x2, self.y, 4, 2, color = [250, 250, 0], batch = bat)
+        if self.time <= time.time() and self.mugsNum !=0:
             now, space = self.mugsInLab.text.split("/")
             self.mugsInLab.text = str(int(now) - 1) + "/" + space
             self.mugsNum -= 1
-            mugs[mug] = (-0.5, 0)
             self.time = time.time() + self.kd
+            mx, my = self.x2, self.y2
+            if self.y == self.y2:
+                if self.x < self.x2:
+                    x, y = 1, 0
+                else:
+                    x, y = -1, 0
+            else:
+                if self.y < self.y2:
+                    x, y = 0, 1
+                else:
+                    x, y = 0, -1
+            mug = pyglet.shapes.Rectangle(mx, my, 4, 2, color = [250, 250, 0], batch = bat)
+            mugs[mug] = (x, y)
             return mug
 
     def pulaMoving(self, dt):
@@ -260,21 +271,35 @@ class Ognestrel:
         for i in mugs:
             zombToDel = []
             for ii in zombies:
-                x, y, x1, y1 = i.x, i.y, i.x + i.width, i.y + i.height
-                zx, zy, zx1, zy1 = ii.x, ii.y, ii.x + ii.width, ii.y + ii.height
-                if ((zy1 >= y1 > zy) or (zy1 >= y > zy)) and ((zx1 >= x1 > zx) or (zx1 >= x > zx)):
-                    rest, xp = zombies[ii]
-                    rest.width -= xp * self.damag
-                    #self.toDel.append(i)
-                    if rest.width <= 0:
-                        zombToDel.append(ii)
-                    i.delete()
+                try:
+                    x, y, x1, y1 = i.x, i.y, i.x + i.width, i.y + i.height
+                    zx, zy, zx1, zy1 = ii.x, ii.y, ii.x + ii.width, ii.y + ii.height
+                    if ((zy1 >= y1 > zy) or (zy1 >= y > zy)) and ((zx1 >= x1 > zx) or (zx1 >= x > zx)):
+                        rest, xp = zombies[ii]
+                        rest.width -= xp * self.damag
+                        #self.toDel.append(i)
+                        if rest.width <= 0:
+                            zombToDel.append(ii)
+                        i.delete()
+                        self.toDel.append(i)
+                        break
+                except AttributeError:
                     break
             for ii in zombToDel:
                 zombies.pop(ii)
                 ii.delete()
-    """def Rotat(self, keys):
+    def Rotat(self, keys):
         if keys[RIGHT]:
+            self.pist.x = self.playr.x + self.playr.width
+            self.pist.y = self.playr.y + self.playr.height / 3
+            self.pist.x2 = self.pist.x + 10
+            self.pist.y2 = self.pist.y
+        if keys[LEFT]:
+            self.pist = pyglet.shapes.Line(self.playr.x, self.playr.y + self.playr.height / 3, self.playr.x - 10, self.playr.y + self.playr.height / 3)
+        if keys[UP]:
+            self.pist = sh.Line(self.playr.x + self.playr.width / 3, self.y + self.playr.height, self.playr.x + self.playr.width / 3, self.playr.y + self.playr.height + 10)
+
+        """if keys[RIGHT]:
             if self.playr.x <= self.x <= self.playr.x + self.playr.height:
                 if self.playr.x == self.x:
                     self.x += 1
