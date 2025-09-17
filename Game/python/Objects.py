@@ -232,6 +232,7 @@ class Ognestrel:
             self.mugsNum -= 1
             self.time = time.time() + self.kd
             mx, my = self.x2, self.y2
+            print(self.x, self.x2, self.y, self.y2)
             if self.y == self.y2:
                 if self.x < self.x2:
                     x, y = 1, 0
@@ -297,10 +298,18 @@ class Ognestrel:
         if keys[LEFT]:
             self.pist = pyglet.shapes.Line(self.playr.x, self.playr.y + self.playr.height / 3, self.playr.x - 10, self.playr.y + self.playr.height / 3)
         if keys[UP]:
-            self.pist = sh.Line(self.playr.x + self.playr.width / 3, self.y + self.playr.height, self.playr.x + self.playr.width / 3, self.playr.y + self.playr.height + 10)
+            self.pist = sh.Line(self.playr.x + self.playr.width / 3, self.playr.y + self.playr.height, self.playr.x + self.playr.width / 3, self.playr.y + self.playr.height + self.playr.HP.height + 3)
+        if keys[DOWN]:
+            self.pist = sh.Line(self.pl)
+        self.x = self.pist.x
+        self.y = self.pist.y
+        self.x2 = self.pist.x2
+        self.y2 = self.pist.y2
+        """if self.pist.x != self.x or self.pist.y != self.y or self.pist.x2 != self.x2 or self.pist.y2 != self.y2:
+            print("jjj")"""
 
         """if keys[RIGHT]:
-            if self.playr.x <= self.x <= self.playr.x + self.playr.height:
+            if self.playr.x <= self.x <= self.playr.x + self.playr.hseeight:
                 if self.playr.x == self.x:
                     self.x += 1
                     self.pist.x += 1
