@@ -81,11 +81,11 @@ class playrUprav:
         return x2, y2
     
     # Ограничение прохаждение через прямоуглоьники
-    def ogran_rectangle(self, x1, y1, width, height, x=0, y=0):
+    def ogran_rectangle(self, x1, y1, width, height, xMov=0, yMov=0):
         # Переназначение переменных согласно функции rectangle
-        x2, y2 = self.rectangle(x1, y1, width, height, x, y)
-        X = x1 - self.playr.width < self.playr.x + x < x2
-        Y = y1 - self.playr.height < self.playr.y + y < y2
+        x2, y2 = self.rectangle(x1, y1, width, height, xMov, yMov)
+        X = x1 - self.playr.width < self.playr.x + xMov < x2
+        Y = y1 - self.playr.height < self.playr.y + yMov < y2
         if X and Y:
             return False
         return True

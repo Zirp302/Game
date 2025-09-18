@@ -85,10 +85,11 @@ class Stena: # Характеристики стен для их отображ�
         RightNiz_X + Shir_S / 2,
         RightNiz_Y
     )
+
     
     dom = pyglet.graphics.Batch() # Пакет данных со всеми стенами
 
-    def __init__(self): # Отображение стен (смотри на названия какая это стена)
+    def __init__(self, playr=None): # Отображение стен (смотри на названиe какая это стена)
         self.widthall_left = sh.Line(Stena.left_S[0], Stena.left_S[1], 
                                 Stena.left_S[2], Stena.left_S[3], 
                                 thickness=Stena.Shir_S, batch=Stena.dom)
@@ -105,9 +106,33 @@ class Stena: # Характеристики стен для их отображ�
                                 Stena.niz_S[2], Stena.niz_S[3], 
                                 thickness=Stena.Shir_S, batch=Stena.dom) 
         self.shipi = sh.Rectangle(200, 200, 20, 20, color=(111,111,111), batch=Stena.dom)
-
+        self.walls = [self.widthall_left, self.widthall_right, self.widthall_niz, self.widthall_verh]
+        #Только руки дошли до твоих стен это что такое вообще
+        #Типы стен будем дописывать
+        self.walls_types = {
+            "dirtWall" : {
+                "xp" : 50,
+                "cost" : {
+                    "dirt" : 5
+                }
+            },
+            "sandWall" : {
+                "xp" : 25,
+                "cost" : {
+                    "water" : 2,
+                    "sand" : 5
+                }
+            }
+        }
     def draw(self): # Пакет для отображения стен
         Stena.dom.draw()
+
+    def walls_creating(self):
+        pass
+
+
+    def return_walls(self):
+        return self.walls
 
     #Прорисовка происходит ТОЛЬКО в функции с названием on_draw 
 
@@ -144,9 +169,10 @@ class Zombi:
             #значение в хэш таблице это хр зомби
 
     def moving(self, dt=1/60):
+            #зачем я создаю функции подо все что происходит? Так надо
             if zombies:
-        #зачем я создаю функции подо все что происходит? Так надо
                 for zombis in zombies:
+
                     if self.playr.x > zombis.x:
                         zombis.x += self.speed
                         zombies[zombis][0].x += self.speed
@@ -232,7 +258,7 @@ class Ognestrel:
             self.mugsNum -= 1
             self.time = time.time() + self.kd
             mx, my = self.x2, self.y2
-            print(self.x, self.x2, self.y, self.y2)
+            #print(self.x, self.x2, self.y, self.y2)
             if self.y == self.y2:
                 if self.x < self.x2:
                     x, y = 1, 0
@@ -269,6 +295,7 @@ class Ognestrel:
             self.mugsNum = self.MaxMugsNum
             self.mugsInLab.text = str(str(self.mugsNum) + "/" + self.mugsInLab.text.split("/")[1])
     def damage(self, dt):
+        mugsToDel = []
         for i in mugs:
             zombToDel = []
             for ii in zombies:
@@ -276,19 +303,21 @@ class Ognestrel:
                     x, y, x1, y1 = i.x, i.y, i.x + i.width, i.y + i.height
                     zx, zy, zx1, zy1 = ii.x, ii.y, ii.x + ii.width, ii.y + ii.height
                     if ((zy1 >= y1 > zy) or (zy1 >= y > zy)) and ((zx1 >= x1 > zx) or (zx1 >= x > zx)):
+                        mugsToDel.append(i)
                         rest, xp = zombies[ii]
                         rest.width -= xp * self.damag
                         #self.toDel.append(i)
                         if rest.width <= 0:
                             zombToDel.append(ii)
-                        i.delete()
-                        self.toDel.append(i)
                         break
                 except AttributeError:
                     break
             for ii in zombToDel:
                 zombies.pop(ii)
                 ii.delete()
+        for i in mugsToDel:
+            i.delete()
+            mugs.pop(i)
     def Rotat(self, keys):
         if keys[RIGHT]:
             self.pist.x = self.playr.x + self.playr.width
@@ -300,7 +329,7 @@ class Ognestrel:
         if keys[UP]:
             self.pist = sh.Line(self.playr.x + self.playr.width / 3, self.playr.y + self.playr.height, self.playr.x + self.playr.width / 3, self.playr.y + self.playr.height + self.playr.HP.height + 3)
         if keys[DOWN]:
-            self.pist = sh.Line(self.pl)
+            self.pist = sh.Line(self.playr.x + self.playr.width / 3, self.playr.y, self.playr.x + self.playr.width / 3, self.playr.y - 10)
         self.x = self.pist.x
         self.y = self.pist.y
         self.x2 = self.pist.x2
@@ -401,9 +430,11 @@ class Physics():
                 playr.playr.y = playr.y
                 playr.HP.x = playr.x
                 playr.HP.y = playr.y + playr.height
+    
+
     def entering_kollision(playr, object):
         x, y, x1, y1 = playr.x, playr.y, playr.x + playr.width, playr.y + playr.height
         zx, zx1, zy, zy1 = object.x, object.y, object.x + object.width, object.y + object.height
         if ((zy1 >= y1 >= zy) or (zy1 >= y >= zy)) and ((zx1 >= x1 >= zx) or (zx1 >= x >= zx)):
             return True
-        return False
+        return 
