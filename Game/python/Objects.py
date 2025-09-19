@@ -32,6 +32,10 @@ class Pl:
         self.HP = sh.Rectangle(self.x, self.y + self.height, self.Polosa, 15, color=(255,0,0), batch=self.pl)
         self.speed = speed
         self.phys = Physics()
+        self.items = {
+            "rock" : 7000
+        }
+        self.itemsCheck = pyglet.text.Label()
     # Характеристеки самого игрока
     def player(self): #Создание и отображение игрока
         return self.playr
@@ -89,7 +93,7 @@ class Stena: # Характеристики стен для их отображ�
     
     dom = pyglet.graphics.Batch() # Пакет данных со всеми стенами
 
-    def __init__(self, playr=None): # Отображение стен (смотри на названиe какая это стена)
+    def __init__(self, playr, uprav): # Отображение стен (смотри на названиe какая это стена)
         self.widthall_left = sh.Line(Stena.left_S[0], Stena.left_S[1], 
                                 Stena.left_S[2], Stena.left_S[3], 
                                 thickness=Stena.Shir_S, batch=Stena.dom)
@@ -105,11 +109,58 @@ class Stena: # Характеристики стен для их отображ�
         self.widthall_niz = sh.Line(Stena.niz_S[0], Stena.niz_S[1], 
                                 Stena.niz_S[2], Stena.niz_S[3], 
                                 thickness=Stena.Shir_S, batch=Stena.dom) 
-        self.shipi = sh.Rectangle(200, 200, 20, 20, color=(111,111,111), batch=Stena.dom)
-        self.walls = [self.widthall_left, self.widthall_right, self.widthall_niz, self.widthall_verh]
+        self.shipi = sh.Rectangle(200, 200, 20, 20, color=(111, 111, 111), batch=Stena.dom)
         #Только руки дошли до твоих стен это что такое вообще
         #Типы стен будем дописывать
+        self.height, self.width = 50, 60
         self.walls_types = {
+            "dirtWall" : {
+                "xp" : 125,
+                "cost" : {
+                    "dirt" : 50
+                },
+                "color" : (80, 40, 50)
+            },
+            "sandWall" : {
+                "xp" : 75,
+                "cost" : {
+                    "water" : 20,
+                    "sand" : 50
+                },
+                "color" : (210, 183, 115)
+            },
+            "rockWall" : {
+                "xp" : 250,
+                "cost" : {
+                    "rock" : 75
+                },
+                "color" :  (192, 192, 192)
+            }
+        }
+
+        self.playr = playr
+        self.uprav = uprav
+        self.walls = [(self.widthall_left, "rockWall", 250), (self.widthall_right, "rockWall", 250), (self.widthall_niz, "rockWall", 250), (self.widthall_verh, "rockWall", 250)]
+        self.wallTypeNow = "rockWall"
+    def draw(self): # Пакет для отображения стен
+        Stena.dom.draw()
+
+    def walls_creating(self):
+        for i in self.walls_types[self.wallTypeNow]["cost"]:
+            for ii in self.playr.items:
+                if ii == i and self.playr.items[ii] >= self.walls_types[self.wallTypeNow]["cost"]:
+                    self.playr.items[ii] - self.walls_types[self.wallTypeNow]["cost"][i]
+                    #Ну хотя бы не 5 вложенных циклов
+                    self.walls.append(sh.Rectangle(self.playr.x + self.playr.width, self.playr.y, self.walls_types[self.wallTypeNow]["width"] if "width" in self.walls_types[self.wallTypeNow].keys() else self.width, self.walls_types[self.wallTypeNow]["height"] if "height" in self.walls_types[self.wallTypeNow].keys() else self.height, self.walls_types[self.wallTypeNow]["color"], batch=self.dom))
+                    #Вот это я конечно УДОБНО сделал да?
+    def return_walls(self):
+        return self.walls
+
+    #Прорисовка происходит ТОЛЬКО в функции с названием on_draw 
+class Walls:
+    #Зачем еще один класс для стен? ЗАЧЕМ?!
+    def __init__(self, type, playr, uprav, w=10, h=10):
+        self.types = {
             "dirtWall" : {
                 "xp" : 50,
                 "cost" : {
@@ -124,18 +175,10 @@ class Stena: # Характеристики стен для их отображ�
                 }
             }
         }
-    def draw(self): # Пакет для отображения стен
-        Stena.dom.draw()
-
-    def walls_creating(self):
-        pass
-
-
-    def return_walls(self):
-        return self.walls
-
-    #Прорисовка происходит ТОЛЬКО в функции с названием on_draw 
-
+        self.width = w
+        self.height = h
+        self.playr = playr
+        self.uprav = uprav
 
 class Zombi:
     def __init__(self, playr, plrUprv, batch=zombiBat, width=35, height=35, col={21, 110, 100}, type=None, xp=100, speed=1, spawnSpeed=1/2, damage=10):
