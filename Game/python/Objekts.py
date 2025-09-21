@@ -15,7 +15,7 @@ class Pl:
     time = 0
 
     # Характеристики здаровья
-    HP_playr = 5               # Количество здоровья
+    HP_playr = 5          # Количество здоровья
     HP_One = width / HP_playr  # Длина одной еденице здаровья
     Polosa = HP_playr * HP_One # Полоска HP
 
@@ -23,27 +23,35 @@ class Pl:
     pl = pyglet.graphics.Batch()
     def playr(self): #Создание и отображение игрока
         self.playr = sh.Rectangle(Pl.x, Pl.y, Pl.width, Pl.height, Pl.color, batch=Pl.pl)
-        print(self.playr)
         return self.playr
 
     # HP игрока
     def HP(self):
-        self.HP = sh.Rectangle(Pl.x, Pl.y + Pl.height, Pl.Polosa, 15, color=(255,0,0), batch=Pl.pl)
+        self.HP = sh.Rectangle(Pl.x, Pl.y + Pl.height, self.Polosa, 15, color=(255,0,0), batch=Pl.pl)
         return self.HP
+    
+    def draw():
+        Pl.pl.draw()
 
+class Damag:
     time = 0
-        
-    def damag(self, playr, HP, x1, y1, x2, y2, x, y):
+    def __init__(self, playr, HP):  # значение по умолчанию
         self.playr = playr
         self.HP = HP
+        self.HP_One = Pl.width / Pl.HP_playr
+        
+    # Функция для определения получаемого урона   
+    def damag(self, uron, x1, y1, x2, y2, x, y):
         X = x1 - Pl.width < self.playr.x + x < x2
         Y = y1 - Pl.height < self.playr.y + y < y2
         kd = 1.25
         time1 = time.time()
-        if X and Y and time1 - Pl.time > kd:
-            Pl.time = time1
-            print(time1, self.time)
-            self.HP.width -= Pl.HP_One
+        # Миханника получение урона
+        if X and Y and time1 - Damag.time > kd: 
+            Damag.time = time1
+            print(uron, self.HP_One)
+            self.HP.width -= (self.HP_One * uron)   # Переделай так чтобы оно вычисляло заново и вычитало uron
+            # Механника смерти
             if self.HP.width <= 0:
                 self.HP.width = Pl.width
                 self.playr.x = Pl.x
@@ -52,7 +60,7 @@ class Pl:
                 self.HP.y = Pl.y + Pl.height
     
     #   Получение урона при нахождении в линии
-    def damag_line(self, playr, HP, x1, y1, width, height, x=0, y=0):
+    def damag_line(self, x1, y1, x2, y2, uron=1, x=0, y=0):
         if x1 == x2:
             x1 -= 10
             x2 += 10
@@ -61,16 +69,17 @@ class Pl:
             y1 -= 10
             y2 += 10
             x1, x2 = min(x1, x2), max(x1, x2)
-        Pl().damag(playr, HP, x1, y1, x2, y2, x, y)
+
+        self.damag(uron, x1, y1, x2, y2, x, y)
 
     #   Получение урона при нахождении в прямоуглоьнике
-    def damag_rectangle(self, playr, HP, x1, y1, width, height, x=0, y=0):
+    def damag_rectangle(self, x1, y1, width, height, uron=1, x=0, y=0):
         x2 = x1 + width
         y2 = y1 + height
-        Pl().damag(playr, HP, x1, y1, x2, y2, x, y)
+        x1, x2 = min(x1, x2), max(x1, x2)
+        y1, y2 = min(y1, y2), max(y1, y2)
 
-    def draw():
-        Pl.pl.draw()
+        self.damag(uron, x1, y1, x2, y2, x, y)
 
 
 
@@ -150,9 +159,4 @@ class Stena:
         Stena.dom.draw()
 
 
-class Damag:
-    def __init__(self, playr, HP, width): 
-        self.playr = playr
-        self.time = 0
-        self.HP = HP
-        self.width = width
+

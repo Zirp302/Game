@@ -46,22 +46,23 @@ def avanpost(x_moving, y_moving):
     return stena_v and stena_n and stena_l and stena_r
 
 
-U = Uprav(playr, HP, width)
+upravlenie = Uprav(playr, HP, width)
+damag = Damag(playr, HP)
 
 def update(dt, speed=5):
-    pl.damag_rectangle(playr, HP, 200, 200, 20, 20)
+    damag.damag_rectangle(200, 200, 20, 20, 1)
     if keys[key.W]:
         x_moving, y_moving = 0, speed
-        U.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))
+        upravlenie.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))
     if keys[key.S]:
         x_moving, y_moving = 0, -speed
-        U.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))
+        upravlenie.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))
     if keys[key.A]:
         x_moving, y_moving = -speed, 0
-        U.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))
+        upravlenie.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))
     if keys[key.D]:
         x_moving, y_moving = speed, 0
-        U.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))
+        upravlenie.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))
 
 
 @wind.event
