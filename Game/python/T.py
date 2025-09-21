@@ -1,4 +1,4 @@
-from Objekts import Pl, Stena
+from Objekts import Pl, Stena, Damag
 from Uprav import Uprav
 import keyboard as k
 import pyglet
@@ -20,27 +20,6 @@ HP = pl.HP()
 @wind.event
 def on_mouse_press(x,y,button,modifiers):
     print(f"x = {x}, y = {y}")
-
-'''
-dm = False
-time_kd = 1
-
-def Damag(dt, HP_One=HP.HP_One):
-    global dm
-    global time_kd
-    t = time.time()
-    kd = t - time_kd
-
-    if dm and kd > 1:
-        print(time_kd, t, kd)
-        time_kd = t
-        cd = 0
-        HP.width -= HP_One
-        if HP.width == 0:
-            playr.x, playr.y = (360, 360)
-            HP.x, HP.y = (360, 360 + 100)
-            HP.width = playr.width
-            dm = False'''
 
 
 keys = key.KeyStateHandler()
@@ -66,13 +45,11 @@ def avanpost(x_moving, y_moving):
 
     return stena_v and stena_n and stena_l and stena_r
 
-'''def damag(x1, y1, width, height):'''
-
 
 U = Uprav(playr, HP, width)
 
 def update(dt, speed=5):
-    S.damag_rectangle(200, 200, 20, 20)
+    pl.damag_rectangle(playr, HP, 200, 200, 20, 20)
     if keys[key.W]:
         x_moving, y_moving = 0, speed
         U.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))

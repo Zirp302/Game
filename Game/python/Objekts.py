@@ -12,6 +12,7 @@ class Pl:
     width = 50
     height = 100
     color = (54, 136, 181)
+    time = 0
 
     # Характеристики здаровья
     HP_playr = 5               # Количество здоровья
@@ -22,6 +23,7 @@ class Pl:
     pl = pyglet.graphics.Batch()
     def playr(self): #Создание и отображение игрока
         self.playr = sh.Rectangle(Pl.x, Pl.y, Pl.width, Pl.height, Pl.color, batch=Pl.pl)
+        print(self.playr)
         return self.playr
 
     # HP игрока
@@ -29,8 +31,47 @@ class Pl:
         self.HP = sh.Rectangle(Pl.x, Pl.y + Pl.height, Pl.Polosa, 15, color=(255,0,0), batch=Pl.pl)
         return self.HP
 
-    def draw(): # Отрисовка пакета данных с игроком и его полоской так как они должны передвигаться одновременно и одинаково
-        Pl.pl.draw() 
+    time = 0
+        
+    def damag(self, playr, HP, x1, y1, x2, y2, x, y):
+        self.playr = playr
+        self.HP = HP
+        X = x1 - Pl.width < self.playr.x + x < x2
+        Y = y1 - Pl.height < self.playr.y + y < y2
+        kd = 1.25
+        time1 = time.time()
+        if X and Y and time1 - Pl.time > kd:
+            Pl.time = time1
+            print(time1, self.time)
+            self.HP.width -= Pl.HP_One
+            if self.HP.width <= 0:
+                self.HP.width = Pl.width
+                self.playr.x = Pl.x
+                self.playr.y = Pl.y
+                self.HP.x = Pl.x
+                self.HP.y = Pl.y + Pl.height
+    
+    #   Получение урона при нахождении в линии
+    def damag_line(self, playr, HP, x1, y1, width, height, x=0, y=0):
+        if x1 == x2:
+            x1 -= 10
+            x2 += 10
+            y1, y2 = min(y1, y2), max(y1, y2)
+        else:
+            y1 -= 10
+            y2 += 10
+            x1, x2 = min(x1, x2), max(x1, x2)
+        Pl().damag(playr, HP, x1, y1, x2, y2, x, y)
+
+    #   Получение урона при нахождении в прямоуглоьнике
+    def damag_rectangle(self, playr, HP, x1, y1, width, height, x=0, y=0):
+        x2 = x1 + width
+        y2 = y1 + height
+        Pl().damag(playr, HP, x1, y1, x2, y2, x, y)
+
+    def draw():
+        Pl.pl.draw()
+
 
 
 class Stena: 
@@ -47,7 +88,6 @@ class Stena:
     #   Отображение стен (смотри на названия)
     def __init__(self, playr, HP, width): 
         self.playr = playr
-        self.time = 0
         self.HP = HP
         self.width = width
         self.left_wall = sh.Line(Stena.left_S[0], Stena.left_S[1], 
@@ -104,42 +144,6 @@ class Stena:
         if X and Y:
             return False
         return True
-    
-    #   Получение урона при нахождении в линии
-    def damag_line(self, x1, y1, width, height, x=0, y=0):
-        x1, y1, x2, y2 = self.line(x1, y1, x2, y2, x, y)  # Переназначение переменных через функцию line
-        X = x1 - Pl.width < self.playr.x + x < x2
-        Y = y1 - Pl.height < self.playr.y + y < y2
-        kd = 1.25
-        time1 = time.time()
-        if X and Y and time1 - self.time > kd:
-            self.time = time1
-            print(time1, self.time)
-            self.HP.width -= Pl.HP_One
-            if self.HP.width <= 0:
-                self.HP.width = Pl.width
-                self.playr.x = Pl.x
-                self.playr.y = Pl.y
-                self.HP.x = Pl.x
-                self.HP.y = Pl.y + Pl.height
-
-    #   Получение урона при нахождении в прямоуглоьнике
-    def damag_rectangle(self, x1, y1, width, height, x=0, y=0):
-        x2, y2 = self.rectangle(x1, y1, width, height, x, y) # Переназначение переменных через функцию rectangle
-        X = x1 - Pl.width < self.playr.x + x < x2
-        Y = y1 - Pl.height < self.playr.y + y < y2
-        kd = 1.25
-        time1 = time.time()
-        if X and Y and time1 - self.time > kd:
-            self.time = time1
-            print(time1, self.time)
-            self.HP.width -= Pl.HP_One
-            if self.HP.width <= 0:
-                self.HP.width = Pl.width
-                self.playr.x = Pl.x
-                self.playr.y = Pl.y
-                self.HP.x = Pl.x
-                self.HP.y = Pl.y + Pl.height
 
     #   Функция для отображения стен
     def draw(self): 
@@ -152,4 +156,3 @@ class Damag:
         self.time = 0
         self.HP = HP
         self.width = width
-
