@@ -9,8 +9,8 @@ class Pl:
     # Характеристеки игрока
     x = 340
     y = 330
-    width = 50
-    height = 100
+    width = 5
+    height = 5
     color = (54, 136, 181)
     time = 0
 
