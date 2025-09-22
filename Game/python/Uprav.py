@@ -7,10 +7,9 @@ from Objects import Pl, Stena
 
 class playrUprav:
     #   Доделать блокировку cтенам
-    def __init__(self, playr, HP, oruzhie):
+    def __init__(self, playr, HP):
         self.playr = playr
         self.HP = HP
-        self.oruzhie = oruzhie
 
     #   Передвижеие игрока и его полоски жизни
     def pl_moving(self, x, y, avanpost):
@@ -18,19 +17,20 @@ class playrUprav:
             self.playr.playr.x += x
             self.playr.x = self.playr.playr.x
             self.playr.HP.x += x
-            if self.oruzhie.isPist == True:
+            """if self.oruzhie.isPist == True:
                 self.oruzhie.pist.x += x
                 self.oruzhie.x += x
-                self.oruzhie.x2 += x
+                self.oruzhie.x2 += x"""
 
         if 0 < y + self.playr.y < 721 - self.playr.width and avanpost:
             self.playr.playr.y += y
             self.playr.y = self.playr.playr.y
             self.playr.HP.y += y
-            if self.oruzhie.isPist == True:
+            """if self.oruzhie.isPist == True:
                 self.oruzhie.pist.y += y
                 self.oruzhie.y += y
-                self.oruzhie.y2 += y
+                self.oruzhie.y2 += y"""
+            #НЕ ТРОЖЬ ЭТо нАм ПоТоМ ЕщЕ пОнАдОбИтСя
 
     #   Проверка линий
     def line(self, x1, y1, x2, y2, x, y, speed=5): 

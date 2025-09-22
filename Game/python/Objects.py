@@ -93,7 +93,7 @@ class Stena: # Характеристики стен для их отображ�
     
     dom = pyglet.graphics.Batch() # Пакет данных со всеми стенами
 
-    def __init__(self, playr, uprav): # Отображение стен (смотри на названиe какая это стена)
+    def __init__(self): # Отображение стен (смотри на названиe какая это стена)
         self.widthall_left = sh.Line(Stena.left_S[0], Stena.left_S[1], 
                                 Stena.left_S[2], Stena.left_S[3], 
                                 thickness=Stena.Shir_S, batch=Stena.dom)
@@ -138,8 +138,8 @@ class Stena: # Характеристики стен для их отображ�
             }
         }
 
-        self.playr = playr
-        self.uprav = uprav
+        """self.playr = playr
+        self.uprav = uprav"""
         self.walls = [(self.widthall_left, "rockWall", 250), (self.widthall_right, "rockWall", 250), (self.widthall_niz, "rockWall", 250), (self.widthall_verh, "rockWall", 250)]
         self.wallTypeNow = "rockWall"
     def draw(self): # Пакет для отображения стен
@@ -265,138 +265,7 @@ class Zombi:
                     
 
 
-
-bat = pyglet.graphics.Batch()
-mugs = {}
-class Ognestrel:
-    def __init__(self, playr, phot="ognestrel.png", damag=10, MaxMugsNum=10, mugsType="common", type=None, isPist=True, bat=bat, mugsNow=100, kd=0.5):
-        self.ognTypes={}
-        if not type or type not in self.ognTypes:
-            self.damag = damag
-            self.MaxMugsNum = MaxMugsNum
-            self.mugsType = mugsType
-            self.playr = playr
-            #photo = pyglet.image.load(phot, open(phot, "br"))
-            self.pist = pyglet.shapes.Line(playr.x, playr.y + self.playr.height / 3, playr.x - 10, playr.y + self.playr.height / 3)
-            #pyglet.sprite.Sprite(photo, playr.x, playr.y+3)
-            self.x = playr.x
-            self.y = playr.y + self.playr.height / 3
-            self.x2 = playr.x - 10
-            self.y2 = self.y
-            self.isPist = isPist
-            self.bat = bat
-            self.mugsNum = MaxMugsNum
-            self.AllmugsLab = pyglet.text.Label(str(mugsNow - MaxMugsNum), 650, 650, color=(255, 255, 0))
-            self.kd = kd
-            self.mugsInLab = pyglet.text.Label(str(MaxMugsNum) + "/" + str(MaxMugsNum), 650, 690, color=(255, 255, 0))
-            self.time = 0
-
-            
-    def shot(self):
-        global mugs
-        global bat
-        if self.time <= time.time() and self.mugsNum !=0:
-            now, space = self.mugsInLab.text.split("/")
-            self.mugsInLab.text = str(int(now) - 1) + "/" + space
-            self.mugsNum -= 1
-            self.time = time.time() + self.kd
-            mx, my = self.x2, self.y2
-            #print(self.x, self.x2, self.y, self.y2)
-            if self.y == self.y2:
-                if self.x < self.x2:
-                    x, y = 1, 0
-                else:
-                    x, y = -1, 0
-            else:
-                if self.y < self.y2:
-                    x, y = 0, 1
-                else:
-                    x, y = 0, -1
-            mug = pyglet.shapes.Rectangle(mx, my, 4, 2, color = [250, 250, 0], batch = bat)
-            mugs[mug] = (x, y)
-            return mug
-
-    def pulaMoving(self, dt):
-        self.toDel=[]
-        for i in mugs:
-            try:
-                if not i.x in [720, 0] and not i.y in [720, 0]:
-                    i.x += mugs[i][0]
-                    i.y += mugs[i][1]
-                else:
-                    self.toDel.append(i)
-                    break
-            except AttributeError:
-                continue
-        for i in self.toDel:
-            mugs.pop(i)
-            i.delete()
-    def recharge(self):
-        if self.MaxMugsNum <= int(self.AllmugsLab.text):
-            now = int(self.mugsInLab.text.split("/")[0])
-            self.AllmugsLab.text = str(int(self.AllmugsLab.text) - (self.MaxMugsNum - int(now)))
-            self.mugsNum = self.MaxMugsNum
-            self.mugsInLab.text = str(str(self.mugsNum) + "/" + self.mugsInLab.text.split("/")[1])
-    def damage(self, dt):
-        mugsToDel = []
-        for i in mugs:
-            zombToDel = []
-            for ii in zombies:
-                try:
-                    x, y, x1, y1 = i.x, i.y, i.x + i.width, i.y + i.height
-                    zx, zy, zx1, zy1 = ii.x, ii.y, ii.x + ii.width, ii.y + ii.height
-                    if ((zy1 >= y1 > zy) or (zy1 >= y > zy)) and ((zx1 >= x1 > zx) or (zx1 >= x > zx)):
-                        mugsToDel.append(i)
-                        rest, xp = zombies[ii]
-                        rest.width -= xp * self.damag
-                        #self.toDel.append(i)
-                        if rest.width <= 0:
-                            zombToDel.append(ii)
-                        break
-                except AttributeError:
-                    break
-            for ii in zombToDel:
-                zombies.pop(ii)
-                ii.delete()
-        for i in mugsToDel:
-            i.delete()
-            mugs.pop(i)
-    def Rotat(self, keys):
-        if keys[RIGHT]:
-            self.pist.x = self.playr.x + self.playr.width
-            self.pist.y = self.playr.y + self.playr.height / 3
-            self.pist.x2 = self.pist.x + 10
-            self.pist.y2 = self.pist.y
-        if keys[LEFT]:
-            self.pist = pyglet.shapes.Line(self.playr.x, self.playr.y + self.playr.height / 3, self.playr.x - 10, self.playr.y + self.playr.height / 3)
-        if keys[UP]:
-            self.pist = sh.Line(self.playr.x + self.playr.width / 3, self.playr.y + self.playr.height, self.playr.x + self.playr.width / 3, self.playr.y + self.playr.height + self.playr.HP.height + 3)
-        if keys[DOWN]:
-            self.pist = sh.Line(self.playr.x + self.playr.width / 3, self.playr.y, self.playr.x + self.playr.width / 3, self.playr.y - 10)
-        self.x = self.pist.x
-        self.y = self.pist.y
-        self.x2 = self.pist.x2
-        self.y2 = self.pist.y2
-        """if self.pist.x != self.x or self.pist.y != self.y or self.pist.x2 != self.x2 or self.pist.y2 != self.y2:
-            print("jjj")"""
-
-        """if keys[RIGHT]:
-            if self.playr.x <= self.x <= self.playr.x + self.playr.hseeight:
-                if self.playr.x == self.x:
-                    self.x += 1
-                    self.pist.x += 1
-                elif self.playr.x + self.playr.width == self.x:
-                    self.x -= 1
-                    self.pist.x -= 1
-
-        if keys[LEFT]:
-            if self.playr.x <= self.x <= self.playr.x + self.playr.height:
-                if self.playr.x == self.x:
-                    self.x -= 1
-                    self.pist.x -= 1
-                elif self.playr.x + self.playr.width == self.x:
-                    self.x += 1
-                    self.pist.x += 1"""           
+   
 class Physics():
     def line(x1, y1, x2, y2, x, y, speed=5): 
         if x1 == x2:
