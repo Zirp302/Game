@@ -7,17 +7,15 @@ import pyglet
 
 class Pl:
     # Характеристеки игрока
-    x = 340
-    y = 330
-    width = 50
-    height = 100
+    x, y = 340, 340 # Координаты спавна
+    width = 50   # Длинна персонажа и полосы здоровья
+    height = 100 # Ширина персонажа
     color = (54, 136, 181)
     time = 0
 
     # Характеристики здаровья
     HP_playr = 5          # Количество здоровья
     HP_One = width / HP_playr  # Длина одной еденице здаровья
-    Polosa = HP_playr * HP_One # Полоска HP
 
     # Пакет для обединения HP и playr
     pl = pyglet.graphics.Batch()
@@ -27,7 +25,7 @@ class Pl:
 
     # HP игрока
     def HP(self):
-        self.HP = sh.Rectangle(Pl.x, Pl.y + Pl.height, self.Polosa, 15, color=(255,0,0), batch=Pl.pl)
+        self.HP = sh.Rectangle(Pl.x, Pl.y + Pl.height, Pl.width, 15, color=(255,0,0), batch=Pl.pl)
         return self.HP
     
     def draw():
