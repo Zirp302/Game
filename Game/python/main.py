@@ -27,7 +27,7 @@ drawInfuncs=[]
 def on_mouse_press(x,y,button,modifiers):
     print(f"x = {x}, y = {y}")
 defaultZomb = Zombi(playr, Uprav)
-MiniBoss = Zombi(playr=playr,plrUprv=Uprav, width=25, height=25, type="big", xp=1000, speed=0.2, spawnSpeed=3, damage=30)
+MiniBoss = Zombi(playr=playr, plrUprv=Uprav, width=25, height=25, type="big", xp=1000, speed=0.2, spawnSpeed=3, damage=30)
 
 
 
@@ -100,8 +100,8 @@ while True:
     os.mkdir("hihi" + str(i))
     i += 1"""
 #defaultZomb.spawn()
-#pyglet.clock.schedule_interval(defaultZomb.spawn,defaultZomb.spawSpeed)
-#pyglet.clock.schedule_interval(defaultZomb.moving,1/20)
+#pyglet.clock.schedule_interval(defaultZomb.spawn, defaultZomb.spawSpeed)
+#pyglet.clock.schedule_interval(defaultZomb.moving, 1/20)
 #передвижения зомбей с обновлением каждые 1/4 секунды может уже не 1/4 
 pyglet.clock.schedule_interval(update, 1/60)
 #pyglet.clock.schedule_interval(defaultZomb.attack, 1)
