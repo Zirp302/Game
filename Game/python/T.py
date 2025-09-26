@@ -1,4 +1,4 @@
-from Objekts import Pl, Stena, Damag
+from Game.python.Objeсts import Pl, Stena, Damag
 from Uprav import Uprav
 import keyboard as k
 import pyglet
