@@ -17,7 +17,7 @@ width, height = (50, 100)
 playr = Pl()
 xp=100
 pist = Ognestrel(playr)
-Uprav = playrUprav(playr, playr.HP, pist)
+uprav = playrUprav(playr, playr.HP, pist)
 #могут ли зомби появляться
 #Скорость появления зомбей попробуй изменить число на какое нибудь оч маленькое по типу 1/60 и тд
 w = 30
@@ -27,8 +27,8 @@ drawInfuncs=[]
 @wind.event
 def on_mouse_press(x,y,button,modifiers):
     print(f"x = {x}, y = {y}")
-defaultZomb = Zombi(playr, Uprav)
-MiniBoss = Zombi(playr=playr,plrUprv=Uprav, width=25, height=25, type="big", xp=1000, speed=0.2, spawnSpeed=3, damage=30)
+defaultZomb = Zombi(playr, uprav)
+MiniBoss = Zombi(playr=playr,plrUprv=uprav, width=25, height=25, type="big", xp=1000, speed=0.2, spawnSpeed=3, damage=30)
 
 
 
@@ -61,13 +61,13 @@ def Damag(dt, HP_One=HP.HP_One):
 
 keys = key.KeyStateHandler()
 wind.push_handlers(keys)
-walls = Stena()
+walls = Stena(playr, uprav)
 
 def avanpost(xM, yM):
-    stena_l = Uprav.ogran_line(walls.left_S[0], walls.left_S[1], walls.left_S[2], walls.left_S[3], xM, yM)
-    stena_r = Uprav.ogran_line(walls.right_S[0], walls.right_S[1], walls.right_S[2], walls.right_S[3], xM, yM)
-    stena_v = Uprav.ogran_line(walls.verh_S[0], walls.verh_S[1], walls.verh_S[2], walls.verh_S[3], xM, yM)
-    stena_n = Uprav.ogran_line(walls.niz_S[0], walls.niz_S[1], walls.niz_S[2], walls.niz_S[3], xM, yM)
+    stena_l = uprav.ogran_line(walls.left_S[0], walls.left_S[1], walls.left_S[2], walls.left_S[3], xM, yM)
+    stena_r = uprav.ogran_line(walls.right_S[0], walls.right_S[1], walls.right_S[2], walls.right_S[3], xM, yM)
+    stena_v = uprav.ogran_line(walls.verh_S[0], walls.verh_S[1], walls.verh_S[2], walls.verh_S[3], xM, yM)
+    stena_n = uprav.ogran_line(walls.niz_S[0], walls.niz_S[1], walls.niz_S[2], walls.niz_S[3], xM, yM)
 
     return stena_v and stena_n and stena_l and stena_r
 
@@ -75,16 +75,16 @@ def avanpost(xM, yM):
 def update(dt, speed=5):
     if keys[W]:
         x_moving, y_moving = 0, speed
-        Uprav.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))
+        uprav.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))
     if keys[S]:
         x_moving, y_moving = 0, -speed
-        Uprav.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))
+        uprav.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))
     if keys[A]:
         x_moving, y_moving = -speed, 0
-        Uprav.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))
+        uprav.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))
     if keys[D]:
         x_moving, y_moving = speed, 0
-        Uprav.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))
+        uprav.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))
     if keys[Q]:
         pist.shot()
     if keys[E]:
@@ -98,7 +98,7 @@ defaultZomb.test(360, 360, 30, 30)
 @wind.event
 def on_draw():
     wind.clear()
-    Stena().draw()
+    walls.draw()
     playr.draw()
     #кстати чтобы определить цвет я использую https://colorscheme.ru/color-names.html
     defaultZomb.batch.draw()
@@ -113,9 +113,9 @@ while True:
 #defaultZomb.spawn()
 #pyglet.clock.schedule_interval(defaultZomb.spawn,defaultZomb.spawSpeed)
 #pyglet.clock.schedule_interval(defaultZomb.moving,1/20)
-pyglet.clock.schedule_interval(pist.pulaMoving, 1/3000)
+pyglet.clock.schedule_interval(pist.pulaMoving, 1/100)
 #передвижения зомбей с обновлением каждые 1/4 секунды может уже не 1/4 
 pyglet.clock.schedule_interval(update, 1/60)
 #pyglet.clock.schedule_interval(defaultZomb.attack, 1)
-pyglet.clock.schedule_interval(pist.damage, 1/150)
+pyglet.clock.schedule_interval(pist.damage, 1/200)
 pyglet.app.run()
