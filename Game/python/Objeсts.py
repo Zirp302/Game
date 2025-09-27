@@ -1,6 +1,6 @@
+import pyglet
 from pyglet import shapes as sh
 import time
-import pyglet
 """
 Файл для создания обектов и их вывода пряма тут 
 """
@@ -30,6 +30,7 @@ class Pl:
     
     def draw():
         Pl.pl.draw()
+
 
 class Damag:
     time = 0
@@ -67,7 +68,6 @@ class Damag:
             y1 -= 10
             y2 += 10
             x1, x2 = min(x1, x2), max(x1, x2)
-
         self.damag(uron, x1, y1, x2, y2, x, y)
 
     #   Получение урона при нахождении в прямоуглоьнике
@@ -76,13 +76,11 @@ class Damag:
         y2 = y1 + height
         x1, x2 = min(x1, x2), max(x1, x2)
         y1, y2 = min(y1, y2), max(y1, y2)
-
         self.damag(uron, x1, y1, x2, y2, x, y)
 
 
-
 class Stena: 
-    # Характеристики стен для их отображения 
+    # Характеристики стен для отображения 
     left_S = (240, 230, 240, 490)
     right_S = (480, 230, 480, 490)
     niz_S = (350, 240, 490, 240)

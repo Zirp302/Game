@@ -1,7 +1,7 @@
 import pyglet
 from pyglet import shapes as sh
 from pyglet.window.key import *
-from Game.python.Objeсts import Pl, Stena
+from Objeсts import Pl, Stena
 
 #   Управление 
 class Uprav:
