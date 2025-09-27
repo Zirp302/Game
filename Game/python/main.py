@@ -1,4 +1,4 @@
-from Objeсts import Pl, Stena, Damag
+from Objeсts import Pl, Stena, Damag, Zombi
 from Uprav import Uprav
 import pyglet
 from pyglet import shapes as sh
@@ -21,19 +21,20 @@ wind.push_handlers(keys)
 S = Stena(playr, HP, Pl.width)
 
 def avanpost(x_moving, y_moving):
-    stena_l = S.ogran_line(S.left_S[0], S.left_S[1], 
+    stena_l = S.ogran_line( 
+                            S.left_S[0], S.left_S[1], 
                             S.left_S[2], S.left_S[3], 
                             x_moving, y_moving)
-    
-    stena_r = S.ogran_line(S.right_S[0],S.right_S[1], 
+    stena_r = S.ogran_line( 
+                            S.right_S[0],S.right_S[1], 
                             S.right_S[2],S.right_S[3], 
                             x_moving, y_moving)
-    
-    stena_v = S.ogran_line(S.verh_S[0], S.verh_S[1], 
+    stena_v = S.ogran_line(
+                            S.verh_S[0], S.verh_S[1], 
                             S.verh_S[2], S.verh_S[3], 
                             x_moving, y_moving)
-    
-    stena_n = S.ogran_line(S.niz_S[0], S.niz_S[1], 
+    stena_n = S.ogran_line(
+                            S.niz_S[0], S.niz_S[1], 
                             S.niz_S[2], S.niz_S[3], 
                             x_moving, y_moving)
 
@@ -42,8 +43,11 @@ def avanpost(x_moving, y_moving):
 
 upravlenie = Uprav(playr, HP, Pl.width)
 damag = Damag(playr, HP)
+Z = Zombi(playr, HP, upravlenie)
 
 def update(dt, speed=5):
+    Z.moving()
+    Z.attack()   
     damag.damag_rectangle(200, 200, 20, 20, 1)
     if keys[key.W]:
         x_moving, y_moving = 0, speed
@@ -66,8 +70,10 @@ def update(dt, speed=5):
 @wind.event
 def on_draw():
     wind.clear()
+    Z.draw()
     S.draw()
-    Pl.draw()
+    pl.draw()
 
 pyglet.clock.schedule_interval(update, 1/60)
+pyglet.clock.schedule_interval(Z.spawn, 2)
 pyglet.app.run()

@@ -1,6 +1,8 @@
 import pyglet
 from pyglet import shapes as sh
 import time
+import random
+zombies={} # значение в хэш таблице это хр зомби
 """
 Файл для создания обектов и их вывода пряма тут 
 """
@@ -14,7 +16,7 @@ class Pl:
     time = 0
 
     # Характеристики здаровья
-    HP_playr = 5          # Количество здоровья
+    HP_playr = 15          # Количество здоровья
     HP_One = width / HP_playr  # Длина одной еденице здаровья
 
     # Пакет для обединения HP и playr
@@ -28,8 +30,8 @@ class Pl:
         self.HP = sh.Rectangle(Pl.x, Pl.y + Pl.height, Pl.width, 15, color=(255,0,0), batch=Pl.pl)
         return self.HP
     
-    def draw():
-        Pl.pl.draw()
+    def draw(self):
+        self.pl.draw()
 
 
 class Damag:
@@ -43,13 +45,13 @@ class Damag:
     def damag(self, uron, x1, y1, x2, y2, x, y):
         X = x1 - Pl.width < self.playr.x + x < x2
         Y = y1 - Pl.height < self.playr.y + y < y2
-        kd = 1.25
+        kd = 0.75
         time1 = time.time()
         # Миханника получение урона
         if X and Y and time1 - Damag.time > kd: 
             Damag.time = time1
             print(uron, self.HP_One)
-            self.HP.width -= (self.HP_One * uron)   # Переделай так чтобы оно вычисляло заново и вычитало uron
+            self.HP.width -= self.HP_One * uron
             # Механника смерти
             if self.HP.width <= 0:
                 self.HP.width = Pl.width
@@ -77,6 +79,72 @@ class Damag:
         x1, x2 = min(x1, x2), max(x1, x2)
         y1, y2 = min(y1, y2), max(y1, y2)
         self.damag(uron, x1, y1, x2, y2, x, y)
+
+
+
+class Zombi:
+    def __init__(self, playr, HP, plrUprv, width=35, height=35, color={21, 110, 100}, type=None, xp=100, speed=1, spawnSpeed=1/2, damage=10):
+        #Мне лень писать self
+        #Но я напишу
+        #type это тип зомби
+        self.zombiBat = pyglet.graphics.Batch()
+        self.width = width
+        self.height = height
+        self.color = color
+        self.xp = xp
+        self.speed = speed
+        self.spawSpeed = spawnSpeed
+        self.damage = damage
+        self.playr = playr
+        self.HP = HP
+        self.plrUpr = plrUprv
+
+    def spawn(self, isSpawn=True):  
+        if isSpawn:
+            x = random.choice((0,720))
+            y = random.randint(0,720)
+            zombi_key = (sh.Rectangle(x, y, self.width, self.height, (21, 110, 100), batch=self.zombiBat))
+            if random.choice((0,1)) == 0:
+                zombies[zombi_key] = (sh.Rectangle(x, y + self.height, self.width, 4, 
+                                                batch=self.zombiBat, color=(255, 0, 0)), 
+                                                self.width / self.xp)
+            else:
+                zombies[zombi_key] = (sh.Rectangle(x, y + self.height, self.width, 4, batch=self.zombiBat, color=(255, 0, 0)), self.width / self.xp)
+
+    def moving(self):
+            #зачем я создаю функции подо все что происходит? Так надо
+            if zombies:
+                for zombis in zombies:
+
+                    if self.playr.x > zombis.x:
+                        zombis.x += self.speed
+                        zombies[zombis][0].x += self.speed
+                    elif self.playr.x < zombis.x:
+                        zombis.x = zombis.x - self.speed
+                        zombies[zombis][0].x -= self.speed
+                    else:
+                        pass
+                    if self.playr.y > zombis.y:
+                        zombis.y += self.speed
+                        zombies[zombis][0].y += self.speed
+                    elif self.playr.y < zombis.y:
+                        zombis.y = zombis.y - self.speed
+                        zombies[zombis][0].y -= self.speed
+    def test(self, x, y, width, height):
+        zombies[sh.Rectangle(x, y, width, height, color=self.color, batch=self.zombiBat)] = (sh.Rectangle(x, y + height, width, 3, color=(255,0,0), batch=self.zombiBat), self.width / 100)
+
+    def attack(self, trash=None):
+        #это можно было сделать и в функции zombMoving но нет надо ведь нагрузить комп кучей бесполезных функций
+        if zombies:
+            for i in zombies:
+                x, y, x1, y1 = self.playr.x, self.playr.y, self.playr.x + self.playr.width, self.playr.y + self.playr.height
+                zomb_x, zomb_y, zomb_x1, zomb_y1 = i.x, i.y, i.x + i.width, i.y + i.height
+                Damag(self.playr, self.HP).damag_rectangle(zomb_x, zomb_y, i.width, i.height)
+
+
+
+    def draw(self):
+        self.zombiBat.draw()
 
 
 class Stena: 
