@@ -4,8 +4,6 @@ from pyglet import shapes as sh
 from pyglet.window.key import *
 from random import randint as r
 import random
-class OutOfXpError(Exception):
-    pass
 zombies={}
 spawnSpeed=1/2
 zombiBat=pyglet.graphics.Batch()
@@ -22,9 +20,9 @@ class Pl:
         self.width = width
         self.height = height
         self.color = color
-        self.xp=pyglet.text.Label(str(xp),20,690,color=(255,0,0))
-        self.pl=pyglet.graphics.Batch()
-        self.harXp=harXp
+        self.xp = pyglet.text.Label(str(xp),20,690,color=(255,0,0))
+        self.pl = pyglet.graphics.Batch()
+        self.harXp = harXp
         self.playr = sh.Rectangle(self.x, self.y, self.width, self.height, self.color, batch=self.pl)
         self.HP_playr = harXp
         self.HP_One = self.width / self.harXp
@@ -41,7 +39,7 @@ class Pl:
         return self.playr
 
     # HP игрока
-    def HarXp(self):
+    def hp(self):
         self.HP_playr = 5
         self.HP_One = self.width / self.harXp
         self.Polosa = self.HP_playr * self.HP_One # Полоска HP
@@ -54,43 +52,13 @@ class Pl:
 
 class Stena: # Характеристики стен для их отображения
     wind_width, wind_height = (720, 720)
-    LeftNiz_X = wind_width / 2 - 120
-    LeftNiz_Y =  wind_height / 2 - 120
-    LeftVerh_X = wind_width / 2 - 120
-    LeftVerh_Y =  wind_height / 2 + 120
-
-    RightNiz_X = wind_width / 2 + 120
-    RightNiz_Y =  wind_height / 2 - 120
-    RightVerh_X = wind_width / 2 + 120
-    RightVerh_Y =  wind_height / 2 + 120
-
-    Shir_S = 20
-    left_S = (
-        LeftNiz_X, 
-        LeftNiz_Y - Shir_S / 2,
-        LeftVerh_X,
-        LeftVerh_Y + Shir_S / 2
-    )
-    right_S = (
-        RightNiz_X, 
-        RightNiz_Y - Shir_S / 2,
-        RightVerh_X, 
-        RightVerh_Y + Shir_S / 2
-    )
-    verh_S = (
-        LeftVerh_X - Shir_S / 2, 
-        LeftVerh_Y, 
-        RightVerh_X + Shir_S / 2,
-        RightVerh_Y
-    )
-    niz_S = (
-        LeftNiz_X + 120 - Shir_S / 2,
-        LeftNiz_Y, 
-        RightNiz_X + Shir_S / 2,
-        RightNiz_Y
-    )
-
     
+    # Характеристики стен для отображения 
+    left_S = (240, 230, 240, 490)
+    right_S = (480, 230, 480, 490)
+    niz_S = (350, 240, 490, 240)
+    verh_S = (230, 480, 490, 480)
+    Shir_S = 20 # Ширина стен
     dom = pyglet.graphics.Batch() # Пакет данных со всеми стенами
 
     def __init__(self): # Отображение стен (смотри на названиe какая это стена)
@@ -113,34 +81,10 @@ class Stena: # Характеристики стен для их отображ�
         #Только руки дошли до твоих стен это что такое вообще
         #Типы стен будем дописывать
         self.height, self.width = 50, 60
-        self.walls_types = {
-            "dirtWall" : {
-                "xp" : 125,
-                "cost" : {
-                    "dirt" : 50
-                },
-                "color" : (80, 40, 50)
-            },
-            "sandWall" : {
-                "xp" : 75,
-                "cost" : {
-                    "water" : 20,
-                    "sand" : 50
-                },
-                "color" : (210, 183, 115)
-            },
-            "rockWall" : {
-                "xp" : 250,
-                "cost" : {
-                    "rock" : 75
-                },
-                "color" :  (192, 192, 192)
-            }
-        }
-
-        """self.playr = playr
-        self.uprav = uprav"""
-        self.walls = [(self.widthall_left, "rockWall", 250), (self.widthall_right, "rockWall", 250), (self.widthall_niz, "rockWall", 250), (self.widthall_verh, "rockWall", 250)]
+        self.walls = [(self.widthall_left, "rockWall", 250), 
+                    (self.widthall_right, "rockWall", 250), 
+                    (self.widthall_niz, "rockWall", 250), 
+                    (self.widthall_verh, "rockWall", 250)]
         self.wallTypeNow = "rockWall"
     def draw(self): # Пакет для отображения стен
         Stena.dom.draw()
@@ -151,34 +95,16 @@ class Stena: # Характеристики стен для их отображ�
                 if ii == i and self.playr.items[ii] >= self.walls_types[self.wallTypeNow]["cost"]:
                     self.playr.items[ii] - self.walls_types[self.wallTypeNow]["cost"][i]
                     #Ну хотя бы не 5 вложенных циклов
-                    self.walls.append(sh.Rectangle(self.playr.x + self.playr.width, self.playr.y, self.walls_types[self.wallTypeNow]["width"] if "width" in self.walls_types[self.wallTypeNow].keys() else self.width, self.walls_types[self.wallTypeNow]["height"] if "height" in self.walls_types[self.wallTypeNow].keys() else self.height, self.walls_types[self.wallTypeNow]["color"], batch=self.dom))
+                    self.walls.append(sh.Rectangle(self.playr.x + self.playr.width, self.playr.y, 
+                                                    self.walls_types[self.wallTypeNow]["width"] if "width" in self.walls_types[self.wallTypeNow].keys() else self.width, 
+                                                    self.walls_types[self.wallTypeNow]["height"] if "height" in self.walls_types[self.wallTypeNow].keys() else self.height, 
+                                                    self.walls_types[self.wallTypeNow]["color"], 
+                                                    batch=self.dom))
                     #Вот это я конечно УДОБНО сделал да?
     def return_walls(self):
         return self.walls
 
     #Прорисовка происходит ТОЛЬКО в функции с названием on_draw 
-class Walls:
-    #Зачем еще один класс для стен? ЗАЧЕМ?!
-    def __init__(self, type, playr, uprav, w=10, h=10):
-        self.types = {
-            "dirtWall" : {
-                "xp" : 50,
-                "cost" : {
-                    "dirt" : 5
-                }
-            },
-            "sandWall" : {
-                "xp" : 25,
-                "cost" : {
-                    "water" : 2,
-                    "sand" : 5
-                }
-            }
-        }
-        self.width = w
-        self.height = h
-        self.playr = playr
-        self.uprav = uprav
 
 class Zombi:
     def __init__(self, playr, plrUprv, batch=zombiBat, width=35, height=35, col={21, 110, 100}, type=None, xp=100, speed=1, spawnSpeed=1/2, damage=10):
@@ -241,31 +167,17 @@ class Zombi:
             for i in zombies:
                 x, y, x1, y1 = self.playr.x, self.playr.y, self.playr.x + self.playr.width, self.playr.y + self.playr.height
                 zx, zy, zx1, zy1 = i.x, i.y, i.x + i.width, i.y + i.height
-                #print((zy1 , y1 , zy), (zy1 , y , zy), (zx1 , x1 , zx), (zx1 , x , zx))
-                #print(((zy1 >= y1 > zy), (zy1 >= y > zy)), ((zx1 >= x1 > zx), (zx1 >= x > zx)))
-                #print(x,y,x1,y1)
-                #print(zx,zy,zx1,zy1)
-                #if (minpx<=maxzx and (minpy>=minzy or maxpy<=maxzy)) or (maxpx>=minzx and (minpy>=minzy or maxpy<=maxzy)) or (minpy<=maxzy and (minpx>=minzx or maxpx<=maxzx)) or (minpy>=maxzy and (minpx>=minzx or maxpx<=maxzx)):
-                        #print(minpx,maxpx,minpy,maxpy)
-                        #print(minzx,maxzx,minpy,maxzy)
-                    #if self.playr.x==i.x and self.playr.y==i.y:
-                        #self.playr.xp.text = str(int(self.playr.xp.text)-self.damage)
                 if ((zy1 >= y1 > zy) or (zy1 >= y > zy)) and ((zx1 >= x1 > zx) or (zx1 >= x > zx)):
-                        print("yes we gonna think about two chairs")
                         self.playr.HP.width -= self.playr.HP_One
-                        #if int(self.playr.xp.text)==0:
+                        # Механника смерти
                         if self.playr.HP.width <= 0:
-                            """self.HP.width = self.playr.width
-                            self.playr.x = self.playr.x
-                            self.playr.y = self.playr.y
-                            self.HP.x = self.playr.x
-                            self.HP.y = self.playr.y + self.playr.height"""
-                            raise OutOfXpError
-                            
-                    
+                            self.HP.width = Pl().width
+                            self.playr.x = Pl().x
+                            self.playr.y = Pl().y
+                            self.рз.x = Pl().x
+                            self.HP.y = Pl().y + Pl().height
 
 
-   
 class Physics():
     def line(x1, y1, x2, y2, x, y, speed=5): 
         if x1 == x2:
