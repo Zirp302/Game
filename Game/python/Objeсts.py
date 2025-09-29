@@ -23,9 +23,9 @@ class Pl:
         return self.playr
 
     # HP игрока
-    def HP(self):
+    def __init__(self):
         self.HP = sh.Rectangle(Pl.x, Pl.y + Pl.height, Pl.width, 15, color=(255,0,0), batch=Pl.pl)
-        return self.HP
+        
     
     def draw(self):
         self.pl.draw()
@@ -157,8 +157,9 @@ class Stena:
 
     #   Отображение стен (смотри на названия)
     def __init__(self, playr, HP, width): 
-        self.playr = playr
-        self.HP = HP
+        """self.playr = playr
+        self.HP = HP"""
+        #пока что нам это не надо ну и никогда надо не будет
         self.width = width
         self.left_wall = sh.Line(Stena.left_S[0], Stena.left_S[1], 
                                 Stena.left_S[2], Stena.left_S[3], 
@@ -179,7 +180,7 @@ class Stena:
         self.shipi = sh.Rectangle(200, 200, 20, 20, color=(111,111,111), batch=Stena.dom)
 
     #   Проверка линий
-    def line(self, x1, y1, x2, y2, x, y, speed=5): 
+    def line(x1, y1, x2, y2, x, y, speed=5): 
         if x1 == x2:
             x1 -= 10
             x2 += 10
@@ -198,22 +199,38 @@ class Stena:
         return x2, y2
 
     #   Ограничение прохаждение через линии
-    def ogran_line(self, x1, y1, x2, y2, x=0, y=0):
-        x1, y1, x2, y2 = self.line(x1, y1, x2, y2, x, y) # Переназначение переменных через функцию line
-        X = x1 - Pl.width < self.playr.x + x < x2
-        Y = y1 - self.playr.height < self.playr.y + y < y2
+    def ogran_line(object, x1, y1, x2, y2, x=0, y=0):
+        x1, y1, x2, y2 = Stena.line(x1, y1, x2, y2, x, y) # Переназначение переменных через функцию line
+        X = x1 - object.width < object.x + x < x2
+        Y = y1 - object.height < object.y + y < y2
         if X and Y:
             return False
         return True
 
     #   Ограничение прохаждение через прямоуглоьники
-    def ogran_rectangle(self, x1, y1, width, height, x=0, y=0):
-        x2, y2 = self.rectangle(x1, y1, width, height, x, y) # Переназначение переменных через функцию rectangle
-        X = x1 - self.playr.width < self.playr.x + x < x2
-        Y = y1 - self.playr.height < self.playr.y + y < y2
+    def ogran_rectangl(object, x1, y1, width, height, x=0, y=0):
+        x2, y2 = Stena.rectangle(x1, y1, width, height, x, y) # Переназначение переменных через функцию rectangle
+        X = x1 - object.width < object.x + x < x2
+        Y = y1 - object.height < object.y + y < y2
         if X and Y:
             return False
         return True
+    def avanpost(playr, x_moving, y_moving):
+    #во первых передавая в качестве первых четырех аргументов распакованный список это легче читается чем твои гроомоздкие куски кода а во вторых это быстрее И лучше
+        stena_l = Stena.ogran_line(playr,
+                                *Stena.left_S,
+                                x_moving, y_moving)
+        stena_r = Stena.ogran_line(playr,
+                                *Stena.right_S, 
+                                x_moving, y_moving)
+        stena_v = Stena.ogran_line(playr,
+                                *Stena.verh_S,
+                                x_moving, y_moving)
+        stena_n = Stena.ogran_line(playr,
+                                *Stena.niz_S,
+                                x_moving, y_moving)
+
+        return stena_v and stena_n and stena_l and stena_r
 
     #   Функция для отображения стен
     def draw(self): 
