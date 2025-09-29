@@ -1,10 +1,11 @@
 import pyglet
 from pyglet import shapes as sh
+from pyglet.window import key
 from pyglet.window.key import *
 from Objeсts import Pl, Stena
 
 #   Управление 
-class Uprav:
+class Playr_uprav:
     def __init__(self, playr, HP, width):
         self.playr = playr
         self.HP = HP

@@ -3,9 +3,6 @@ from pyglet import shapes as sh
 import time
 import random
 zombies={} # значение в хэш таблице это хр зомби
-"""
-Файл для создания обектов и их вывода пряма тут 
-"""
 
 class Pl:
     # Характеристеки игрока
@@ -106,10 +103,10 @@ class Zombi:
             zombi_key = (sh.Rectangle(x, y, self.width, self.height, (21, 110, 100), batch=self.zombiBat))
             if random.choice((0,1)) == 0:
                 zombies[zombi_key] = (sh.Rectangle(x, y + self.height, self.width, 4, 
-                                                batch=self.zombiBat, color=(255, 0, 0)), 
-                                                self.width / self.xp)
+                                                batch=self.zombiBat, color=(255, 0, 0)),
+                                                (self.width / self.xp))
             else:
-                zombies[zombi_key] = (sh.Rectangle(x, y + self.height, self.width, 4, batch=self.zombiBat, color=(255, 0, 0)), self.width / self.xp)
+                zombies[zombi_key] = (sh.Rectangle(x, y + self.height, self.width, 4, batch=self.zombiBat, color=(255, 0, 0)), (self.width / self.xp))
 
     def moving(self):
             #зачем я создаю функции подо все что происходит? Так надо
@@ -204,7 +201,7 @@ class Stena:
     def ogran_line(self, x1, y1, x2, y2, x=0, y=0):
         x1, y1, x2, y2 = self.line(x1, y1, x2, y2, x, y) # Переназначение переменных через функцию line
         X = x1 - Pl.width < self.playr.x + x < x2
-        Y = y1 - Pl.height < self.playr.y + y < y2
+        Y = y1 - self.playr.height < self.playr.y + y < y2
         if X and Y:
             return False
         return True
@@ -212,8 +209,8 @@ class Stena:
     #   Ограничение прохаждение через прямоуглоьники
     def ogran_rectangle(self, x1, y1, width, height, x=0, y=0):
         x2, y2 = self.rectangle(x1, y1, width, height, x, y) # Переназначение переменных через функцию rectangle
-        X = x1 - Pl.width < self.playr.x + x < x2
-        Y = y1 - Pl.height < self.playr.y + y < y2
+        X = x1 - self.playr.width < self.playr.x + x < x2
+        Y = y1 - self.playr.height < self.playr.y + y < y2
         if X and Y:
             return False
         return True
