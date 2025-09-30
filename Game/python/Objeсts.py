@@ -17,14 +17,12 @@ class Pl:
     HP_One = width / HP_playr  # Длина одной еденице здаровья
 
     # Пакет для обединения HP и playr
-    pl = pyglet.graphics.Batch()
-    def playr(self): #Создание и отображение игрока
-        self.playr = sh.Rectangle(Pl.x, Pl.y, Pl.width, Pl.height, Pl.color, batch=Pl.pl)
-        return self.playr
+    pl = pyglet.graphics.Batch() #Создание и отображение игрока
 
     # HP игрока
     def __init__(self):
         self.HP = sh.Rectangle(Pl.x, Pl.y + Pl.height, Pl.width, 15, color=(255,0,0), batch=Pl.pl)
+        self.playr = sh.Rectangle(Pl.x, Pl.y, Pl.width, Pl.height, Pl.color, batch=Pl.pl)
         
     
     def draw(self):
@@ -47,7 +45,7 @@ class Damag:
         # Миханника получение урона
         if X and Y and time1 - Damag.time > kd: 
             Damag.time = time1
-            print(uron, self.HP_One)
+            #print(uron, self.HP_One)
             self.HP.width -= self.HP_One * uron
             # Механника смерти
             if self.HP.width <= 0:
@@ -100,13 +98,15 @@ class Zombi:
         if isSpawn:
             x = random.choice((0,720))
             y = random.randint(0,720)
-            zombi_key = (sh.Rectangle(x, y, self.width, self.height, (21, 110, 100), batch=self.zombiBat))
             if random.choice((0,1)) == 0:
-                zombies[zombi_key] = (sh.Rectangle(x, y + self.height, self.width, 4, 
-                                                batch=self.zombiBat, color=(255, 0, 0)),
-                                                (self.width / self.xp))
+                pass
             else:
-                zombies[zombi_key] = (sh.Rectangle(x, y + self.height, self.width, 4, batch=self.zombiBat, color=(255, 0, 0)), (self.width / self.xp))
+                x1 = y
+                y1 = x
+                x = x1
+                y = y1
+            zomb = (sh.Rectangle(x, y, self.width, self.height, (21, 110, 100), batch=self.zombiBat))
+            zombies[zomb] = (sh.Rectangle(x, y + self.height, self.width, 4, batch=self.zombiBat, color=(255, 0, 0)), (self.width / self.xp))
 
     def moving(self):
             #зачем я создаю функции подо все что происходит? Так надо

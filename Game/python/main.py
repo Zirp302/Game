@@ -41,5 +41,5 @@ def on_draw():
     playr.draw()
 
 pyglet.clock.schedule_interval(update, 1/60)
-pyglet.clock.schedule_interval(default_zomb.spawn, 2)
+#pyglet.clock.schedule_interval(default_zomb.spawn, 2)
 pyglet.app.run()
