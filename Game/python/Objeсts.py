@@ -4,27 +4,27 @@ import time
 import random
 zombies={} # значение в хэш таблице это хр зомби
 
-class Pl:
-    # Характеристеки игрока
-    x, y = 340, 340 # Координаты спавна
-    width = 50   # Длинна персонажа и полосы здоровья
-    height = 100 # Ширина персонажа
-    color = (54, 136, 181)
-    time = 0
-
-    # Характеристики здаровья
-    HP_playr = 15          # Количество здоровья
-    HP_One = width / HP_playr  # Длина одной еденице здаровья
-
-    # Пакет для обединения HP и playr
-    pl = pyglet.graphics.Batch() #Создание и отображение игрока
-
-    # HP игрока
-    def __init__(self):
-        self.HP = sh.Rectangle(Pl.x, Pl.y + Pl.height, Pl.width, 15, color=(255,0,0), batch=Pl.pl)
-        self.playr = sh.Rectangle(Pl.x, Pl.y, Pl.width, Pl.height, Pl.color, batch=Pl.pl)
-        
-    
+class Player:
+    def __init__(self, x=100, y=100, width=30, height=30, color={54,136,181}, xp=100, harXp=5, speed=5):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.color = color
+        self.xp=pyglet.text.Label(str(xp),20,690,color=(255,0,0))
+        self.pl=pyglet.graphics.Batch()
+        self.harXp=harXp
+        self.playr = sh.Rectangle(self.x, self.y, self.width, self.height, self.color, batch=self.pl)
+        self.HP_playr = harXp
+        self.HP_One = self.width / self.harXp
+        self.Polosa = self.HP_playr * self.HP_One # Полоска HP
+        self.HP = sh.Rectangle(self.x, self.y + self.height, self.Polosa, 15, color=(255,0,0), batch=self.pl)
+        self.speed = speed
+        self.items = {
+            "rock" : 7000
+        }
+        self.itemsCheck = pyglet.text.Label()
+    #В таком формате гораздо удобнее работать
     def draw(self):
         self.pl.draw()
 
@@ -34,26 +34,26 @@ class Damag:
     def __init__(self, playr, HP):  # значение по умолчанию
         self.playr = playr
         self.HP = HP
-        self.HP_One = Pl.width / Pl.HP_playr
+        self.HP_One = playr.width / playr.HP_playr
         
     # Функция для определения получаемого урона   
-    def damag(self, uron, x1, y1, x2, y2, x, y):
-        X = x1 - Pl.width < self.playr.x + x < x2
-        Y = y1 - Pl.height < self.playr.y + y < y2
+    def damag(self, uron, x1, y1, x2, y2):
+        #X = x1 - self.playr.width < self.playr.x + x < x2
+        #Y = y1 - self.playr.height < self.playr.y + y < y2
         kd = 0.75
         time1 = time.time()
         # Миханника получение урона
-        if X and Y and time1 - Damag.time > kd: 
+        if time1 - Damag.time > kd: 
             Damag.time = time1
             #print(uron, self.HP_One)
             self.HP.width -= self.HP_One * uron
             # Механника смерти
             if self.HP.width <= 0:
-                self.HP.width = Pl.width
-                self.playr.x = Pl.x
-                self.playr.y = Pl.y
-                self.HP.x = Pl.x
-                self.HP.y = Pl.y + Pl.height
+                self.HP.width = self.playr.width
+                self.playr.x = self.playr.x
+                self.playr.y = self.playr.y
+                self.HP.x = self.playr.x
+                self.HP.y = self.playr.y + self.playr.height
     
     #   Получение урона при нахождении в линии
     def damag_line(self, x1, y1, x2, y2, uron=1, x=0, y=0):
@@ -68,14 +68,17 @@ class Damag:
         self.damag(uron, x1, y1, x2, y2, x, y)
 
     #   Получение урона при нахождении в прямоуглоьнике
-    def damag_rectangle(self, x1, y1, width, height, uron=1, x=0, y=0):
-        x2 = x1 + width
+    def damag_rectangle(self, object, uron=1, x=0, y=0):
+        """x2 = x1 + width
         y2 = y1 + height
         x1, x2 = min(x1, x2), max(x1, x2)
         y1, y2 = min(y1, y2), max(y1, y2)
-        self.damag(uron, x1, y1, x2, y2, x, y)
-
-
+        self.damag(uron, x1, y1, x2, y2, x, y)"""
+        x, y, x1, y1 = self.playr.x, self.playr.y, self.playr.x + self.playr.width, self.playr.y + self.playr.height
+        ox, oy, ox1, oy1 = object.x, object.y, object.x + object.width, object.y + object.height
+        if ((oy1 >= y1 > oy) or (oy1 >= y > oy)) and ((ox1 >= x1 > ox) or (ox1 >= x > ox)):
+            self.damag(uron, x, y, x1, y1)
+            #Потом накидаю комментариев
 
 class Zombi:
     def __init__(self, playr, HP, plrUprv, width=35, height=35, color={21, 110, 100}, type=None, xp=100, speed=1, spawnSpeed=1/2, damage=10):
@@ -98,7 +101,9 @@ class Zombi:
         if isSpawn:
             x = random.choice((0,720))
             y = random.randint(0,720)
-            if random.choice((0,1)) == 0:
+            #Карта это прямоугольник 720 на 720 значит на краю карты одна из координат гарантированно 720 или 0
+            #Вот этот случайный выбор которой ниже этого текста выбирает какая из координат будет являться иксом а какая игреком (ты почему то кстати удалил тот комментарий который описывал работу этого кода)
+            if random.choice((0,1)):
                 pass
             else:
                 x1 = y
@@ -106,6 +111,7 @@ class Zombi:
                 x = x1
                 y = y1
             zomb = (sh.Rectangle(x, y, self.width, self.height, (21, 110, 100), batch=self.zombiBat))
+            #Ключ это сам зомби а значение это прямоугольник хп зомби и значение одной единицы хп у них
             zombies[zomb] = (sh.Rectangle(x, y + self.height, self.width, 4, batch=self.zombiBat, color=(255, 0, 0)), (self.width / self.xp))
 
     def moving(self):
@@ -136,7 +142,7 @@ class Zombi:
             for i in zombies:
                 x, y, x1, y1 = self.playr.x, self.playr.y, self.playr.x + self.playr.width, self.playr.y + self.playr.height
                 zomb_x, zomb_y, zomb_x1, zomb_y1 = i.x, i.y, i.x + i.width, i.y + i.height
-                Damag(self.playr, self.HP).damag_rectangle(zomb_x, zomb_y, i.width, i.height)
+                Damag(self.playr).damag_rectangle(i)
 
 
 
@@ -156,7 +162,7 @@ class Stena:
     dom = pyglet.graphics.Batch() 
 
     #   Отображение стен (смотри на названия)
-    def __init__(self, playr, HP, width): 
+    def __init__(self, width): 
         """self.playr = playr
         self.HP = HP"""
         #пока что нам это не надо ну и никогда надо не будет

@@ -1,4 +1,4 @@
-from Objeсts import Pl, Stena, Damag, Zombi
+from Objeсts import Player, Stena, Damag, Zombi
 from Uprav import Playr_uprav
 import pyglet
 from pyglet import shapes as sh
@@ -7,7 +7,7 @@ from pyglet.window import key
 
 wind_width, wind_height = (720, 720) # Ширина и высота окна
 wind = pyglet.window.Window(width=wind_width, height=wind_height, caption="gameOnPyglet") # Создание окна
-playr = Pl()
+playr = Player()
 
 """@wind.event
 def on_mouse_press(x,y,button,modifiers):
@@ -16,9 +16,9 @@ def on_mouse_press(x,y,button,modifiers):
 
 keys = key.KeyStateHandler()
 wind.push_handlers(keys)
-walls = Stena(playr, playr.HP, Pl.width)
+walls = Stena(playr, playr.HP, playr.width)
 
-uprav_playr = Playr_uprav(playr, playr.HP, Pl.width)
+uprav_playr = Playr_uprav(playr, playr.HP, playr.width)
 damag = Damag(playr, playr.HP)
 default_zomb = Zombi(playr, playr.HP, uprav_playr)
 
