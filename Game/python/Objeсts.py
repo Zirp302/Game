@@ -20,6 +20,7 @@ class Player:
         self.Polosa = self.HP_playr * self.HP_One # Полоска HP
         self.HP = sh.Rectangle(self.x, self.y + self.height, self.Polosa, 15, color=(255,0,0), batch=self.pl)
         self.speed = speed
+        self.spawn_coords = (x, y)
         self.items = {
             "rock" : 7000
         }
@@ -31,9 +32,9 @@ class Player:
 
 class Damag:
     time = 0
-    def __init__(self, playr, HP):  # значение по умолчанию
+    def __init__(self, playr):  # значение по умолчанию
         self.playr = playr
-        self.HP = HP
+        self.HP = playr.HP
         self.HP_One = playr.width / playr.HP_playr
         
     # Функция для определения получаемого урона   
@@ -50,10 +51,11 @@ class Damag:
             # Механника смерти
             if self.HP.width <= 0:
                 self.HP.width = self.playr.width
-                self.playr.x = self.playr.x
-                self.playr.y = self.playr.y
-                self.HP.x = self.playr.x
-                self.HP.y = self.playr.y + self.playr.height
+                x, y = self.playr.spawn_coords
+                self.playr.x, self.playr.y = x, y
+                self.playr.playr.x, self.playr.playr.y = x, y
+                self.HP.x = x
+                self.HP.y = y + self.playr.height
     
     #   Получение урона при нахождении в линии
     def damag_line(self, x1, y1, x2, y2, uron=1, x=0, y=0):
@@ -76,12 +78,12 @@ class Damag:
         self.damag(uron, x1, y1, x2, y2, x, y)"""
         x, y, x1, y1 = self.playr.x, self.playr.y, self.playr.x + self.playr.width, self.playr.y + self.playr.height
         ox, oy, ox1, oy1 = object.x, object.y, object.x + object.width, object.y + object.height
-        if ((oy1 >= y1 > oy) or (oy1 >= y > oy)) and ((ox1 >= x1 > ox) or (ox1 >= x > ox)):
+        if ((oy1 >= y1 >= oy) or (oy1 >= y >= oy)) and ((ox1 >= x1 >= ox) or (ox1 >= x >= ox)):
             self.damag(uron, x, y, x1, y1)
             #Потом накидаю комментариев
 
 class Zombi:
-    def __init__(self, playr, HP, plrUprv, width=35, height=35, color={21, 110, 100}, type=None, xp=100, speed=1, spawnSpeed=1/2, damage=10):
+    def __init__(self, playr, plrUprv, width=35, height=35, color={21, 110, 100}, type=None, xp=100, speed=1, spawnSpeed=1/2, damage=10):
         #Мне лень писать self
         #Но я напишу
         #type это тип зомби
@@ -94,9 +96,9 @@ class Zombi:
         self.spawSpeed = spawnSpeed
         self.damage = damage
         self.playr = playr
-        self.HP = HP
+        self.HP = playr.HP
         self.plrUpr = plrUprv
-
+        self.damag_obj = Damag(playr)
     def spawn(self, isSpawn=True):  
         if isSpawn:
             x = random.choice((0,720))
@@ -133,17 +135,15 @@ class Zombi:
                     elif self.playr.y < zombis.y:
                         zombis.y = zombis.y - self.speed
                         zombies[zombis][0].y -= self.speed
+                        #В первом из объектов значения хэш табицы наодится полоска хп зомби
     def test(self, x, y, width, height):
         zombies[sh.Rectangle(x, y, width, height, color=self.color, batch=self.zombiBat)] = (sh.Rectangle(x, y + height, width, 3, color=(255,0,0), batch=self.zombiBat), self.width / 100)
-
+        #Это спавн одного тестового зомби
     def attack(self, trash=None):
         #это можно было сделать и в функции zombMoving но нет надо ведь нагрузить комп кучей бесполезных функций
         if zombies:
             for i in zombies:
-                x, y, x1, y1 = self.playr.x, self.playr.y, self.playr.x + self.playr.width, self.playr.y + self.playr.height
-                zomb_x, zomb_y, zomb_x1, zomb_y1 = i.x, i.y, i.x + i.width, i.y + i.height
-                Damag(self.playr).damag_rectangle(i)
-
+                self.damag_obj.damag_rectangle(i)
 
 
     def draw(self):

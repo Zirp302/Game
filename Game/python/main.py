@@ -16,23 +16,23 @@ def on_mouse_press(x,y,button,modifiers):
 
 keys = key.KeyStateHandler()
 wind.push_handlers(keys)
-walls = Stena(playr, playr.HP, playr.width)
+walls = Stena(playr.width)
 
-uprav_playr = Playr_uprav(playr, playr.HP, playr.width)
-damag = Damag(playr, playr.HP)
-default_zomb = Zombi(playr, playr.HP, uprav_playr)
+uprav_playr = Playr_uprav(playr)
+default_zomb = Zombi(playr, uprav_playr)
+damag = Damag(playr)
 
 def update(dt, speed=5):
-    default_zomb.moving()
+    #default_zomb.moving()
     default_zomb.attack()
     #Не используй буквы в качестве переменных во первых из за этого мы не сможем использовать клавишу а во вторых это плохо читается
-    #Вот это все что связано с проверкой входения персонажа в стену нужно переместить в одну функциюа то это плохо читается, а также нагружает главный файл
-    damag.damag_rectangle(200, 200, 20, 20, 1)
+    #Вот это все что связано с проверкой входения персонажа в стену нужно переместить в одну функцию а то это плохо читается, а также нагружает главный файл
     if True in {keys[W], keys[A], keys[S], keys[D]}:
         uprav_playr.pl_moving(keys)
+    damag.damag_rectangle(walls.shipi)
         #Полностью перенесем управление в отдельный файл
 
-
+default_zomb.test(250, 250, 45, 45)
 @wind.event
 def on_draw():
     wind.clear()
