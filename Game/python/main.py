@@ -1,7 +1,6 @@
 from Objeсts import Pl, Stena, Damag, Zombi
 from Uprav import Uprav
 import pyglet
-from pyglet import shapes as sh
 from pyglet.window import key
 
 
