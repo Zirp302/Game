@@ -1,5 +1,5 @@
 import pyglet
-from pyglet.window import key
+from pyglet import shapes as sh
 from pyglet.window.key import *
 
 #   Управление 
@@ -27,4 +27,4 @@ class Playr_uprav:
         if 0 < y_mov + self.playr.y < 721 - self.playr.width and avanpost:
             self.playr.y += y_mov
             self.HP.y += y_mov
-            
+
