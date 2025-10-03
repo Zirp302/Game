@@ -1,8 +1,6 @@
 import pyglet
-from pyglet import shapes as sh
 from pyglet.window import key
 from pyglet.window.key import *
-from Objeсts import Player, Stena, Damag
 
 #   Управление 
 class Playr_uprav:
