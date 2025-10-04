@@ -50,7 +50,6 @@ class Damag:
         # Миханника получение урона
         if X and Y and time1 - Damag.time > kd: 
             Damag.time = time1
-            print(uron, self.HP_One)
             self.HP.width -= self.HP_One * uron
             # Механника смерти
             if self.HP.width <= 0:

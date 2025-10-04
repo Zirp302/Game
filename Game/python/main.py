@@ -1,7 +1,6 @@
 from Objeсts import Pl, Stena, Damag, Zombi
 from Uprav import Uprav
 import pyglet
-from pyglet import shapes as sh
 from pyglet.window import key
 
 
@@ -16,8 +15,7 @@ def on_mouse_press(x,y,button,modifiers):
     print(f"x = {x}, y = {y}")
 
 
-keys = key.KeyStateHandler()
-wind.push_handlers(keys)
+
 S = Stena(playr, HP, Pl.width)
 
 def avanpost(x_moving, y_moving):
@@ -44,6 +42,9 @@ def avanpost(x_moving, y_moving):
 upravlenie = Uprav(playr, HP, Pl.width)
 damag = Damag(playr, HP)
 Z = Zombi(playr, HP, upravlenie)
+
+keys = key.KeyStateHandler()
+wind.push_handlers(keys)
 
 def update(dt, speed=5):
     Z.moving()

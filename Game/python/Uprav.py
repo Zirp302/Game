@@ -1,9 +1,4 @@
-import pyglet
-from pyglet import shapes as sh
-from pyglet.window.key import *
-from Objeсts import Pl, Stena
-
-#   Управление 
+# Управление 
 class Uprav:
     def __init__(self, playr, HP, width):
         self.playr = playr
