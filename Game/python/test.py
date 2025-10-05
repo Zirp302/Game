@@ -31,6 +31,7 @@ while True:
     if len(subjects_rf) == 0:
         subjects_rf = deleted
         deleted.clear()
+        i = 0
     subject = random.choice(subjects_rf)
     print(subject)
     print(len(subjects_rf))
