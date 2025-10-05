@@ -1,45 +1,80 @@
-from Objeсts import Player, Stena, Damag, Zombi
-from Uprav import Playr_uprav
+from Objeсts import Pl, Stena, Damag, Zombi
+from Uprav import Uprav
 import pyglet
-from pyglet import shapes as sh
-from pyglet.window.key import *
 from pyglet.window import key
+
 
 wind_width, wind_height = (720, 720) # Ширина и высота окна
 wind = pyglet.window.Window(width=wind_width, height=wind_height, caption="gameOnPyglet") # Создание окна
-playr = Player()
+pl = Pl()
+playr = pl.playr()
+HP = pl.HP()
 
-"""@wind.event
+@wind.event
 def on_mouse_press(x,y,button,modifiers):
-    print(f"x = {x}, y = {y}")"""
+    print(f"x = {x}, y = {y}")
 
+
+
+S = Stena(playr, HP, Pl.width)
+
+def avanpost(x_moving, y_moving):
+    stena_l = S.ogran_line( 
+                            S.left_S[0], S.left_S[1], 
+                            S.left_S[2], S.left_S[3], 
+                            x_moving, y_moving)
+    stena_r = S.ogran_line( 
+                            S.right_S[0],S.right_S[1], 
+                            S.right_S[2],S.right_S[3], 
+                            x_moving, y_moving)
+    stena_v = S.ogran_line(
+                            S.verh_S[0], S.verh_S[1], 
+                            S.verh_S[2], S.verh_S[3], 
+                            x_moving, y_moving)
+    stena_n = S.ogran_line(
+                            S.niz_S[0], S.niz_S[1], 
+                            S.niz_S[2], S.niz_S[3], 
+                            x_moving, y_moving)
+
+    return stena_v and stena_n and stena_l and stena_r
+
+
+upravlenie = Uprav(playr, HP, Pl.width)
+damag = Damag(playr, HP)
+Z = Zombi(playr, HP, upravlenie)
 
 keys = key.KeyStateHandler()
 wind.push_handlers(keys)
-walls = Stena(playr.width)
-
-uprav_playr = Playr_uprav(playr)
-default_zomb = Zombi(playr, uprav_playr)
-damag = Damag(playr)
 
 def update(dt, speed=5):
-    #default_zomb.moving()
-    default_zomb.attack()
-    #Не используй буквы в качестве переменных во первых из за этого мы не сможем использовать клавишу а во вторых это плохо читается
-    #Вот это все что связано с проверкой входения персонажа в стену нужно переместить в одну функцию а то это плохо читается, а также нагружает главный файл
-    if True in {keys[W], keys[A], keys[S], keys[D]}:
-        uprav_playr.pl_moving(keys)
-    damag.damag_rectangle(walls.shipi)
-        #Полностью перенесем управление в отдельный файл
+    Z.moving()
+    Z.attack()   
+    damag.damag_rectangle(200, 200, 20, 20, 1)
+    if keys[key.W]:
+        x_moving, y_moving = 0, speed
+        upravlenie.pl_moving(x_moving, y_moving, 
+                            avanpost(x_moving, y_moving))
+    if keys[key.S]:
+        x_moving, y_moving = 0, -speed
+        upravlenie.pl_moving(x_moving, y_moving, 
+                            avanpost(x_moving, y_moving))
+    if keys[key.A]:
+        x_moving, y_moving = -speed, 0
+        upravlenie.pl_moving(x_moving, y_moving,
+                            avanpost(x_moving, y_moving))
+    if keys[key.D]:
+        x_moving, y_moving = speed, 0
+        upravlenie.pl_moving(x_moving, y_moving,
+                            avanpost(x_moving, y_moving))
 
-default_zomb.test(250, 250, 45, 45)
+
 @wind.event
 def on_draw():
     wind.clear()
-    default_zomb.draw()
-    walls.draw()
-    playr.draw()
+    Z.draw()
+    S.draw()
+    pl.draw()
 
 pyglet.clock.schedule_interval(update, 1/60)
-#pyglet.clock.schedule_interval(default_zomb.spawn, 2)
+pyglet.clock.schedule_interval(Z.spawn, 2)
 pyglet.app.run()
