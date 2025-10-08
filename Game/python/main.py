@@ -54,6 +54,7 @@ keys = key.KeyStateHandler()
 wind.push_handlers(keys)
 @wind.event
 def on_draw():
+    # Проверка нажатия клавишь для взаимодействия с игрой
     if keys[key.W]:
         x_moving, y_moving = 0, speed
         upravlenie.pl_moving(x_moving, y_moving, 
@@ -70,6 +71,7 @@ def on_draw():
         x_moving, y_moving = speed, 0
         upravlenie.pl_moving(x_moving, y_moving,
                             avanpost(x_moving, y_moving))
+    # Обновление изображений
     wind.clear()
     Z.draw()
     S.draw()
