@@ -9,6 +9,8 @@ wind = pyglet.window.Window(width=wind_width, height=wind_height, caption="gameO
 pl = Pl()
 playr = pl.playr()
 HP = pl.HP()
+global speed
+speed = 5
 
 @wind.event
 def on_mouse_press(x,y,button,modifiers):
@@ -43,13 +45,15 @@ upravlenie = Uprav(playr, HP, Pl.width)
 damag = Damag(playr, HP)
 Z = Zombi(playr, HP, upravlenie)
 
-keys = key.KeyStateHandler()
-wind.push_handlers(keys)
-
-def update(dt, speed=5):
+def update(dt):
     Z.moving()
     Z.attack()   
     damag.damag_rectangle(200, 200, 20, 20, 1)
+
+keys = key.KeyStateHandler()
+wind.push_handlers(keys)
+@wind.event
+def on_draw():
     if keys[key.W]:
         x_moving, y_moving = 0, speed
         upravlenie.pl_moving(x_moving, y_moving, 
@@ -66,10 +70,6 @@ def update(dt, speed=5):
         x_moving, y_moving = speed, 0
         upravlenie.pl_moving(x_moving, y_moving,
                             avanpost(x_moving, y_moving))
-
-
-@wind.event
-def on_draw():
     wind.clear()
     Z.draw()
     S.draw()
