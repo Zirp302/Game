@@ -15,26 +15,27 @@ def on_mouse_press(x,y,button,modifiers):
     print(f"x = {x}, y = {y}")
 
 
-
 S = Stena(playr, HP, Pl.width)
-
 def avanpost(x_moving, y_moving):
     stena_l = S.ogran_line( 
-                            S.left_S[0], S.left_S[1], 
-                            S.left_S[2], S.left_S[3], 
-                            x_moving, y_moving)
+        S.left_S[0], S.left_S[1], 
+        S.left_S[2], S.left_S[3], 
+        x_moving, y_moving)
+    
     stena_r = S.ogran_line( 
-                            S.right_S[0],S.right_S[1], 
-                            S.right_S[2],S.right_S[3], 
-                            x_moving, y_moving)
+        S.right_S[0],S.right_S[1], 
+        S.right_S[2],S.right_S[3], 
+        x_moving, y_moving)
+    
     stena_v = S.ogran_line(
-                            S.verh_S[0], S.verh_S[1], 
-                            S.verh_S[2], S.verh_S[3], 
-                            x_moving, y_moving)
+        S.verh_S[0], S.verh_S[1], 
+        S.verh_S[2], S.verh_S[3], 
+        x_moving, y_moving)
+    
     stena_n = S.ogran_line(
-                            S.niz_S[0], S.niz_S[1], 
-                            S.niz_S[2], S.niz_S[3], 
-                            x_moving, y_moving)
+        S.niz_S[0], S.niz_S[1], 
+        S.niz_S[2], S.niz_S[3], 
+        x_moving, y_moving)
 
     return stena_v and stena_n and stena_l and stena_r
 
@@ -46,26 +47,27 @@ Z = Zombi(playr, HP, upravlenie)
 keys = key.KeyStateHandler()
 wind.push_handlers(keys)
 
-def update(dt, speed=5):
+def update(dt, speed=5, uron=1):
     Z.moving()
     Z.attack()   
-    damag.damag_rectangle(200, 200, 20, 20, 1)
-    if keys[key.W]:
-        x_moving, y_moving = 0, speed
-        upravlenie.pl_moving(x_moving, y_moving, 
-                            avanpost(x_moving, y_moving))
-    if keys[key.S]:
-        x_moving, y_moving = 0, -speed
-        upravlenie.pl_moving(x_moving, y_moving, 
-                            avanpost(x_moving, y_moving))
-    if keys[key.A]:
-        x_moving, y_moving = -speed, 0
-        upravlenie.pl_moving(x_moving, y_moving,
-                            avanpost(x_moving, y_moving))
-    if keys[key.D]:
-        x_moving, y_moving = speed, 0
-        upravlenie.pl_moving(x_moving, y_moving,
-                            avanpost(x_moving, y_moving))
+    damag.damag_rectangle(200, 200, 20, 20, uron)
+
+    hodba_y = int(keys[key.W]) - int(keys[key.S])
+    hodba_x = int(keys[key.D]) - int(keys[key.A])
+    
+    if hodba_y != 0:
+        y_moving = speed * hodba_y
+        upravlenie.pl_moving(
+            0, y_moving, 
+            avanpost(0, y_moving)
+            )
+    
+    if hodba_x != 0:
+        x_moving = speed * hodba_x
+        upravlenie.pl_moving(
+            x_moving, 0, 
+            avanpost(x_moving, 0)
+            )
 
 
 @wind.event
