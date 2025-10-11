@@ -55,7 +55,7 @@ def update(dt, speed=5, uron=1):
     hodba_y = int(keys[key.W]) - int(keys[key.S])
     hodba_x = int(keys[key.D]) - int(keys[key.A])
     """
-    if hodba_y != 0 or hodba_x != 0:  # Исправить баг прилепания к стенам через нейтрализацию
+    if hodba_y or hodba_x:  # Исправить баг прилепания к стенам через нейтрализацию
         y_moving = speed * hodba_y
         x_moving = speed * hodba_x
         upravlenie.pl_moving(
@@ -63,14 +63,14 @@ def update(dt, speed=5, uron=1):
             avanpost(x_moving, y_moving)
             )
     """
-    if hodba_y != 0:  
+    if hodba_y:  
         y_moving = speed * hodba_y
         upravlenie.pl_moving(
             0, y_moving, 
             avanpost(0, y_moving)
             )
         
-    if hodba_x != 0:  
+    if hodba_x:  
         x_moving = speed * hodba_x
         upravlenie.pl_moving(
             x_moving, 0, 
