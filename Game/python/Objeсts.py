@@ -102,16 +102,11 @@ class Zombi:
         if isSpawn:
             x = random.choice((0,720))
             y = random.randint(0,720)
-            zombi_key = (sh.Rectangle(
-                x, y, self.width, self.height, 
-                (21, 110, 100), batch=self.zombiBat)
-                )
+            zombi_key = (sh.Rectangle(x, y, self.width, self.height, (21, 110, 100), batch=self.zombiBat))
             if random.choice((0,1)) == 0:
-                zombies[zombi_key] = (sh.Rectangle(
-                    x, y + self.height, self.width, 4, 
-                    batch=self.zombiBat, color=(255, 0, 0)), 
-                    self.width / self.xp
-                    )
+                zombies[zombi_key] = (sh.Rectangle(x, y + self.height, self.width, 4, 
+                                                batch=self.zombiBat, color=(255, 0, 0)), 
+                                                self.width / self.xp)
             else:
                 zombies[zombi_key] = (sh.Rectangle(x, y + self.height, self.width, 4, batch=self.zombiBat, color=(255, 0, 0)), self.width / self.xp)
 
@@ -134,7 +129,6 @@ class Zombi:
                     elif self.playr.y < zombis.y:
                         zombis.y = zombis.y - self.speed
                         zombies[zombis][0].y -= self.speed
-
     def test(self, x, y, width, height):
         zombies[sh.Rectangle(x, y, width, height, color=self.color, batch=self.zombiBat)] = (sh.Rectangle(x, y + height, width, 3, color=(255,0,0), batch=self.zombiBat), self.width / 100)
 
@@ -154,37 +148,46 @@ class Zombi:
 
 class Stena: 
     # Характеристики стен для отображения 
-    left_S = (240, 230, 240, 490)
-    right_S = (480, 230, 480, 490)
-    niz_S = (350, 240, 490, 240)
-    verh_S = (230, 480, 490, 480)
+    left_S = (240, 230, 240, 490, (255, 255, 255))
+    right_S = (480, 230, 480, 490, (255, 255, 255))
+    niz_S = (350, 240, 490, 240, (255, 255, 255))
+    verh_S = (230, 480, 490, 480, (255, 255, 255))
+    shipi = (200, 200, 20, 20, (111,111,111))
     # Ширина стен
     Shir_S = 20
     # Пакет данных со всеми стенами
     dom = pyglet.graphics.Batch() 
+    all_line_stens = {
+        left_S: None, 
+        right_S: None, 
+        niz_S: None, 
+        verh_S: None
+        }
+    all_recta_stens = {
+        shipi: None
+        }
 
     #   Отображение стен (смотри на названия)
     def __init__(self, playr, HP, width): 
         self.playr = playr
         self.HP = HP
         self.width = width
-        self.left_wall = sh.Line(Stena.left_S[0], Stena.left_S[1], 
-                                Stena.left_S[2], Stena.left_S[3], 
-                                thickness=Stena.Shir_S, batch=Stena.dom
-        )
-        self.right_wall = sh.Line(Stena.right_S[0], Stena.right_S[1], 
-                                Stena.right_S[2], Stena.right_S[3], 
-                                thickness=Stena.Shir_S, batch=Stena.dom
-        )
-        self.verh_wall = sh.Line(Stena.verh_S[0], Stena.verh_S[1], 
-                                Stena.verh_S[2], Stena.verh_S[3],
-                                thickness=Stena.Shir_S, batch=Stena.dom
-        )
-        self.niz_wall = sh.Line(Stena.niz_S[0], Stena.niz_S[1], 
-                                Stena.niz_S[2], Stena.niz_S[3], 
-                                thickness=Stena.Shir_S, batch=Stena.dom
-        ) 
-        self.shipi = sh.Rectangle(200, 200, 20, 20, color=(111,111,111), batch=Stena.dom)
+
+        for line_stena in self.all_line_stens:
+            self.all_line_stens[line_stena] = sh.Line(
+                line_stena[0], line_stena[1], 
+                line_stena[2], line_stena[3], 
+                color=line_stena[4], thickness=self.Shir_S, 
+                batch=self.dom
+                )
+        
+        for recta_stena in self.all_recta_stens:
+            self.all_recta_stens[recta_stena] = sh.Rectangle(
+                recta_stena[0], recta_stena[1], 
+                recta_stena[2], recta_stena[3], 
+                color=recta_stena[4], batch=self.dom
+                )
+            
 
     #   Проверка линий
     def line(self, x1, y1, x2, y2, x, y, speed=5): 
@@ -229,3 +232,28 @@ class Stena:
 
 
 
+''' Перенести аванпост сюда
+S = Stena(playr, HP, Pl.width)
+def avanpost(x_moving, y_moving):
+    stena_l = S.ogran_line( 
+        S.left_S[0], S.left_S[1], 
+        S.left_S[2], S.left_S[3], 
+        x_moving, y_moving)
+    
+    stena_r = S.ogran_line( 
+        S.right_S[0],S.right_S[1], 
+        S.right_S[2],S.right_S[3], 
+        x_moving, y_moving)
+    
+    stena_v = S.ogran_line(
+        S.verh_S[0], S.verh_S[1], 
+        S.verh_S[2], S.verh_S[3], 
+        x_moving, y_moving)
+    
+    stena_n = S.ogran_line(
+        S.niz_S[0], S.niz_S[1], 
+        S.niz_S[2], S.niz_S[3], 
+        x_moving, y_moving)
+
+    return stena_v and stena_n and stena_l and stena_r
+'''

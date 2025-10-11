@@ -16,7 +16,7 @@ def on_mouse_press(x,y,button,modifiers):
 
 
 S = Stena(playr, HP, Pl.width)
-def avanpost(x_moving, y_moving):
+def avanpost(x_moving, y_moving): # Перенести аванпост в object
     stena_l = S.ogran_line( 
         S.left_S[0], S.left_S[1], 
         S.left_S[2], S.left_S[3], 
@@ -54,15 +54,23 @@ def update(dt, speed=5, uron=1):
 
     hodba_y = int(keys[key.W]) - int(keys[key.S])
     hodba_x = int(keys[key.D]) - int(keys[key.A])
-    
-    if hodba_y != 0:
+    """
+    if hodba_y != 0 or hodba_x != 0:  # Исправить баг прилепания к стенам через нейтрализацию
+        y_moving = speed * hodba_y
+        x_moving = speed * hodba_x
+        upravlenie.pl_moving(
+            x_moving, y_moving, 
+            avanpost(x_moving, y_moving)
+            )
+    """
+    if hodba_y != 0:  
         y_moving = speed * hodba_y
         upravlenie.pl_moving(
             0, y_moving, 
             avanpost(0, y_moving)
             )
-    
-    if hodba_x != 0:
+        
+    if hodba_x != 0:  
         x_moving = speed * hodba_x
         upravlenie.pl_moving(
             x_moving, 0, 
