@@ -9,9 +9,9 @@ class Uprav:
     def pl_moving(self, x, y, avanpost):
         self.x = x
         self.y = y
-        if 0 < x + self.playr.x < 721 - self.width and avanpost:
+        if 0 < self.playr.x + x < 721 - self.width and avanpost:
             self.playr.x += x
             self.HP.x += x
-        if 0 < y + self.playr.y < 721 - self.width and avanpost:
+        if 0 < self.playr.y + y < 721 - self.width and avanpost:
             self.playr.y += y
             self.HP.y += y
