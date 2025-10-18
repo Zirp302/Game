@@ -102,18 +102,15 @@ class Zombi:
         if isSpawn:
             x = random.choice((0,720))
             y = random.randint(0,720)
+            if random.choice((0, 1)) == 0:
+                x1 = y
+                y = x
+                x = x1
             zombi_key = (sh.Rectangle(
                 x, y, self.width, self.height, 
                 (21, 110, 100), batch=self.zombiBat)
                 )
-            if random.choice((0,1)) == 0:
-                zombies[zombi_key] = (sh.Rectangle(
-                    x, y + self.height, self.width, 4, 
-                    batch=self.zombiBat, color=(255, 0, 0)), 
-                    self.width / self.xp
-                    )
-            else:
-                zombies[zombi_key] = (sh.Rectangle(x, y + self.height, self.width, 4, batch=self.zombiBat, color=(255, 0, 0)), self.width / self.xp)
+            zombies[zombi_key] = (sh.Rectangle(x, y + self.height, self.width, 4, batch=self.zombiBat, color=(255, 0, 0)), self.width / self.xp)
 
     def moving(self):
             #зачем я создаю функции подо все что происходит? Так надо
