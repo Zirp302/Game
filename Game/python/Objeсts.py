@@ -82,21 +82,19 @@ class Damag:
 
 
 class Zombi:
-    def __init__(self, playr, HP, plrUprv, width=35, height=35, color={21, 110, 100}, type=None, xp=100, speed=1, spawnSpeed=1/2, damage=10):
+    def __init__(self, playr, HP, screens):
         #Мне лень писать self
         #Но я напишу
         #type это тип зомби
         self.zombiBat = pyglet.graphics.Batch()
-        self.width = width
-        self.height = height
-        self.color = color
-        self.xp = xp
-        self.speed = speed
-        self.spawSpeed = spawnSpeed
-        self.damage = damage
+        self.width = 35
+        self.height = 35
+        self.color = (21, 110, 100)
+        self.xp = 100
+        self.speed = 1
         self.playr = playr
         self.HP = HP
-        self.plrUpr = plrUprv
+        self.screens = screens
 
     def spawn(self, isSpawn=True):  
         if isSpawn:
@@ -131,7 +129,6 @@ class Zombi:
                     elif self.playr.y < zombis.y:
                         zombis.y = zombis.y - self.speed
                         zombies[zombis][0].y -= self.speed
-
     def test(self, x, y, width, height):
         zombies[sh.Rectangle(x, y, width, height, color=self.color, batch=self.zombiBat)] = (sh.Rectangle(x, y + height, width, 3, color=(255,0,0), batch=self.zombiBat), self.width / 100)
 
@@ -149,39 +146,49 @@ class Zombi:
         self.zombiBat.draw()
 
 
-class Stena: 
-    # Характеристики стен для отображения 
-    left_S = (240, 230, 240, 490)
-    right_S = (480, 230, 480, 490)
-    niz_S = (350, 240, 490, 240)
-    verh_S = (230, 480, 490, 480)
+class Wall: 
+    # Координаты стен для отображения 
+    left_wall = (240, 230, 240, 490, (255, 255, 255))
+    right_wall = (480, 230, 480, 490, (255, 255, 255))
+    niz_wall = (350, 240, 490, 240, (255, 255, 255))
+    verh_wall = (230, 480, 490, 480, (255, 255, 255))
+    # Координаты чегото наносящего урон
+    shipi = (200, 200, 20, 20, (111,111,111))
     # Ширина стен
-    Shir_S = 20
+    width_wall = 20
     # Пакет данных со всеми стенами
     dom = pyglet.graphics.Batch() 
+    all_line_walls = {
+        left_wall: None, 
+        right_wall: None, 
+        niz_wall: None, 
+        verh_wall: None
+        }
+    all_recta_walls = {
+        shipi: None
+        }
 
     #   Отображение стен (смотри на названия)
     def __init__(self, playr, HP, width): 
         self.playr = playr
         self.HP = HP
         self.width = width
-        self.left_wall = sh.Line(Stena.left_S[0], Stena.left_S[1], 
-                                Stena.left_S[2], Stena.left_S[3], 
-                                thickness=Stena.Shir_S, batch=Stena.dom
-        )
-        self.right_wall = sh.Line(Stena.right_S[0], Stena.right_S[1], 
-                                Stena.right_S[2], Stena.right_S[3], 
-                                thickness=Stena.Shir_S, batch=Stena.dom
-        )
-        self.verh_wall = sh.Line(Stena.verh_S[0], Stena.verh_S[1], 
-                                Stena.verh_S[2], Stena.verh_S[3],
-                                thickness=Stena.Shir_S, batch=Stena.dom
-        )
-        self.niz_wall = sh.Line(Stena.niz_S[0], Stena.niz_S[1], 
-                                Stena.niz_S[2], Stena.niz_S[3], 
-                                thickness=Stena.Shir_S, batch=Stena.dom
-        ) 
-        self.shipi = sh.Rectangle(200, 200, 20, 20, color=(111,111,111), batch=Stena.dom)
+
+        for line_wall in self.all_line_walls:
+            self.all_line_walls[line_wall] = sh.Line(
+                line_wall[0], line_wall[1], 
+                line_wall[2], line_wall[3], 
+                color=line_wall[4], thickness=self.width_wall, 
+                batch=self.dom
+                )
+        
+        for recta_wall in self.all_recta_walls:
+            self.all_recta_walls[recta_wall] = sh.Rectangle(
+                recta_wall[0], recta_wall[1], 
+                recta_wall[2], recta_wall[3], 
+                color=recta_wall[4], batch=self.dom
+                )
+            
 
     #   Проверка линий
     def line(self, x1, y1, x2, y2, x, y, speed=5): 
@@ -190,11 +197,11 @@ class Stena:
             x2 += 10
             y1, y2 = min(y1, y2), max(y1, y2)
             return x1, y1, x2, y2
-        else:
-            y1 -= 10
-            y2 += 10
-            x1, x2 = min(x1, x2), max(x1, x2)
-            return x1, y1, x2, y2
+        
+        y1 -= 10
+        y2 += 10
+        x1, x2 = min(x1, x2), max(x1, x2)
+        return x1, y1, x2, y2
 
     #   Проверка прямоугольников
     def rectangle(self, x1, y1, width, height, x, y, speed=5):
@@ -221,8 +228,10 @@ class Stena:
         return True
 
     #   Функция для отображения стен
-    def draw(self): 
-        Stena.dom.draw()
+    def draw(): 
+        Wall.dom.draw()
 
 
 
+''' Перенести аванпост сюда
+'''
