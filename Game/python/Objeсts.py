@@ -1,6 +1,6 @@
 import pyglet
 from pyglet import shapes as sh
-import time
+from time import time
 import random
 zombies={} # значение в хэш таблице это хр зомби
 """
@@ -46,7 +46,7 @@ class Damag:
         X = x1 - Pl.width < self.playr.x + x < x2
         Y = y1 - Pl.height < self.playr.y + y < y2
         kd = 0.75
-        time1 = time.time()
+        time1 = time()
         # Миханника получение урона
         if X and Y and time1 - Damag.time > kd: 
             Damag.time = time1
@@ -108,8 +108,12 @@ class Zombi:
                 x, y, self.width, self.height, 
                 (21, 110, 100), batch=self.zombiBat)
                 )
-            zombies[zombi_key] = (sh.Rectangle(x, y + self.height, self.width, 4, batch=self.zombiBat, color=(255, 0, 0)), self.width / self.xp)
-
+            zombies[zombi_key] = (sh.Rectangle(
+                x, y + self.height, 
+                self.width, 4, 
+                batch=self.zombiBat, color=(255, 0, 0)
+                ), self.width / self.xp)
+            print(len(zombies))
     def moving(self):
             #зачем я создаю функции подо все что происходит? Так надо
             if zombies:
@@ -169,10 +173,10 @@ class Wall:
         }
 
     #   Отображение стен (смотри на названия)
-    def __init__(self, playr, HP, width): 
-        self.playr = playr
+    def __init__(self, playr, HP): 
+        self.playr = playr   
         self.HP = HP
-        self.width = width
+        self.width = playr.width
 
         for line_wall in self.all_line_walls:
             self.all_line_walls[line_wall] = sh.Line(
@@ -226,12 +230,23 @@ class Wall:
         if X and Y:
             return False
         return True
+    
+    # Аванпост
+    def avanpost(self, x_moving, y_moving): 
+        for walls in Wall.all_line_walls:
+            ogran = self.ogran_line( 
+                walls[0], walls[1], 
+                walls[2], walls[3], 
+                x_moving, y_moving
+                )
+            if ogran == False:
+                return False
+        return True
 
     #   Функция для отображения стен
     def draw(): 
         Wall.dom.draw()
+        
 
 
 
-''' Перенести аванпост сюда
-'''
