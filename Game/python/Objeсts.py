@@ -98,12 +98,12 @@ class Zombi:
 
     def spawn(self, isSpawn=True):  
         if isSpawn:
-            x = random.choice((0,720))
-            y = random.randint(0,720)
-            if random.choice((0, 1)) == 0:
-                x1 = y
-                y = x
-                x = x1
+            if random.choice((0, 1)):
+                y = random.randint(0, self.screens.height)
+                x = random.choice((0, self.screens.width))
+            else:
+                x = random.randint(0, self.screens.width)
+                y = random.choice((0, self.screens.height))
             zombi_key = (sh.Rectangle(
                 x, y, self.width, self.height, 
                 (21, 110, 100), batch=self.zombiBat)
