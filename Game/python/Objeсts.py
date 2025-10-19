@@ -3,16 +3,13 @@ from pyglet import shapes as sh
 from time import time
 import random
 zombies={} # значение в хэш таблице это хр зомби
-"""
-Файл для создания обектов и их вывода пряма тут 
-"""
 
 class Pl:
     # Характеристеки игрока
     x, y = 340, 340 # Координаты спавна
     width = 50   # Длинна персонажа и полосы здоровья
-    height = 100 # Ширина персонажа
-    color = (54, 136, 181)
+    height_playr = 100
+    height_HP = 15
     time = 0
 
     # Характеристики здаровья
@@ -21,17 +18,25 @@ class Pl:
 
     # Пакет для обединения HP и playr
     pl = pyglet.graphics.Batch()
-    def playr(self): #Создание и отображение игрока
-        self.playr = sh.Rectangle(Pl.x, Pl.y, Pl.width, Pl.height, Pl.color, batch=Pl.pl)
+    def playr(self,  color=(54, 136, 181)): #Создание и отображение игрока
+        
+        self.playr = sh.Rectangle(
+            Pl.x, Pl.y, 
+            Pl.width, self.height_playr, 
+            color, batch=Pl.pl)
         return self.playr
 
     # HP игрока
-    def HP(self):
-        self.HP = sh.Rectangle(Pl.x, Pl.y + Pl.height, Pl.width, 15, color=(255,0,0), batch=Pl.pl)
+    def HP(self, color=(255,0,0)):
+        self.HP = sh.Rectangle(
+            Pl.x, Pl.y + self.height_playr, 
+            Pl.width, self.height_HP, 
+            color, batch=Pl.pl)
         return self.HP
     
     def draw(self):
         self.pl.draw()
+
 
 
 class Damag:
@@ -44,7 +49,7 @@ class Damag:
     # Функция для определения получаемого урона   
     def damag(self, uron, x1, y1, x2, y2, x, y):
         X = x1 - Pl.width < self.playr.x + x < x2
-        Y = y1 - Pl.height < self.playr.y + y < y2
+        Y = y1 - Pl.height_playr < self.playr.y + y < y2
         kd = 0.75
         time1 = time()
         # Миханника получение урона
@@ -57,7 +62,7 @@ class Damag:
                 self.playr.x = Pl.x
                 self.playr.y = Pl.y
                 self.HP.x = Pl.x
-                self.HP.y = Pl.y + Pl.height
+                self.HP.y = Pl.y + Pl.height_playr
     
     #   Получение урона при нахождении в линии
     def damag_line(self, x1, y1, x2, y2, uron=1, x=0, y=0):
@@ -118,20 +123,20 @@ class Zombi:
             print(len(zombies))
 
     def moving(self):
-            for zombis in zombies:
-                if self.playr.x > zombis.x:
-                    zombis.x += self.speed
-                    zombies[zombis][0].x += self.speed
-                elif self.playr.x < zombis.x:
-                    zombis.x = zombis.x - self.speed
-                    zombies[zombis][0].x -= self.speed
+        for zombis in zombies:
+            if self.playr.x > zombis.x:
+                zombis.x += self.speed
+                zombies[zombis][0].x += self.speed
+            elif self.playr.x < zombis.x:
+                zombis.x = zombis.x - self.speed
+                zombies[zombis][0].x -= self.speed
 
-                if self.playr.y > zombis.y:
-                    zombis.y += self.speed
-                    zombies[zombis][0].y += self.speed
-                elif self.playr.y < zombis.y:
-                    zombis.y = zombis.y - self.speed
-                    zombies[zombis][0].y -= self.speed
+            if self.playr.y > zombis.y:
+                zombis.y += self.speed
+                zombies[zombis][0].y += self.speed
+            elif self.playr.y < zombis.y:
+                zombis.y = zombis.y - self.speed
+                zombies[zombis][0].y -= self.speed
                 
     def test(self, x, y, width, height):
         zombies[sh.Rectangle(x, y, width, height, color=self.color, batch=self.zombiBat)] = (sh.Rectangle(x, y + height, width, 3, color=(255,0,0), batch=self.zombiBat), self.width / 100)
@@ -214,7 +219,7 @@ class Wall:
     def ogran_line(self, x1, y1, x2, y2, x=0, y=0):
         x1, y1, x2, y2 = self.line(x1, y1, x2, y2, x, y) # Переназначение переменных через функцию line
         X = x1 - Pl.width < self.playr.x + x < x2
-        Y = y1 - Pl.height < self.playr.y + y < y2
+        Y = y1 - Pl.height_playr < self.playr.y + y < y2
         if X and Y:
             return False
         return True
@@ -223,7 +228,7 @@ class Wall:
     def ogran_rectangle(self, x1, y1, width, height, x=0, y=0):
         x2, y2 = self.rectangle(x1, y1, width, height, x, y) # Переназначение переменных через функцию rectangle
         X = x1 - Pl.width < self.playr.x + x < x2
-        Y = y1 - Pl.height < self.playr.y + y < y2
+        Y = y1 - Pl.height_playr < self.playr.y + y < y2
         if X and Y:
             return False
         return True
@@ -244,6 +249,5 @@ class Wall:
     def draw(): 
         Wall.dom.draw()
         
-
 
 

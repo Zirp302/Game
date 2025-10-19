@@ -1,4 +1,4 @@
-from Objeсts import Pl, Wall, Damag, Zombi
+from Objeсts import Pl, Wall, Zombi, Damag
 from Management import Uprav
 import pyglet
 from pyglet.window import key
