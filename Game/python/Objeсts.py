@@ -139,10 +139,9 @@ class Zombi:
     def attack(self, trash=None):
         #это можно было сделать и в функции zombMoving но нет надо ведь нагрузить комп кучей бесполезных функций
         if zombies:
-            for i in zombies:
-                x, y, x1, y1 = self.playr.x, self.playr.y, self.playr.x + self.playr.width, self.playr.y + self.playr.height
-                zomb_x, zomb_y, zomb_x1, zomb_y1 = i.x, i.y, i.x + i.width, i.y + i.height
-                Damag(self.playr, self.HP).damag_rectangle(zomb_x, zomb_y, i.width, i.height)
+            for zomby in zombies:
+                Damag(self.playr, self.HP).damag_rectangle(zomby.x, zomby.y, zomby.width, zomby.height)
+
 
 
 

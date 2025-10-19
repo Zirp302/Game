@@ -1,5 +1,5 @@
 from Objeсts import Pl, Wall, Damag, Zombi
-from Uprav import Uprav
+from Management import Uprav
 import pyglet
 from pyglet.window import key
 
@@ -60,5 +60,5 @@ def on_draw():
     pl.draw()
 
 pyglet.clock.schedule_interval(update, 1/60)
-pyglet.clock.schedule_interval(Z.spawn, 2)
+pyglet.clock.schedule_interval(Z.spawn, 1/60)
 pyglet.app.run()
