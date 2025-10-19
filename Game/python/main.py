@@ -60,5 +60,5 @@ def on_draw():
     pl.draw()
 
 pyglet.clock.schedule_interval(update, 1/60)
-pyglet.clock.schedule_interval(Z.spawn, 1/60)
+pyglet.clock.schedule_interval(Z.spawn, 2)
 pyglet.app.run()

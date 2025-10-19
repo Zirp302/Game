@@ -104,43 +104,41 @@ class Zombi:
             else:
                 x = random.randint(0, self.screens.width)
                 y = random.choice((0, self.screens.height))
-            zombi_key = (sh.Rectangle(
+
+            zombi_key = sh.Rectangle(
                 x, y, self.width, self.height, 
-                (21, 110, 100), batch=self.zombiBat)
+                (21, 110, 100), batch=self.zombiBat
                 )
+                
             zombies[zombi_key] = (sh.Rectangle(
                 x, y + self.height, 
                 self.width, 4, 
                 batch=self.zombiBat, color=(255, 0, 0)
                 ), self.width / self.xp)
             print(len(zombies))
-    def moving(self):
-            #зачем я создаю функции подо все что происходит? Так надо
-            if zombies:
-                for zombis in zombies:
 
-                    if self.playr.x > zombis.x:
-                        zombis.x += self.speed
-                        zombies[zombis][0].x += self.speed
-                    elif self.playr.x < zombis.x:
-                        zombis.x = zombis.x - self.speed
-                        zombies[zombis][0].x -= self.speed
-                    else:
-                        pass
-                    if self.playr.y > zombis.y:
-                        zombis.y += self.speed
-                        zombies[zombis][0].y += self.speed
-                    elif self.playr.y < zombis.y:
-                        zombis.y = zombis.y - self.speed
-                        zombies[zombis][0].y -= self.speed
+    def moving(self):
+            for zombis in zombies:
+                if self.playr.x > zombis.x:
+                    zombis.x += self.speed
+                    zombies[zombis][0].x += self.speed
+                elif self.playr.x < zombis.x:
+                    zombis.x = zombis.x - self.speed
+                    zombies[zombis][0].x -= self.speed
+
+                if self.playr.y > zombis.y:
+                    zombis.y += self.speed
+                    zombies[zombis][0].y += self.speed
+                elif self.playr.y < zombis.y:
+                    zombis.y = zombis.y - self.speed
+                    zombies[zombis][0].y -= self.speed
+                
     def test(self, x, y, width, height):
         zombies[sh.Rectangle(x, y, width, height, color=self.color, batch=self.zombiBat)] = (sh.Rectangle(x, y + height, width, 3, color=(255,0,0), batch=self.zombiBat), self.width / 100)
 
-    def attack(self, trash=None):
-        #это можно было сделать и в функции zombMoving но нет надо ведь нагрузить комп кучей бесполезных функций
-        if zombies:
-            for zomby in zombies:
-                Damag(self.playr, self.HP).damag_rectangle(zomby.x, zomby.y, zomby.width, zomby.height)
+    def attack(self):
+        for zomby in zombies:
+            Damag(self.playr, self.HP).damag_rectangle(zomby.x, zomby.y, zomby.width, zomby.height)
 
 
 
