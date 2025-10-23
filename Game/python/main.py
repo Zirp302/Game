@@ -33,17 +33,17 @@ def update(dt, speed=5, uron=1):
     zombi.attack()   
     damag.damag_rectangle(200, 200, 20, 20, uron)
 
-    hodba_y = int(keys[key.W]) - int(keys[key.S])
-    hodba_x = int(keys[key.D]) - int(keys[key.A])
-    if bool(hodba_y):  
-        y_moving = speed * hodba_y
+    walking_y = int(keys[key.W]) - int(keys[key.S]) # Ходьба по оси х
+    walking_x = int(keys[key.D]) - int(keys[key.A]) # Ходьба по оси у
+    if bool(walking_y):  
+        y_moving = speed * walking_y
         Managmentlenie.playr_moving(
             0, y_moving, 
             wall.all_walls(0, y_moving)
             )
         
-    if bool(hodba_x):  
-        x_moving = speed * hodba_x
+    if bool(walking_x):  
+        x_moving = speed * walking_x
         Managmentlenie.playr_moving(
             x_moving, 0, 
             wall.all_walls(x_moving, 0)

@@ -2,10 +2,9 @@ import pyglet
 from pyglet import shapes as sh
 from time import time
 import random
-zombies={} # значение в хэш таблице это хр зомби
 
 class Pl:
-    
+
     # Характеристеки игрока
     x, y = 340, 340 # Координаты спавна
     width = 50   # Длинна персонажа и полосы здоровья
@@ -100,10 +99,11 @@ class Zombi:
         self.playr = playr
         self.hp_playr = hp_playr
         self.screens = screens
+        self.zombies={} # значение в хэш таблице это хр зомби
 
     def spawn(self, isSpawn=True):  
         if isSpawn:
-            if random.choice((0, 1)):
+            if bool(random.choice((0, 1))):
                 y = random.randint(0, self.screens.height)
                 x = random.choice((0, self.screens.width))
             else:
@@ -115,35 +115,35 @@ class Zombi:
                 (21, 110, 100), batch=self.zombiBat
                 )
                 
-            zombies[zombi_key] = (sh.Rectangle(
+            self.zombies[zombi_key] = (sh.Rectangle(
                 x, y + self.height, 
                 self.width, 4, 
                 batch=self.zombiBat, color=(255, 0, 0)
                 ), self.width / self.xp)
-            print(len(zombies))
+            print(len(self.zombies))
 
     def moving(self):
-        for zombis in zombies:
+        for zombis in self.zombies:
             if self.playr.x > zombis.x:
                 zombis.x += self.speed
-                zombies[zombis][0].x += self.speed
+                self.zombies[zombis][0].x += self.speed
             elif self.playr.x < zombis.x:
                 zombis.x = zombis.x - self.speed
-                zombies[zombis][0].x -= self.speed
+                self.zombies[zombis][0].x -= self.speed
 
             if self.playr.y > zombis.y:
                 zombis.y += self.speed
-                zombies[zombis][0].y += self.speed
+                self.zombies[zombis][0].y += self.speed
             elif self.playr.y < zombis.y:
                 zombis.y = zombis.y - self.speed
-                zombies[zombis][0].y -= self.speed
+                self.zombies[zombis][0].y -= self.speed
                 
     def test(self, x, y, width, height):
-        zombies[sh.Rectangle(x, y, width, height, color=self.color, batch=self.zombiBat)] = (sh.Rectangle(x, y + height, width, 3, color=(255,0,0), batch=self.zombiBat), self.width / 100)
+        self.zombies[sh.Rectangle(x, y, width, height, color=self.color, batch=self.zombiBat)] = (sh.Rectangle(x, y + height, width, 3, color=(255,0,0), batch=self.zombiBat), self.width / 100)
 
-    def attack(self):
-        for zomby in zombies:
-            Damag(self.playr, self.hp_playr).damag_rectangle(zomby.x, zomby.y, zomby.width, zomby.height)
+    def attack(self, impact_force=1):
+        for zomby in self.zombies:
+            Damag(self.playr, self.hp_playr).damag_rectangle(zomby.x, zomby.y, zomby.width, zomby.height, impact_force)
 
 
 
