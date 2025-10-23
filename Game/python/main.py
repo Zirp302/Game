@@ -1,4 +1,4 @@
-from objeсts import Pl, Wall, Zombi, Damag
+from objeсts import Playr, Wall, Zombi, Damag
 from management import Managment
 import pyglet
 from pyglet.window import key
@@ -11,8 +11,8 @@ wind = pyglet.window.Window(               # Создание окна
 
 wind.maximize()
 
-pl = Pl()
-playr = pl.playr()
+pl = Playr()
+playr = pl.avatar()
 hp = pl.hp_playr()
 
 @wind.event

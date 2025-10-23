@@ -3,38 +3,37 @@ from pyglet import shapes as sh
 from time import time
 import random
 
-class Pl:
+class Playr:
+    def __init__(self):
+        # Характеристеки игрока
+        self.x, self.y = 340, 340 # Координаты спавна
+        self.width = 50   # Длинна персонажа и полосы здоровья
+        self.height_playr = 100
+        self.height_hp_playr = 15
+        self.time = 0
+        # Характеристики здаровья
+        self.hp_playr_width = 15          # Количество здоровья
+        self.hp_playr_One = self.width / self.hp_playr_width  # Длина одной еденице здаровья
+        # Пакет для обединения hp_playr и playr
+        self.pak_playr = pyglet.graphics.Batch()
 
-    # Характеристеки игрока
-    x, y = 340, 340 # Координаты спавна
-    width = 50   # Длинна персонажа и полосы здоровья
-    height_playr = 100
-    height_hp_playr = 15
-    time = 0
-
-    # Характеристики здаровья
-    hp_playr_width = 15          # Количество здоровья
-    hp_playr_One = width / hp_playr_width  # Длина одной еденице здаровья
-
-    # Пакет для обединения hp_playr и playr
-    pl = pyglet.graphics.Batch()
-    def playr(self, color=(54, 136, 181)): #Создание и отображение игрока
+    def avatar(self, color=(54, 136, 181)): #Создание и отображение игрока
         self.playr = sh.Rectangle(
-            Pl.x, Pl.y, 
-            Pl.width, self.height_playr, 
-            color, batch=Pl.pl)
+            self.x, self.y, 
+            self.width, self.height_playr, 
+            color, batch=self.pak_playr)
         return self.playr
 
     # hp_playr игрока
     def hp_playr(self, color=(255,0,0)):
         self.hp_playr = sh.Rectangle(
-            Pl.x, Pl.y + self.height_playr, 
-            Pl.width, self.height_hp_playr, 
-            color, batch=Pl.pl)
+            self.x, self.y + self.height_playr, 
+            self.width, self.height_hp_playr, 
+            color, batch=self.pak_playr)
         return self.hp_playr
     
     def draw(self):
-        self.pl.draw()
+        self.pak_playr.draw()
 
 
 
@@ -43,12 +42,12 @@ class Damag:
     def __init__(self, playr, hp_playr):  # значение по умолчанию
         self.playr = playr
         self.hp_playr = hp_playr
-        self.hp_playr_One = Pl.width / Pl.hp_playr_width
+        self.hp_playr_One = Playr().width / Playr().hp_playr_width
         
     # Функция для определения получаемого урона   
     def damag(self, uron, x1, y1, x2, y2, x, y):
-        X = x1 - Pl.width < self.playr.x + x < x2
-        Y = y1 - Pl.height_playr < self.playr.y + y < y2
+        X = x1 - Playr().width < self.playr.x + x < x2
+        Y = y1 - Playr().height_playr < self.playr.y + y < y2
         kd = 0.75
         time1 = time()
         # Миханника получение урона
@@ -57,11 +56,11 @@ class Damag:
             self.hp_playr.width -= self.hp_playr_One * uron
             # Механника смерти
             if self.hp_playr.width <= 0:
-                self.hp_playr.width = Pl.width
-                self.playr.x = Pl.x
-                self.playr.y = Pl.y
-                self.hp_playr.x = Pl.x
-                self.hp_playr.y = Pl.y + Pl.height_playr
+                self.hp_playr.width = Playr().width
+                self.playr.x = Playr().x
+                self.playr.y = Playr().y
+                self.hp_playr.x = Playr().x
+                self.hp_playr.y = Playr().y + Playr().height_playr
     
     #   Получение урона при нахождении в линии
     def damag_line(self, x1, y1, x2, y2, uron=1, x=0, y=0):
@@ -143,10 +142,12 @@ class Zombi:
 
     def attack(self, impact_force=1):
         for zomby in self.zombies:
-            Damag(self.playr, self.hp_playr).damag_rectangle(zomby.x, zomby.y, zomby.width, zomby.height, impact_force)
-
-
-
+            Damag(self.playr, self.hp_playr
+                    ).damag_rectangle(
+                        zomby.x, zomby.y, 
+                        zomby.width, zomby.height, 
+                        impact_force
+                        )
 
     def draw(self):
         self.zombiBat.draw()
@@ -218,8 +219,8 @@ class Wall:
     #   Ограничение прохаждение через линии
     def ogran_line(self, x1, y1, x2, y2, x=0, y=0):
         x1, y1, x2, y2 = self.line(x1, y1, x2, y2, x, y) # Переназначение переменных через функцию line
-        X = x1 - Pl.width < self.playr.x + x < x2
-        Y = y1 - Pl.height_playr < self.playr.y + y < y2
+        X = x1 - Playr().width < self.playr.x + x < x2
+        Y = y1 - Playr().height_playr < self.playr.y + y < y2
         if X and Y:
             return False
         return True
@@ -227,8 +228,8 @@ class Wall:
     #   Ограничение прохаждение через прямоуглоьники
     def ogran_rectangle(self, x1, y1, width, height, x=0, y=0):
         x2, y2 = self.rectangle(x1, y1, width, height, x, y) # Переназначение переменных через функцию rectangle
-        X = x1 - Pl.width < self.playr.x + x < x2
-        Y = y1 - Pl.height_playr < self.playr.y + y < y2
+        X = x1 - Playr().width < self.playr.x + x < x2
+        Y = y1 - Playr().height_playr < self.playr.y + y < y2
         if X and Y:
             return False
         return True
