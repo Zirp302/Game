@@ -1,5 +1,5 @@
-from Objeсts import Pl, Wall, Zombi, Damag
-from Management import Uprav
+from objeсts import Pl, Wall, Zombi, Damag
+from management import Managment
 import pyglet
 from pyglet.window import key
 
@@ -13,7 +13,7 @@ wind.maximize()
 
 pl = Pl()
 playr = pl.playr()
-HP = pl.HP()
+hp = pl.hp_playr()
 
 @wind.event
 def on_mouse_press(x,y,button,modifiers):
@@ -21,11 +21,10 @@ def on_mouse_press(x,y,button,modifiers):
 
 
 
-
-wall = Wall(playr, HP)
-upravlenie = Uprav(playr, HP, screens)
-damag = Damag(playr, HP)
-Z = Zombi(playr, HP, screens)
+wall = Wall(playr, hp)
+Managmentlenie = Managment(playr, hp, screens)
+damag = Damag(playr, hp)
+Z = Zombi(playr, hp, screens)
 
 keys = key.KeyStateHandler()
 wind.push_handlers(keys)
@@ -39,14 +38,14 @@ def update(dt, speed=5, uron=1):
     hodba_x = int(keys[key.D]) - int(keys[key.A])
     if hodba_y:  
         y_moving = speed * hodba_y
-        upravlenie.pl_moving(
+        Managmentlenie.pl_moving(
             0, y_moving, 
             wall.avanpost(0, y_moving)
             )
         
     if hodba_x:  
         x_moving = speed * hodba_x
-        upravlenie.pl_moving(
+        Managmentlenie.pl_moving(
             x_moving, 0, 
             wall.avanpost(x_moving, 0)
             )

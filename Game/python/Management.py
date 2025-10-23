@@ -1,5 +1,5 @@
 # Управление 
-class Uprav:
+class Managment:
     def __init__(self, playr, HP, screens):
         self.playr = playr
         self.HP = HP

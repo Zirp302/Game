@@ -9,30 +9,29 @@ class Pl:
     x, y = 340, 340 # Координаты спавна
     width = 50   # Длинна персонажа и полосы здоровья
     height_playr = 100
-    height_HP = 15
+    height_hp_playr = 15
     time = 0
 
     # Характеристики здаровья
-    HP_playr = 15          # Количество здоровья
-    HP_One = width / HP_playr  # Длина одной еденице здаровья
+    hp_playr_width = 15          # Количество здоровья
+    hp_playr_One = width / hp_playr_width  # Длина одной еденице здаровья
 
-    # Пакет для обединения HP и playr
+    # Пакет для обединения hp_playr и playr
     pl = pyglet.graphics.Batch()
-    def playr(self,  color=(54, 136, 181)): #Создание и отображение игрока
-        
+    def playr(self, color=(54, 136, 181)): #Создание и отображение игрока
         self.playr = sh.Rectangle(
             Pl.x, Pl.y, 
             Pl.width, self.height_playr, 
             color, batch=Pl.pl)
         return self.playr
 
-    # HP игрока
-    def HP(self, color=(255,0,0)):
-        self.HP = sh.Rectangle(
+    # hp_playr игрока
+    def hp_playr(self, color=(255,0,0)):
+        self.hp_playr = sh.Rectangle(
             Pl.x, Pl.y + self.height_playr, 
-            Pl.width, self.height_HP, 
+            Pl.width, self.height_hp_playr, 
             color, batch=Pl.pl)
-        return self.HP
+        return self.hp_playr
     
     def draw(self):
         self.pl.draw()
@@ -41,10 +40,10 @@ class Pl:
 
 class Damag:
     time = 0
-    def __init__(self, playr, HP):  # значение по умолчанию
+    def __init__(self, playr, hp_playr):  # значение по умолчанию
         self.playr = playr
-        self.HP = HP
-        self.HP_One = Pl.width / Pl.HP_playr
+        self.hp_playr = hp_playr
+        self.hp_playr_One = Pl.width / Pl.hp_playr_width
         
     # Функция для определения получаемого урона   
     def damag(self, uron, x1, y1, x2, y2, x, y):
@@ -55,14 +54,14 @@ class Damag:
         # Миханника получение урона
         if X and Y and time1 - Damag.time > kd: 
             Damag.time = time1
-            self.HP.width -= self.HP_One * uron
+            self.hp_playr.width -= self.hp_playr_One * uron
             # Механника смерти
-            if self.HP.width <= 0:
-                self.HP.width = Pl.width
+            if self.hp_playr.width <= 0:
+                self.hp_playr.width = Pl.width
                 self.playr.x = Pl.x
                 self.playr.y = Pl.y
-                self.HP.x = Pl.x
-                self.HP.y = Pl.y + Pl.height_playr
+                self.hp_playr.x = Pl.x
+                self.hp_playr.y = Pl.y + Pl.height_playr
     
     #   Получение урона при нахождении в линии
     def damag_line(self, x1, y1, x2, y2, uron=1, x=0, y=0):
@@ -87,7 +86,7 @@ class Damag:
 
 
 class Zombi:
-    def __init__(self, playr, HP, screens):
+    def __init__(self, playr, hp_playr, screens):
         #Мне лень писать self
         #Но я напишу
         #type это тип зомби
@@ -98,7 +97,7 @@ class Zombi:
         self.xp = 100
         self.speed = 1
         self.playr = playr
-        self.HP = HP
+        self.hp_playr = hp_playr
         self.screens = screens
 
     def spawn(self, isSpawn=True):  
@@ -143,7 +142,7 @@ class Zombi:
 
     def attack(self):
         for zomby in zombies:
-            Damag(self.playr, self.HP).damag_rectangle(zomby.x, zomby.y, zomby.width, zomby.height)
+            Damag(self.playr, self.hp_playr).damag_rectangle(zomby.x, zomby.y, zomby.width, zomby.height)
 
 
 
@@ -175,9 +174,9 @@ class Wall:
         }
 
     #   Отображение стен (смотри на названия)
-    def __init__(self, playr, HP): 
+    def __init__(self, playr, hp_playr): 
         self.playr = playr   
-        self.HP = HP
+        self.hp_playr = hp_playr
         self.width = playr.width
 
         for line_wall in self.all_line_walls:
