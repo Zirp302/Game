@@ -20,44 +20,43 @@ def on_mouse_press(x,y,button,modifiers):
     print(f"x = {x}, y = {y}")
 
 
-
 wall = Wall(playr, hp)
 Managmentlenie = Managment(playr, hp, screens)
 damag = Damag(playr, hp)
-Z = Zombi(playr, hp, screens)
+zombi = Zombi(playr, hp, screens)
 
 keys = key.KeyStateHandler()
 wind.push_handlers(keys)
 
 def update(dt, speed=5, uron=1):
-    Z.moving()
-    Z.attack()   
+    zombi.moving()
+    zombi.attack()   
     damag.damag_rectangle(200, 200, 20, 20, uron)
 
     hodba_y = int(keys[key.W]) - int(keys[key.S])
     hodba_x = int(keys[key.D]) - int(keys[key.A])
-    if hodba_y:  
+    if bool(hodba_y):  
         y_moving = speed * hodba_y
-        Managmentlenie.pl_moving(
+        Managmentlenie.playr_moving(
             0, y_moving, 
-            wall.avanpost(0, y_moving)
+            wall.all_walls(0, y_moving)
             )
         
-    if hodba_x:  
+    if bool(hodba_x):  
         x_moving = speed * hodba_x
-        Managmentlenie.pl_moving(
+        Managmentlenie.playr_moving(
             x_moving, 0, 
-            wall.avanpost(x_moving, 0)
+            wall.all_walls(x_moving, 0)
             )
 
 
 @wind.event
 def on_draw():
     wind.clear()
-    Z.draw()
+    zombi.draw()
     Wall.draw()
     pl.draw()
 
 pyglet.clock.schedule_interval(update, 1/60)
-pyglet.clock.schedule_interval(Z.spawn, 2)
+pyglet.clock.schedule_interval(zombi.spawn, 2)
 pyglet.app.run()

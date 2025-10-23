@@ -5,6 +5,7 @@ import random
 zombies={} # значение в хэш таблице это хр зомби
 
 class Pl:
+    
     # Характеристеки игрока
     x, y = 340, 340 # Координаты спавна
     width = 50   # Длинна персонажа и полосы здоровья
@@ -233,7 +234,7 @@ class Wall:
         return True
     
     # Аванпост
-    def avanpost(self, x_moving, y_moving): 
+    def all_walls(self, x_moving, y_moving): 
         for walls in Wall.all_line_walls:
             ogran = self.ogran_line( 
                 walls[0], walls[1], 
