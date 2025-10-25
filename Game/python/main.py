@@ -31,10 +31,15 @@ wind.push_handlers(keys)
 def update(dt, speed=5, uron=1):
     zombi.moving()
     zombi.attack()   
-    damag.damag_rectangle(200, 200, 20, 20, uron)
+    for objects_damag in wall.all_spikes_in_forest:
+        damag.damag_rectangle(
+            objects_damag[0], objects_damag[1], 
+            objects_damag[2], objects_damag[3], 
+            uron)
 
     walking_y = int(keys[key.W]) - int(keys[key.S]) # Ходьба по оси х
     walking_x = int(keys[key.D]) - int(keys[key.A]) # Ходьба по оси у
+
     if bool(walking_y):  
         y_moving = speed * walking_y
         Managmentlenie.playr_moving(

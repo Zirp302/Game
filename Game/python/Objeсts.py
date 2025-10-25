@@ -160,19 +160,21 @@ class Wall:
     niz_wall = (350, 240, 490, 240, (255, 255, 255))
     verh_wall = (230, 480, 490, 480, (255, 255, 255))
     # Координаты чегото наносящего урон
-    shipi = (200, 200, 20, 20, (111,111,111))
+    spike1 = (200, 200, 20, 20, (111,111,111))
     # Ширина стен
     width_wall = 20
     # Пакет данных со всеми стенами
     dom = pyglet.graphics.Batch() 
-    all_line_walls = {
+
+    all_walls_in_forest = {
         left_wall: None, 
         right_wall: None, 
         niz_wall: None, 
         verh_wall: None
         }
-    all_recta_walls = {
-        shipi: None
+    
+    all_spikes_in_forest = {
+        spike1: None
         }
 
     #   Отображение стен (смотри на названия)
@@ -181,16 +183,16 @@ class Wall:
         self.hp_playr = hp_playr
         self.width = playr.width
 
-        for line_wall in self.all_line_walls:
-            self.all_line_walls[line_wall] = sh.Line(
+        for line_wall in self.all_walls_in_forest:
+            self.all_walls_in_forest[line_wall] = sh.Line(
                 line_wall[0], line_wall[1], 
                 line_wall[2], line_wall[3], 
                 color=line_wall[4], thickness=self.width_wall, 
                 batch=self.dom
                 )
         
-        for recta_wall in self.all_recta_walls:
-            self.all_recta_walls[recta_wall] = sh.Rectangle(
+        for recta_wall in self.all_spikes_in_forest:
+            self.all_spikes_in_forest[recta_wall] = sh.Rectangle(
                 recta_wall[0], recta_wall[1], 
                 recta_wall[2], recta_wall[3], 
                 color=recta_wall[4], batch=self.dom
@@ -236,7 +238,7 @@ class Wall:
     
     # Аванпост
     def all_walls(self, x_moving, y_moving): 
-        for walls in Wall.all_line_walls:
+        for walls in Wall.all_walls_in_forest:
             ogran = self.ogran_line( 
                 walls[0], walls[1], 
                 walls[2], walls[3], 
