@@ -1,80 +1,67 @@
-from Objeсts import Pl, Stena, Damag, Zombi
-from Uprav import Uprav
+from objeсts import Playr, Wall, Zombi, Damag
+from management import Managment
 import pyglet
 from pyglet.window import key
 
+screens = pyglet.display.get_display().get_screens()[0] # Определение максимальной высоты и ширины экрана
+wind = pyglet.window.Window(               # Создание окна
+    screens.width, screens.height, 
+    resizable=True, caption="gameOnPyglet"
+    ) 
 
-wind_width, wind_height = (720, 720) # Ширина и высота окна
-wind = pyglet.window.Window(width=wind_width, height=wind_height, caption="gameOnPyglet") # Создание окна
-pl = Pl()
-playr = pl.playr()
-HP = pl.HP()
+wind.maximize()
+
+pl = Playr()
+playr = pl.avatar()
+hp = pl.hp_playr()
 
 @wind.event
 def on_mouse_press(x,y,button,modifiers):
     print(f"x = {x}, y = {y}")
 
 
-
-S = Stena(playr, HP, Pl.width)
-
-def avanpost(x_moving, y_moving):
-    stena_l = S.ogran_line( 
-                            S.left_S[0], S.left_S[1], 
-                            S.left_S[2], S.left_S[3], 
-                            x_moving, y_moving)
-    stena_r = S.ogran_line( 
-                            S.right_S[0],S.right_S[1], 
-                            S.right_S[2],S.right_S[3], 
-                            x_moving, y_moving)
-    stena_v = S.ogran_line(
-                            S.verh_S[0], S.verh_S[1], 
-                            S.verh_S[2], S.verh_S[3], 
-                            x_moving, y_moving)
-    stena_n = S.ogran_line(
-                            S.niz_S[0], S.niz_S[1], 
-                            S.niz_S[2], S.niz_S[3], 
-                            x_moving, y_moving)
-
-    return stena_v and stena_n and stena_l and stena_r
-
-
-upravlenie = Uprav(playr, HP, Pl.width)
-damag = Damag(playr, HP)
-Z = Zombi(playr, HP, upravlenie)
+wall = Wall(playr, hp)
+Managmentlenie = Managment(playr, hp, screens)
+damag = Damag(playr, hp)
+zombi = Zombi(playr, hp, screens)
 
 keys = key.KeyStateHandler()
 wind.push_handlers(keys)
 
-def update(dt, speed=5):
-    Z.moving()
-    Z.attack()   
-    damag.damag_rectangle(200, 200, 20, 20, 1)
-    if keys[key.W]:
-        x_moving, y_moving = 0, speed
-        upravlenie.pl_moving(x_moving, y_moving, 
-                            avanpost(x_moving, y_moving))
-    if keys[key.S]:
-        x_moving, y_moving = 0, -speed
-        upravlenie.pl_moving(x_moving, y_moving, 
-                            avanpost(x_moving, y_moving))
-    if keys[key.A]:
-        x_moving, y_moving = -speed, 0
-        upravlenie.pl_moving(x_moving, y_moving,
-                            avanpost(x_moving, y_moving))
-    if keys[key.D]:
-        x_moving, y_moving = speed, 0
-        upravlenie.pl_moving(x_moving, y_moving,
-                            avanpost(x_moving, y_moving))
+def update(dt, speed=5, uron=1):
+    zombi.moving()
+    zombi.attack()   
+    for objects_damag in wall.all_spikes_in_forest:
+        damag.damag_rectangle(
+            objects_damag[0], objects_damag[1], 
+            objects_damag[2], objects_damag[3], 
+            uron)
+
+    walking_y = int(keys[key.W]) - int(keys[key.S]) # Ходьба по оси х
+    walking_x = int(keys[key.D]) - int(keys[key.A]) # Ходьба по оси у
+
+    if bool(walking_y):  
+        y_moving = speed * walking_y
+        Managmentlenie.playr_moving(
+            0, y_moving, 
+            wall.all_walls(0, y_moving)
+            )
+        
+    if bool(walking_x):  
+        x_moving = speed * walking_x
+        Managmentlenie.playr_moving(
+            x_moving, 0, 
+            wall.all_walls(x_moving, 0)
+            )
 
 
 @wind.event
 def on_draw():
     wind.clear()
-    Z.draw()
-    S.draw()
+    zombi.draw()
+    Wall.draw()
     pl.draw()
 
 pyglet.clock.schedule_interval(update, 1/60)
-pyglet.clock.schedule_interval(Z.spawn, 2)
+pyglet.clock.schedule_interval(zombi.spawn, 2)
 pyglet.app.run()
