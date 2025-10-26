@@ -119,7 +119,6 @@ class Zombi:
                 self.width, 4, 
                 batch=self.zombiBat, color=(255, 0, 0)
                 ), self.width / self.xp)
-            print(len(self.zombies))
 
     def moving(self):
         for zombis in self.zombies:
