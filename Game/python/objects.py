@@ -102,7 +102,7 @@ class Zombi:
 
     def spawn(self, isSpawn=True):  
         if isSpawn:
-            if bool(random.choice((0, 1))):
+            if random.choice((False, True)):
                 y = random.randint(0, self.screens.height)
                 x = random.choice((0, self.screens.width))
             else:
@@ -122,6 +122,29 @@ class Zombi:
 
     def moving(self):
         for zombis in self.zombies:
+
+            if self.playr.x != zombis.x or self.playr.y != zombis.y:
+                zombi_x = zombis.x - self.playr.x
+                zombi_y = zombis.y - self.playr.y
+
+                if zombi_x > 0:
+                    zombis.x -= self.speed
+                    self.zombies[zombis][0].x -= self.speed
+                elif zombi_x < 0:
+                    zombis.x += self.speed
+                    self.zombies[zombis][0].x += self.speed
+
+                    
+                if zombi_y > 0:
+                    zombis.y -= self.speed
+                    self.zombies[zombis][0].y -= self.speed
+                elif zombi_y < 0:
+                    zombis.y += self.speed
+                    self.zombies[zombis][0].y += self.speed
+
+
+
+            '''
             if self.playr.x > zombis.x:
                 zombis.x += self.speed
                 self.zombies[zombis][0].x += self.speed
@@ -135,7 +158,7 @@ class Zombi:
             elif self.playr.y < zombis.y:
                 zombis.y = zombis.y - self.speed
                 self.zombies[zombis][0].y -= self.speed
-                
+                '''
     def test(self, x, y, width, height):
         self.zombies[sh.Rectangle(x, y, width, height, color=self.color, batch=self.zombiBat)] = (sh.Rectangle(x, y + height, width, 3, color=(255,0,0), batch=self.zombiBat), self.width / 100)
 
