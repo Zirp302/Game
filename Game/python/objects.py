@@ -91,9 +91,8 @@ class Zombi:
         #Но я напишу
         #type это тип зомби
         self.zombiBat = pyglet.graphics.Batch()
-        self.batch1 = pyglet.graphics.Batch()
         self.width = 116
-        self.height = 69
+        self.height = 105
         self.color = (21, 110, 100)
         self.xp = 100
         self.speed = 1
@@ -101,7 +100,8 @@ class Zombi:
         self.hp_playr = hp_playr
         self.screens = screens
         self.zombies={} # значение в хэш таблице это хр зомби
-        self.animation = Animation()
+        self.bath = []
+        self.animation = Animation
 
 
     def spawn(self, isSpawn=True):  
@@ -112,17 +112,19 @@ class Zombi:
             else:
                 x = randint(0, self.screens.width)
                 y = choice((0, self.screens.height))
+            a = self.animation(x, y).batch()
+            a.batch = self.zombiBat
 
-            zombi_key = sh.Rectangle(
-                x, y, self.width, self.height, 
-                (21, 110, 100), batch=self.zombiBat
-                )
+            zombi_key = a
                 
-            self.zombies[zombi_key] = (sh.Rectangle(
+                
+            self.zombies[zombi_key] = sh.Rectangle(
                 x, y + self.height, 
-                self.width, 4, 
+                self.width, 8, 
                 batch=self.zombiBat, color=(255, 0, 0)
-                ), self.width / self.xp)
+                ), self.width / self.xp
+            
+        print(len(self.zombies))
 
     def moving(self):
         for zombis in self.zombies:
@@ -157,8 +159,6 @@ class Zombi:
 
     def draw(self):
         self.zombiBat.draw()
-        self.batch1.draw()
-
 
 class Wall: 
     # Координаты стен для отображения 

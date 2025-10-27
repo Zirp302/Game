@@ -4,12 +4,14 @@ import pyglet
 from pyglet.window import key
 
 screens = pyglet.display.get_display().get_screens()[0] # Определение максимальной высоты и ширины экрана
+# Отключает синхронизацию (У меня моник с низкой герцовкой так что не уберай)
+pyglet.options['vsync'] = False  
+wind_width, wind_height = 720, 620
+wind = pyglet.window.Window(wind_width, wind_height, resizable=True, caption="gameOnPyglet") # Создание окна 
 
-wind_width, wind_height = 720, 720
-wind = pyglet.window.Window(               # Создание окна
-    wind_width, wind_height, 
-    resizable=True, caption="gameOnPyglet"
-    ) 
+fps_display = pyglet.window.FPSDisplay(wind)
+
+fps_display.y = 600
 
 wind.maximize()
 pl = Playr()
@@ -19,8 +21,6 @@ hp = pl.hp_playr()
 @wind.event
 def on_mouse_press(x,y,button,modifiers):
     print(f"x = {x}, y = {y}")
-
-
 
 
 wall = Wall(playr, hp)
@@ -56,14 +56,16 @@ def update(dt, speed=5, uron=1):
             x_moving, 0, 
             wall.all_walls(x_moving, 0)
             )
-
+    global fps_display
 
 @wind.event
 def on_draw():
     wind.clear()
-    zombi.draw()
     Wall.draw()
     pl.draw()
+    zombi.draw()
+    fps_display.draw()
+    
 
 pyglet.clock.schedule_interval(update, 1/60)
 pyglet.clock.schedule_interval(zombi.spawn, 2)
