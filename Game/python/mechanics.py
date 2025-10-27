@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import pyglet 
 import os
 
@@ -48,3 +49,60 @@ class Animation:
 
 
 Animation()
+=======
+import pyglet 
+import os
+
+class Animation:
+    filу_python = os.path.dirname(__file__)
+    file_game = os.path.dirname(filу_python)
+    print(file_game)
+        
+    imgs_left = (
+            pyglet.image.load(str(file_game)+"/img/left_f0.png"), 
+            pyglet.image.load(str(file_game)+"/img/left_f1.png")
+            )
+
+    imgs_right = (
+            pyglet.image.load(str(file_game)+"/img/right_f0.png"), 
+            pyglet.image.load(str(file_game)+"/img/right_f1.png")
+            )
+
+    batch1 = pyglet.graphics.Batch()
+    batch2 = pyglet.graphics.Batch()
+
+    animation_right = pyglet.image.Animation.from_image_sequence(
+                imgs_right, 
+                duration=0.4,  # время показа одного кадра
+                loop=True      # анимация повторяется
+            )
+
+    animation_left = pyglet.image.Animation.from_image_sequence(
+                imgs_left, 
+                duration=0.4,  # время показа одного кадра
+                loop=True      # анимация повторяется
+            )
+
+
+    def __init__(self, x=0, y=0):
+        sprite_right = pyglet.sprite.Sprite(self.animation_right, x, y, batch=self.batch1)
+        sprite_left = pyglet.sprite.Sprite(self.animation_left, x, y, batch=self.batch2)
+
+        sprite_right.scale = 0.06
+        sprite_left.scale = 0.06
+        print(sprite_left.width)
+    
+    def batch(self, x=0):
+        if x > 0:
+            return self.batch1
+        return self.batch2
+
+
+
+
+
+
+
+Animation()
+
+>>>>>>> 452b46233ca23d2eadc9240996576dd523a39863
