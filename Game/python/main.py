@@ -1,4 +1,4 @@
-from objeсts import Playr, Wall, Zombi, Damag
+from objects import Playr, Wall, Zombi, Damag
 from management import Managment
 import pyglet
 from pyglet.window import key

@@ -126,20 +126,23 @@ class Zombi:
 
     def moving(self):
         for zombis in self.zombies:
-            if self.playr.x > zombis.x:
-                zombis.x += self.speed
-                self.zombies[zombis][0].x += self.speed
-            elif self.playr.x < zombis.x:
-                zombis.x = zombis.x - self.speed
-                self.zombies[zombis][0].x -= self.speed
+            if self.playr.x != zombis.x:
+                if self.playr.x > zombis.x:
+                    zombis.x += self.speed
+                    self.zombies[zombis][0].x += self.speed
+                else:
+                    zombis.x = zombis.x - self.speed
+                    self.zombies[zombis][0].x -= self.speed
 
-            if self.playr.y > zombis.y:
-                zombis.y += self.speed
-                self.zombies[zombis][0].y += self.speed
-            elif self.playr.y < zombis.y:
-                zombis.y = zombis.y - self.speed
-                self.zombies[zombis][0].y -= self.speed
-                
+            if self.playr.y != zombis.y:
+                if self.playr.y > zombis.y:
+                    zombis.y += self.speed
+                    self.zombies[zombis][0].y += self.speed
+                else:
+                    zombis.y = zombis.y - self.speed
+                    self.zombies[zombis][0].y -= self.speed
+
+
     def test(self, x, y, width, height):
         self.zombies[sh.Rectangle(x, y, width, height, color=self.color, batch=self.zombiBat)] = (sh.Rectangle(x, y + height, width, 3, color=(255,0,0), batch=self.zombiBat), self.width / 100)
 
