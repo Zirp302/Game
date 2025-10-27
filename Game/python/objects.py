@@ -101,7 +101,8 @@ class Zombi:
         self.screens = screens
         self.zombies={} # значение в хэш таблице это хр зомби
         self.bath = []
-        self.animation = Animation
+        self.animation = Animation()
+        self.n = 0
 
 
     def spawn(self, isSpawn=True):  
@@ -112,10 +113,11 @@ class Zombi:
             else:
                 x = randint(0, self.screens.width)
                 y = choice((0, self.screens.height))
-            a = self.animation(x, y).batch()
-            a.batch = self.zombiBat
 
-            zombi_key = a
+            self.art = self.animation.fox(x, y, self.playr.x - x)
+            self.art.batch = self.zombiBat
+
+            zombi_key = self.art
                 
                 
             self.zombies[zombi_key] = sh.Rectangle(
@@ -128,6 +130,7 @@ class Zombi:
 
     def moving(self):
         for zombis in self.zombies:
+            print(zombis)
             if self.playr.x != zombis.x:
                 if self.playr.x > zombis.x:
                     zombis.x += self.speed
