@@ -4,13 +4,14 @@ import pyglet
 from pyglet.window import key
 
 screens = pyglet.display.get_display().get_screens()[0] # Определение максимальной высоты и ширины экрана
+
+wind_width, wind_height = 720, 720
 wind = pyglet.window.Window(               # Создание окна
-    screens.width, screens.height, 
+    wind_width, wind_height, 
     resizable=True, caption="gameOnPyglet"
     ) 
 
 wind.maximize()
-
 pl = Playr()
 playr = pl.avatar()
 hp = pl.hp_playr()
@@ -18,6 +19,8 @@ hp = pl.hp_playr()
 @wind.event
 def on_mouse_press(x,y,button,modifiers):
     print(f"x = {x}, y = {y}")
+
+
 
 
 wall = Wall(playr, hp)
@@ -40,14 +43,14 @@ def update(dt, speed=5, uron=1):
     walking_y = int(keys[key.W]) - int(keys[key.S]) # Ходьба по оси х
     walking_x = int(keys[key.D]) - int(keys[key.A]) # Ходьба по оси у
 
-    if bool(walking_y):  
+    if walking_y:  
         y_moving = speed * walking_y
         Managmentlenie.playr_moving(
             0, y_moving, 
             wall.all_walls(0, y_moving)
             )
         
-    if bool(walking_x):  
+    if walking_x:  
         x_moving = speed * walking_x
         Managmentlenie.playr_moving(
             x_moving, 0, 

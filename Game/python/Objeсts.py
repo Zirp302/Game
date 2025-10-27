@@ -1,7 +1,8 @@
 import pyglet
 from pyglet import shapes as sh
 from time import time
-import random
+from mechanics import Animation
+from random import choice, randint
 
 class Playr:
     def __init__(self):
@@ -90,8 +91,9 @@ class Zombi:
         #Но я напишу
         #type это тип зомби
         self.zombiBat = pyglet.graphics.Batch()
-        self.width = 35
-        self.height = 35
+        self.batch1 = pyglet.graphics.Batch()
+        self.width = 116
+        self.height = 69
         self.color = (21, 110, 100)
         self.xp = 100
         self.speed = 1
@@ -99,15 +101,17 @@ class Zombi:
         self.hp_playr = hp_playr
         self.screens = screens
         self.zombies={} # значение в хэш таблице это хр зомби
+        self.animation = Animation()
+
 
     def spawn(self, isSpawn=True):  
         if isSpawn:
-            if bool(random.choice((0, 1))):
-                y = random.randint(0, self.screens.height)
-                x = random.choice((0, self.screens.width))
+            if choice((0, 1)):
+                y = randint(0, self.screens.height)
+                x = choice((0, self.screens.width))
             else:
-                x = random.randint(0, self.screens.width)
-                y = random.choice((0, self.screens.height))
+                x = randint(0, self.screens.width)
+                y = choice((0, self.screens.height))
 
             zombi_key = sh.Rectangle(
                 x, y, self.width, self.height, 
@@ -119,7 +123,6 @@ class Zombi:
                 self.width, 4, 
                 batch=self.zombiBat, color=(255, 0, 0)
                 ), self.width / self.xp)
-            print(len(self.zombies))
 
     def moving(self):
         for zombis in self.zombies:
@@ -151,6 +154,7 @@ class Zombi:
 
     def draw(self):
         self.zombiBat.draw()
+        self.batch1.draw()
 
 
 class Wall: 
