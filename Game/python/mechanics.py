@@ -42,7 +42,3 @@ class Animation:
         return self.sprite_left
     
 
-
-
-
-Animation()
