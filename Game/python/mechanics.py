@@ -17,7 +17,6 @@ class Animation:
 
     batch1 = pyglet.graphics.Batch()
     batch2 = pyglet.graphics.Batch()
-    batch3 = pyglet.graphics.Batch()
 
     animation_right = pyglet.image.Animation.from_image_sequence(
         imgs_right, 
