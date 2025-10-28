@@ -277,4 +277,3 @@ class Wall:
         Wall.dom.draw()
         
 
-
