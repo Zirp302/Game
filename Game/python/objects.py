@@ -91,6 +91,7 @@ class Zombi:
         #Но я напишу
         #type это тип зомби
         self.zombiBat = pyglet.graphics.Batch()
+        self.zombiBatch = pyglet.graphics.Batch()
         self.width = 116
         self.height = 105
         self.color = (21, 110, 100)
@@ -102,7 +103,6 @@ class Zombi:
         self.zombies={} # значение в хэш таблице это хр зомби
         self.bath = []
         self.animation = Animation()
-        self.n = 0
 
 
     def spawn(self, isSpawn=True):  
@@ -115,36 +115,49 @@ class Zombi:
                 y = choice((0, self.screens.height))
 
             self.art = self.animation.fox(x, y, self.playr.x - x)
-            self.art.batch = self.zombiBat
-
+            self.art[0].batch = self.zombiBat
             zombi_key = self.art
                 
                 
-            self.zombies[zombi_key] = sh.Rectangle(
+            self.zombies[zombi_key] = [sh.Rectangle(
                 x, y + self.height, 
                 self.width, 8, 
                 batch=self.zombiBat, color=(255, 0, 0)
-                ), self.width / self.xp
+                ), self.width / self.xp, 0]
             
         print(len(self.zombies))
 
     def moving(self):
         for zombis in self.zombies:
-            print(zombis)
-            if self.playr.x != zombis.x:
-                if self.playr.x > zombis.x:
-                    zombis.x += self.speed
+            n = self.zombies[zombis][2]
+            if self.playr.x != zombis[n].x:
+                if self.playr.x > zombis[n].x:
+                    if n != 1:
+                        zombis[0].batch = None
+                        self.zombies[zombis][2] = 1
+                        zombis[1].x = zombis[0].x
+                        zombis[1].y = zombis[0].y
+                        zombis[1].batch = self.zombiBat
+                    zombis[1].x += self.speed
                     self.zombies[zombis][0].x += self.speed
+                
                 else:
-                    zombis.x = zombis.x - self.speed
+                    if n != 0:
+                        zombis[1].batch = None
+                        self.zombies[zombis][2] = 0
+                        zombis[0].x = zombis[1].x
+                        zombis[0].y = zombis[1].y
+                        zombis[0].batch = self.zombiBat
+                    zombis[0].x -= self.speed
                     self.zombies[zombis][0].x -= self.speed
-
-            if self.playr.y != zombis.y:
-                if self.playr.y > zombis.y:
-                    zombis.y += self.speed
+            
+            
+            if self.playr.y != zombis[n].y:
+                if self.playr.y > zombis[n].y:
+                    zombis[n].y += self.speed
                     self.zombies[zombis][0].y += self.speed
                 else:
-                    zombis.y = zombis.y - self.speed
+                    zombis[n].y -= self.speed
                     self.zombies[zombis][0].y -= self.speed
 
 
@@ -153,6 +166,7 @@ class Zombi:
 
     def attack(self, impact_force=1):
         for zomby in self.zombies:
+            zomby = zomby[self.zombies[zomby][2]]
             Damag(self.playr, self.hp_playr
                     ).damag_rectangle(
                         zomby.x, zomby.y, 
