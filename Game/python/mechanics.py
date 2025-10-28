@@ -31,16 +31,14 @@ class Animation:
         )      # анимация повторяется
 
 
-    def fox(self, x=0, y=0, left_or_right=0, img_name=''): # Добавить автоматизаци
-        self.left_or_right = left_or_right
+    def fox(self, x=0, y=0, playr_x=0, img_name=''): # Добавить автоматизацию
         self.sprite_right = pyglet.sprite.Sprite(self.animation_right, x, y)
         self.sprite_left = pyglet.sprite.Sprite(self.animation_left, x, y)
         
         self.sprite_right.scale = 0.06
         self.sprite_left.scale = 0.06
-
-        return self.sprite_left, self.sprite_right
+        if playr_x > 0:
+            return self.sprite_right
+        return self.sprite_left
     
-
-
 
