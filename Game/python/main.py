@@ -40,17 +40,14 @@ def update(dt, speed=5, uron=1):
             objects_damag[2], objects_damag[3], 
             uron)
 
-    walking_y = int(keys[key.W]) - int(keys[key.S]) # Ходьба по оси х
-    walking_x = int(keys[key.D]) - int(keys[key.A]) # Ходьба по оси у
-
-    if walking_y:  
+    if walking_y := (keys[key.W] - keys[key.S]): # Проверка ходьбы по оси y
         y_moving = speed * walking_y
         Managmentlenie.playr_moving(
             0, y_moving, 
             wall.all_walls(0, y_moving)
             )
         
-    if walking_x:  
+    if walking_x := (keys[key.D] - keys[key.A]): # Проверка ходьбы по оси x
         x_moving = speed * walking_x
         Managmentlenie.playr_moving(
             x_moving, 0, 

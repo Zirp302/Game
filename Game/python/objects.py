@@ -102,7 +102,24 @@ class Zombi:
         self.screens = screens
         self.zombies={} # значение в хэш таблице это хр зомби
         self.bath = []
+        self.damag = Damag(self.playr, self.hp_playr)
         self.animation = Animation()
+
+    def turn(self, zombis, n):
+        if n:
+            zombis[1].batch = None
+            self.zombies[zombis][2] = 0
+            zombis[0].x = zombis[1].x
+            zombis[0].y = zombis[1].y
+            zombis[0].batch = self.zombiBat
+            return zombis
+        
+        zombis[0].batch = None
+        self.zombies[zombis][2] = 1
+        zombis[1].x = zombis[0].x
+        zombis[1].y = zombis[0].y
+        zombis[1].batch = self.zombiBat
+        return zombis
 
 
     def spawn(self, isSpawn=True):  
@@ -130,27 +147,18 @@ class Zombi:
     def moving(self):
         for zombis in self.zombies:
             n = self.zombies[zombis][2]
+
             if self.playr.x != zombis[n].x:
                 if self.playr.x > zombis[n].x:
-                    if n != 1:
-                        zombis[0].batch = None
-                        self.zombies[zombis][2] = 1
-                        zombis[1].x = zombis[0].x
-                        zombis[1].y = zombis[0].y
-                        zombis[1].batch = self.zombiBat
+                    if not n:
+                        zombis = self.turn(zombis, n)
                     zombis[1].x += self.speed
                     self.zombies[zombis][0].x += self.speed
-                
                 else:
-                    if n != 0:
-                        zombis[1].batch = None
-                        self.zombies[zombis][2] = 0
-                        zombis[0].x = zombis[1].x
-                        zombis[0].y = zombis[1].y
-                        zombis[0].batch = self.zombiBat
+                    if n:
+                        zombis = self.turn(zombis, n)
                     zombis[0].x -= self.speed
                     self.zombies[zombis][0].x -= self.speed
-            
             
             if self.playr.y != zombis[n].y:
                 if self.playr.y > zombis[n].y:
@@ -159,6 +167,8 @@ class Zombi:
                 else:
                     zombis[n].y -= self.speed
                     self.zombies[zombis][0].y -= self.speed
+            
+            
 
 
     def test(self, x, y, width, height):
@@ -167,8 +177,7 @@ class Zombi:
     def attack(self, impact_force=1):
         for zomby in self.zombies:
             zomby = zomby[self.zombies[zomby][2]]
-            Damag(self.playr, self.hp_playr
-                    ).damag_rectangle(
+            self.damag.damag_rectangle(
                         zomby.x, zomby.y, 
                         zomby.width, zomby.height, 
                         impact_force
