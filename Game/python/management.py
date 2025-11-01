@@ -6,7 +6,7 @@ class Managment:
         self.screens = screens
 
     #   Передвижеие игрока и его полоски жизни
-    def playr_moving(self, x, y, avanpost):
+    def playr_moving(self, x, y, avanpost, pist):
         # left - линия огранияения ухода влево
         # right - линия огранияения ухода вправо
         # bottom - линия огранияения ухода вниз

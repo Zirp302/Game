@@ -1,5 +1,5 @@
-from objects import Playr, Wall, Zombi, Damag
-from management import Managment
+from objects import *
+from management import *
 import pyglet
 from pyglet.window import key
 
@@ -25,9 +25,9 @@ def on_mouse_press(x,y,button,modifiers):
 
 wall = Wall(playr, hp)
 Managmentlenie = Managment(playr, hp, screens)
-damag = Damag(playr, hp)
 zombi = Zombi(playr, hp, screens)
-
+pist = Ognestrel(playr, zombi, mugSpeed=99, kd=0.05, mugsNow=100000, MaxMugsNum=1000, damag=100)
+damag = Damag(playr, hp)
 keys = key.KeyStateHandler()
 wind.push_handlers(keys)
 
@@ -42,17 +42,19 @@ def update(dt, speed=5, uron=1):
 
     if walking_y := (keys[key.W] - keys[key.S]): # Проверка ходьбы по оси y
         y_moving = speed * walking_y
-        Managmentlenie.playr_moving(
-            0, y_moving, 
-            wall.all_walls(0, y_moving)
-            )
+        Managmentlenie.playr_moving(0, y_moving, wall.all_walls(0, y_moving), pist.pulaMoving)
+        pist.pulaMoving(playr.x, playr.y + 50)
         
     if walking_x := (keys[key.D] - keys[key.A]): # Проверка ходьбы по оси x
         x_moving = speed * walking_x
-        Managmentlenie.playr_moving(
-            x_moving, 0, 
-            wall.all_walls(x_moving, 0)
-            )
+        Managmentlenie.playr_moving(x_moving, 0, wall.all_walls(x_moving, 0), pist.pulaMoving)
+        pist.pulaMoving(playr.x, playr.y + 50)
+    pist.damage()
+    if keys[key.Q]:
+        pist.shot()
+    elif keys[key.E]:
+        pist.recharge()
+
     global fps_display
 
 @wind.event
@@ -62,6 +64,7 @@ def on_draw():
     pl.draw()
     zombi.draw()
     fps_display.draw()
+    pist.draw()
     
 
 pyglet.clock.schedule_interval(update, 1/60)
