@@ -44,7 +44,6 @@ class Damag:
         self.playr = playr
         self.hp_playr = hp_playr
         self.hp_playr_One = Playr().width / Playr().hp_playr_width
-        
     # Функция для определения получаемого урона   
     def damag(self, uron, x1, y1, x2, y2, x, y):
         X = x1 - Playr().width < self.playr.x + x < x2
@@ -62,6 +61,7 @@ class Damag:
                 self.playr.y = Playr().y
                 self.hp_playr.x = Playr().x
                 self.hp_playr.y = Playr().y + Playr().height_playr
+
     
     #   Получение урона при нахождении в линии
     def damag_line(self, x1, y1, x2, y2, uron=1, x=0, y=0):
@@ -100,7 +100,7 @@ class Zombi:
         self.playr = playr
         self.hp_playr = hp_playr
         self.screens = screens
-        self.zombies={} # значение в хэш таблице это хр зомби
+        self.zombies = {} # значение в хэш таблице это хр зомби
         self.bath = []
         self.damag = Damag(self.playr, self.hp_playr)
         self.animation = Animation()
@@ -121,7 +121,6 @@ class Zombi:
         zombis[1].batch = self.zombiBat
         return zombis
 
-
     def spawn(self, isSpawn=True):  
         if isSpawn:
             if choice((0, 1)):
@@ -130,12 +129,10 @@ class Zombi:
             else:
                 x = randint(0, self.screens.width)
                 y = choice((0, self.screens.height))
-
+            
             self.art = self.animation.fox(x, y, self.playr.x - x)
             self.art[0].batch = self.zombiBat
             zombi_key = self.art
-                
-                
             self.zombies[zombi_key] = [sh.Rectangle(
                 x, y + self.height, 
                 self.width, 8, 
@@ -167,21 +164,15 @@ class Zombi:
                 else:
                     zombis[n].y -= self.speed
                     self.zombies[zombis][0].y -= self.speed
-            
-            
-
-
-    def test(self, x, y, width, height):
-        self.zombies[sh.Rectangle(x, y, width, height, color=self.color, batch=self.zombiBat)] = (sh.Rectangle(x, y + height, width, 3, color=(255,0,0), batch=self.zombiBat), self.width / 100)
 
     def attack(self, impact_force=1):
         for zomby in self.zombies:
-            zomby = zomby[self.zombies[zomby][2]]
+            zomby = zomby[self.zombies[zomby][2]] # Проверяет нынешнию анимация для определения параметров зомби
             self.damag.damag_rectangle(
-                        zomby.x, zomby.y, 
-                        zomby.width, zomby.height, 
-                        impact_force
-                        )
+                zomby.x, zomby.y, 
+                zomby.width, zomby.height, 
+                impact_force
+                )
 
     def draw(self):
         self.zombiBat.draw()
@@ -269,7 +260,7 @@ class Wall:
             return False
         return True
     
-    # Аванпост
+    # Все стены
     def all_walls(self, x_moving, y_moving): 
         for walls in Wall.all_walls_in_forest:
             ogran = self.ogran_line( 
@@ -285,4 +276,108 @@ class Wall:
     def draw(): 
         Wall.dom.draw()
         
+
+# Доделай
+
+mugs = {}
+class Ognestrel:
+    def __init__(self, playr, zombi, damag=10, MaxMugsNum=10, mugsType="common", type=None, isPist=True, mugsNow=100, kd=0.5, mugSpeed=99):
+        self.ognTypes={}
+        if not type or type not in self.ognTypes:
+            self.bat = pyglet.graphics.Batch()
+            self.damag = damag
+            self.zombi = zombi
+            self.MaxMugsNum = MaxMugsNum
+            self.mugsType = mugsType
+            self.playr = playr
+            self.pist = pyglet.shapes.Line(
+                playr.x, playr.y + 50, 
+                playr.x - 10, playr.y + 50, 
+                batch = self.bat
+                )
+            self.x = playr.x
+            self.y = playr.y + self.playr.height / 3
+            self.x2 = playr.x - 10
+            self.y2 = self.y
+            self.isPist = isPist
+            self.mugsNum = MaxMugsNum
+            self.AllmugsLab = pyglet.text.Label(
+                str(mugsNow - MaxMugsNum), 
+                650, 650, color=(255, 255, 0), batch = self.bat
+                )
+            self.kd = kd
+            self.mugsInLab = pyglet.text.Label(
+                str(MaxMugsNum) + "/" + str(MaxMugsNum), 
+                650, 690, color=(255, 255, 0), batch = self.bat
+                )
+            self.time = 0
+            self.mugSpeed = mugSpeed
+
+            
+    def shot(self):
+        global mugs
+        if self.time <= time() and self.mugsNum != 0:
+            now, space = self.mugsInLab.text.split("/")
+            self.mugsInLab.text = str(int(now) - 1) + "/" + space
+            self.mugsNum -= 1
+            self.time = time() + self.kd
+            mx, my = self.x2, self.y2
+            if self.y == self.y2:
+                if self.x < self.x2:
+                    x, y = self.mugSpeed, 0
+                else:
+                    x, y = -self.mugSpeed, 0
+            else:
+                if self.y < self.y2:
+                    x, y = 0, self.mugSpeed
+                else:
+                    x, y = 0, -self.mugSpeed
+            mug = pyglet.shapes.Rectangle(mx, my, 4, 2, color = (250, 250, 0), batch = self.bat)
+            mugs[mug] = (x, y)
+            return mug
+
+    def pulaMoving(self, x, y):
+        self.pist.x = x 
+        self.pist.y = y      
+
+    def recharge(self):
+        if self.MaxMugsNum <= int(self.AllmugsLab.text):
+            now = int(self.mugsInLab.text.split("/")[0])
+            self.AllmugsLab.text = str(int(self.AllmugsLab.text) - (self.MaxMugsNum - int(now)))
+            self.mugsNum = self.MaxMugsNum
+            self.mugsInLab.text = str(str(self.mugsNum) + "/" + self.mugsInLab.text.split("/")[1])
+
+    def damage(self):
+        zombie = self.zombi.zombies
+        mugsToDel = []
+        for i in mugs:
+            zombToDel = []
+            for ii in zombie:
+                try:
+                    x, y, x1, y1 = i.x, i.y, i.x + i.width, i.y + i.height
+                    zx, zy, zx1, zy1 = ii.x, ii.y, ii.x + ii.width, ii.y + ii.height
+                    if ((zy1 >= y1 > zy) or (zy1 >= y > zy)) and ((zx1 >= x1 > zx) or (zx1 >= x > zx)):
+                        mugsToDel.append(i)
+                        rest, xp = zombie[ii]
+                        rest.width -= xp * self.damag
+                        #self.toDel.append(i)
+                        if rest.width <= 0:
+                            zombToDel.append(ii)
+                        break
+                except AttributeError:
+                    break
+            for ii in zombToDel:
+                zombie.pop(ii)
+                ii.delete()
+        for i in mugsToDel:
+            i.delete()
+            mugs.pop(i)
+
+    def draw(self):
+        self.bat.draw()
+
+
+
+
+
 
