@@ -22,9 +22,9 @@ class Pl:
         self.width = width
         self.height = height
         self.color = color
-        self.xp=pyglet.text.Label(str(xp),20,690,color=(255,0,0))
-        self.pl=pyglet.graphics.Batch()
-        self.harXp=harXp
+        self.xp = pyglet.text.Label(str(xp),20,690,color=(255,0,0))
+        self.pl = pyglet.graphics.Batch()
+        self.harXp = harXp
         self.playr = sh.Rectangle(self.x, self.y, self.width, self.height, self.color, batch=self.pl)
         self.HP_playr = harXp
         self.HP_One = self.width / self.harXp
@@ -181,7 +181,7 @@ class Walls:
         self.uprav = uprav
 
 class Zombi:
-    def __init__(self, playr, plrUprv, batch=zombiBat, width=35, height=35, col={21, 110, 100}, type=None, xp=100, speed=1, spawnSpeed=1/2, damage=10):
+    def __init__(self, playr, plrUprv, batch=zombiBat, width=35, height=35, col={21, 110, 100}, type=None, xp=100, speed=1, spawnSpeed=2, damage=10):
         #Мне лень писать self
         #Но я напишу
         #type это тип зомби
@@ -269,7 +269,7 @@ class Zombi:
 bat = pyglet.graphics.Batch()
 mugs = {}
 class Ognestrel:
-    def __init__(self, playr, phot="ognestrel.png", damag=10, MaxMugsNum=10, mugsType="common", type=None, isPist=True, bat=bat, mugsNow=100, kd=0.5, mugSpeed=15):
+    def __init__(self, playr, phot="ognestrel.png", damag=10, MaxMugsNum=10, mugsType="common", type=None, isPist=True, bat=bat, mugsNow=100, kd=0.2, mugSpeed=15):
         self.ognTypes={}
         if not type or type not in self.ognTypes:
             self.damag = damag
