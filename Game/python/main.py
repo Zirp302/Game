@@ -14,8 +14,8 @@ fps_display = pyglet.window.FPSDisplay(wind)
 fps_display.y = 600
 
 wind.maximize()
-pl = Playr()
-playr = pl.avatar()
+pl = Player()
+player = pl.avatar()
 hp = pl.hp_playr()
 
 @wind.event
@@ -27,7 +27,7 @@ wall = Wall(playr, hp)
 Managmentlenie = Managment(playr, hp, screens)
 zombi = Zombi(playr, hp, screens)
 pist = Ognestrel(playr, zombi, mugSpeed=99, kd=0.05, mugsNow=100000, MaxMugsNum=1000, damag=100)
-damag = Damag(playr, hp)
+damage = Damage(playr, hp)
 keys = key.KeyStateHandler()
 wind.push_handlers(keys)
 
