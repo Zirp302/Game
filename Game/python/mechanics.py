@@ -6,13 +6,13 @@ class Animation:
     file_game = os.path.dirname(filу_python)
     print(file_game)
     imgs_left = (
-        pyglet.image.load(str(file_game)+"/img/left_f0.png"), 
-        pyglet.image.load(str(file_game)+"/img/left_f1.png")
+        pyglet.image.load(str(file_game)+"/img/left_fox0.png"), 
+        pyglet.image.load(str(file_game)+"/img/left_fox1.png")
         )
 
     imgs_right = (
-        pyglet.image.load(str(file_game)+"/img/right_f0.png"), 
-        pyglet.image.load(str(file_game)+"/img/right_f1.png")
+        pyglet.image.load(str(file_game)+"/img/right_fox0.png"), 
+        pyglet.image.load(str(file_game)+"/img/right_fox1.png")
         )
 
     batch1 = pyglet.graphics.Batch()
@@ -31,7 +31,7 @@ class Animation:
         )      # анимация повторяется
 
 
-    def fox(self, x=0, y=0, playr_x=0, img_name=''): # Добавить автоматизацию
+    def fox(self, x=0, y=0, img_name=''): # Добавить автоматизацию
         self.sprite_right = pyglet.sprite.Sprite(self.animation_right, x, y)
         self.sprite_left = pyglet.sprite.Sprite(self.animation_left, x, y)
 

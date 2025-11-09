@@ -8,54 +8,44 @@ screens = pyglet.display.get_display().get_screens()[0] # Определение
 pyglet.options['vsync'] = False  
 wind_width, wind_height = 720, 620
 wind = pyglet.window.Window(wind_width, wind_height, resizable=True, caption="gameOnPyglet") # Создание окна 
+wind.maximize()
 
 fps_display = pyglet.window.FPSDisplay(wind)
-
 fps_display.y = 600
 
-wind.maximize()
+
 pl = Player()
 player = pl.avatar()
-hp = pl.hp_playr()
+hp = pl.hp_player()
 
 @wind.event
 def on_mouse_press(x,y,button,modifiers):
     print(f"x = {x}, y = {y}")
 
 
-wall = Wall(playr, hp)
-Managmentlenie = Managment(playr, hp, screens)
-zombi = Zombi(playr, hp, screens)
-pist = Ognestrel(playr, zombi, mugSpeed=99, kd=0.05, mugsNow=100000, MaxMugsNum=1000, damag=100)
-damage = Damage(playr, hp)
+wall = Wall(player, hp)
+Managmentlenie = Managment(player, hp, screens)
+zombi = Zombi(player, hp, screens)
+damage = Damage(player, hp)
 keys = key.KeyStateHandler()
 wind.push_handlers(keys)
 
 def update(dt, speed=5, uron=1):
     zombi.moving()
     zombi.attack()   
-    for objects_damag in wall.all_spikes_in_forest:
-        damag.damag_rectangle(
-            objects_damag[0], objects_damag[1], 
-            objects_damag[2], objects_damag[3], 
+    for objects_damage in wall.all_spikes_in_forest:
+        damage.damage_rectangle(
+            objects_damage[0], objects_damage[1], 
+            objects_damage[2], objects_damage[3], 
             uron)
-
+        
     if walking_y := (keys[key.W] - keys[key.S]): # Проверка ходьбы по оси y
         y_moving = speed * walking_y
-        Managmentlenie.playr_moving(0, y_moving, wall.all_walls(0, y_moving), pist.pulaMoving)
-        pist.pulaMoving(playr.x, playr.y + 50)
+        Managmentlenie.player_moving(0, y_moving, wall.all_walls(0, y_moving))
         
     if walking_x := (keys[key.D] - keys[key.A]): # Проверка ходьбы по оси x
         x_moving = speed * walking_x
-        Managmentlenie.playr_moving(x_moving, 0, wall.all_walls(x_moving, 0), pist.pulaMoving)
-        pist.pulaMoving(playr.x, playr.y + 50)
-    pist.damage()
-    if keys[key.Q]:
-        pist.shot()
-    elif keys[key.E]:
-        pist.recharge()
-
-    global fps_display
+        Managmentlenie.player_moving(x_moving, 0, wall.all_walls(x_moving, 0))
 
 @wind.event
 def on_draw():
@@ -64,8 +54,6 @@ def on_draw():
     pl.draw()
     zombi.draw()
     fps_display.draw()
-    pist.draw()
-    
 
 pyglet.clock.schedule_interval(update, 1/60)
 pyglet.clock.schedule_interval(zombi.spawn, 2)
