@@ -4,8 +4,7 @@ import pyglet
 from pyglet.window import key
 
 screens = pyglet.display.get_display().get_screens()[0] # Определение максимальной высоты и ширины экрана
-# Отключает синхронизацию (У меня моник с низкой герцовкой так что не уберай)
-pyglet.options['vsync'] = False  
+pyglet.options['vsync'] = False  # Отключает синхронизацию (У меня моник с низкой герцовкой так что не уберай)
 wind_width, wind_height = 720, 620
 wind = pyglet.window.Window(wind_width, wind_height, resizable=True, caption="gameOnPyglet") # Создание окна 
 wind.maximize()
@@ -15,24 +14,33 @@ fps_display.y = 600
 
 
 pl = Player()
-player = pl.avatar()
-hp = pl.hp_player()
+pl.body()
+pl.hp()
+player = pl.body_entitie
+hp = pl.hp_entitie
+
+entitie = Entitie()
+entitie.hp()
+entitie.body()
+e_player = entitie.body_entitie
+e_hp = entitie.hp_entitie
 
 @wind.event
-def on_mouse_press(x,y,button,modifiers):
+def on_mouse_press(x, y, button, modifiers):
     print(f"x = {x}, y = {y}")
 
 
-wall = Wall(player, hp)
 Managmentlenie = Managment(player, hp, screens)
-zombi = Zombi(player, hp, screens)
+wall = Wall(player, hp)
+zombi = Zombi(player, hp, screens, entitie)
 damage = Damage(player, hp)
 keys = key.KeyStateHandler()
 wind.push_handlers(keys)
 
 def update(dt, speed=5, uron=1):
     zombi.moving()
-    zombi.attack()   
+    zombi.attack()  
+    
     for objects_damage in wall.all_spikes_in_forest:
         damage.damage_rectangle(
             objects_damage[0], objects_damage[1], 
@@ -54,6 +62,8 @@ def on_draw():
     pl.draw()
     zombi.draw()
     fps_display.draw()
+    entitie.draw()
+    
 
 pyglet.clock.schedule_interval(update, 1/60)
 pyglet.clock.schedule_interval(zombi.spawn, 2)

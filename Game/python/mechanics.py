@@ -1,9 +1,9 @@
 import pyglet 
-import os
+from os import path
 
 class Animation:
-    filу_python = os.path.dirname(__file__)
-    file_game = os.path.dirname(filу_python)
+    filу_python = path.dirname(__file__)
+    file_game = path.dirname(filу_python)
     print(file_game)
     imgs_left = (
         pyglet.image.load(str(file_game)+"/img/left_fox0.png"), 

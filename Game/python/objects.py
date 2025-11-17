@@ -3,64 +3,64 @@ from pyglet import shapes as sh
 from time import time
 from mechanics import Animation
 from random import choice, randint
-
+'''
 class Player:
     def __init__(self):
         # Характеристеки игрока
         self.x, self.y = 340, 340 # Координаты спавна
         self.width = 50   # Длинна персонажа и полосы здоровья
-        self.height_player = 100
-        self.height_hp_player = 15
+        self.height = 100
+        self.height_hp = 15
         self.time = 0
         # Характеристики здаровья
-        self.hp_player_width = 15          # Количество здоровья
-        self.hp_player_One = self.width / self.hp_player_width  # Длина одной еденице здаровья
-        # Пакет для обединения hp_player и player
-        self.pak_player = pyglet.graphics.Batch()
+        self.hp_width = 15          # Количество здоровья
+        self.hp_One = self.width / self.hp_width  # Длина одной еденице здаровья
+        # Пакет для обединения hp и player
+        self.pak = pyglet.graphics.Batch()
 
     def avatar(self, color=(54, 136, 181)): #Создание и отображение игрока
         self.player = sh.Rectangle(
             self.x, self.y, 
-            self.width, self.height_player, 
-            color, batch=self.pak_player)
+            self.width, self.height, 
+            color, batch=self.pak)
         return self.player
 
-    # hp_player игрока
-    def hp_player(self, color=(255,0,0)):
-        self.hp_player = sh.Rectangle(
-            self.x, self.y + self.height_player, 
-            self.width, self.height_hp_player, 
-            color, batch=self.pak_player)
-        return self.hp_player
+    # hp игрока
+    def hp(self, color=(255,0,0)):
+        self.hp = sh.Rectangle(
+            self.x, self.y + self.height, 
+            self.width, self.height_hp, 
+            color, batch=self.pak)
+        return self.hp
     
     def draw(self):
-        self.pak_player.draw()
-
+        self.pak.draw()
+'''
 
 
 class Damage:
     time = 0
-    def __init__(self, player, hp_player):  # значение по умолчанию
+    def __init__(self, player, hp):  # значение по умолчанию
         self.player = player
-        self.hp_player = hp_player
-        self.hp_player_One = Player().width / Player().hp_player_width
+        self.hp = hp
+        self.hp_One = Player().width / Player().width
     # Функция для определения получаемого урона   
     def damage(self, uron, x1, y1, x2, y2, x, y):
         X = x1 - Player().width < self.player.x + x < x2
-        Y = y1 - Player().height_player < self.player.y + y < y2
+        Y = y1 - Player().height < self.player.y + y < y2
         kd = 0.75
         time1 = time()
         # Миханника получение урона
         if X and Y and time1 - Damage.time > kd: 
             Damage.time = time1
-            self.hp_player.width -= self.hp_player_One * uron
+            self.hp.width -= self.hp_One * uron
             # Механника смерти
-            if self.hp_player.width <= 0:
-                self.hp_player.width = Player().width
+            if self.hp.width <= 0:
+                self.hp.width = Player().width
                 self.player.x = Player().x
                 self.player.y = Player().y
-                self.hp_player.x = Player().x
-                self.hp_player.y = Player().y + Player().height_player
+                self.hp.x = Player().x
+                self.hp.y = Player().y + Player().height
 
     
     #   Получение урона при нахождении в линии
@@ -86,7 +86,7 @@ class Damage:
 
 
 class Zombi:
-    def __init__(self, player, hp_player, screens):
+    def __init__(self, player, hp, screens, entitie):
         #Мне лень писать self
         #Но я напишу
         #type это тип зомби
@@ -97,11 +97,15 @@ class Zombi:
         self.xp = 100
         self.speed = 1
         self.player = player
-        self.hp_player = hp_player
+        self.hp = hp
+
+        self.entitie = entitie
+
+
         self.screens = screens
         self.zombies = {} # значение в хэш таблице это хр зомби
         self.bath = []
-        self.damage = Damage(self.player, self.hp_player)
+        self.damage = Damage(self.player, self.hp)
         self.animation = Animation()
 
     def turn(self, zombis, n):
@@ -172,6 +176,10 @@ class Zombi:
                 zomby.width, zomby.height, 
                 impact_force
                 )
+            self.entitie.damage(
+                zomby.x, zomby.y, 
+                zomby.width, zomby.height
+                )
 
     def draw(self):
         self.zombiBat.draw()
@@ -201,9 +209,9 @@ class Wall:
         }
 
     #   Отображение стен (смотри на названия)
-    def __init__(self, player, hp_player): 
+    def __init__(self, player, hp): 
         self.player = player   
-        self.hp_player = hp_player
+        self.hp = hp
         self.width = player.width
 
         for line_wall in self.all_walls_in_forest:
@@ -245,7 +253,7 @@ class Wall:
     def ogran_line(self, x1, y1, x2, y2, x=0, y=0):
         x1, y1, x2, y2 = self.line(x1, y1, x2, y2, x, y) # Переназначение переменных через функцию line
         X = x1 - Player().width < self.player.x + x < x2
-        Y = y1 - Player().height_player < self.player.y + y < y2
+        Y = y1 - Player().height < self.player.y + y < y2
         if X and Y:
             return False
         return True
@@ -254,7 +262,7 @@ class Wall:
     def ogran_rectangle(self, x1, y1, width, height, x=0, y=0):
         x2, y2 = self.rectangle(x1, y1, width, height, x, y) # Переназначение переменных через функцию rectangle
         X = x1 - Player().width < self.player.x + x < x2
-        Y = y1 - Player().height_player < self.player.y + y < y2
+        Y = y1 - Player().height < self.player.y + y < y2
         if X and Y:
             return False
         return True
@@ -274,3 +282,83 @@ class Wall:
     #   Функция для отображения стен
     def draw(): 
         Wall.dom.draw()
+
+
+# ____________________________________________________________________________________________________
+
+class Entitie:
+    def __init__(self):
+        # Параметры сущности
+        self.color_body = (54, 136, 181)
+        self.x = 320
+        self.y = 320
+        self.width = 100
+        self.height = 100
+        
+        # Параметры полоски HP 
+        self.color_hp = (255, 0, 0)
+        self.height_hp = 15
+        self.x_hp = self.x
+        self.y_hp = self.y + self.height
+        self.hp_quantity = 15
+
+        # Игровые параметры
+        self.x_spawn = 320
+        self.y_spawn = 320
+        self.time = 0
+        self.kd = 0.75
+        self.pak = pyglet.graphics.Batch()
+
+    def hp(self):
+        self.hp_quantity = self.hp_quantity
+        self.width_one_hp = self.width / self.hp_quantity
+        print(self.width_one_hp)
+        self.hp_entitie = sh.Rectangle(
+            self.x_hp, self.y_hp, 
+            self.width, self.height_hp, 
+            self.color_hp, batch=self.pak
+            )
+
+    def body(self): # Создание существа
+        self.body_entitie = sh.Rectangle(
+            self.x, self.y, 
+            self.width, self.height, 
+            self.color_body, batch=self.pak
+            )
+
+    def damage(self, x1, y1, width_threat, height_threat, uron=1):
+        # Распределение крайних точек атакующего обекта
+        x2 = x1 + width_threat
+        y2 = y1 + height_threat
+        x1, x2 = min(x1, x2), max(x1, x2)
+        y1, y2 = min(y1, y2), max(y1, y2)
+        X = x1 - self.width < self.x < x2
+        Y = y1 - self.height < self.y < y2
+        time0 = time()
+        time_kd = time0 - self.time > self.kd
+
+        # Миханника получение урона
+        if X and Y and time_kd: 
+            self.time = time0
+            self.hp_entitie.width -= self.width_one_hp * uron
+            print(uron, self.width_one_hp, self.hp_entitie.width)
+            if self.hp_entitie.width <= 0:
+                self.death()
+
+    def death(self): # Механника смерти
+        # Возраждение игрока
+        self.x = self.x_spawn
+        self.y = self.x_spawn
+        # Возполнение hp
+        self.hp_entitie.width = self.width
+        self.hp_entitie.x = self.x_spawn
+        self.hp_entitie.y = self.y_spawn + self.height
+            
+
+    def draw(self):
+        self.pak.draw()
+    
+class Player(Entitie):
+    def __init__(self):
+        super().__init__()
+        self.width = 50

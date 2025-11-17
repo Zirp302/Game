@@ -11,8 +11,10 @@ class Managment:
         # right - линия огранияения ухода вправо
         # bottom - линия огранияения ухода вниз
         # top - линия огранияения ухода вверх
-        left, right = 0, self.screens.width - self.player.width 
-        bottom, top = 0, self.screens.height - self.player.height - self.HP.height
+        left = 0
+        right = self.screens.width - self.player.width 
+        bottom = 0
+        top = self.screens.height - self.player.height - self.HP.height
 
         map_x = left < self.player.x + x < right
         map_y = bottom < self.player.y + y < top
