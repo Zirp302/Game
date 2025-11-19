@@ -3,90 +3,92 @@ from pyglet import shapes as sh
 from time import time
 from mechanics import Animation
 from random import choice, randint
-'''
-class Player:
+
+
+#_____Сущности_____________________________________________________________________________#
+
+class Entitie:
     def __init__(self):
-        # Характеристеки игрока
-        self.x, self.y = 340, 340 # Координаты спавна
-        self.width = 50   # Длинна персонажа и полосы здоровья
-        self.height = 100
-        self.height_hp = 15
+        # Игровые параметры
+        self.x_spawn = 320
+        self.y_spawn = 320
         self.time = 0
-        # Характеристики здаровья
-        self.hp_width = 15          # Количество здоровья
-        self.hp_One = self.width / self.hp_width  # Длина одной еденице здаровья
-        # Пакет для обединения hp и player
+        self.kd = 0.75
         self.pak = pyglet.graphics.Batch()
 
-    def avatar(self, color=(54, 136, 181)): #Создание и отображение игрока
-        self.player = sh.Rectangle(
-            self.x, self.y, 
-            self.width, self.height, 
-            color, batch=self.pak)
-        return self.player
+        # Параметры сущности
+        self.color_body = (54, 136, 181)
+        self.width = 100
+        self.height = 100
+        
+        # Параметры полоски HP 
+        self.color_hp = (255, 0, 0)
+        self.height_hp = 15
+        self.x_hp = self.x_spawn
+        self.y_hp = self.y_spawn + self.height
+        self.hp_quantity = 15
 
-    # hp игрока
-    def hp(self, color=(255,0,0)):
-        self.hp = sh.Rectangle(
-            self.x, self.y + self.height, 
+    def hp(self):
+        self.hp_quantity = self.hp_quantity
+        self.width_one_hp = self.width / self.hp_quantity
+        self.hp_entitie = sh.Rectangle(
+            self.x_hp, self.y_hp, 
             self.width, self.height_hp, 
-            color, batch=self.pak)
-        return self.hp
-    
-    def draw(self):
-        self.pak.draw()
-'''
+            self.color_hp, batch=self.pak
+            )
 
+    def body(self): # Создание существа
+        self.body_entitie = sh.Rectangle(
+            self.x_spawn, self.y_spawn, 
+            self.width, self.height, 
+            self.color_body, batch=self.pak
+            )
 
-class Damage:
-    time = 0
-    def __init__(self, player, hp):  # значение по умолчанию
-        self.player = player
-        self.hp = hp
-        self.hp_One = Player().width / Player().width
-    # Функция для определения получаемого урона   
-    def damage(self, uron, x1, y1, x2, y2, x, y):
-        X = x1 - Player().width < self.player.x + x < x2
-        Y = y1 - Player().height < self.player.y + y < y2
-        kd = 0.75
-        time1 = time()
-        # Миханника получение урона
-        if X and Y and time1 - Damage.time > kd: 
-            Damage.time = time1
-            self.hp.width -= self.hp_One * uron
-            # Механника смерти
-            if self.hp.width <= 0:
-                self.hp.width = Player().width
-                self.player.x = Player().x
-                self.player.y = Player().y
-                self.hp.x = Player().x
-                self.hp.y = Player().y + Player().height
-
-    
-    #   Получение урона при нахождении в линии
-    def damage_line(self, x1, y1, x2, y2, uron=1, x=0, y=0):
-        if x1 == x2:
-            x1 -= 10
-            x2 += 10
-            y1, y2 = min(y1, y2), max(y1, y2)
-        else:
-            y1 -= 10
-            y2 += 10
-            x1, x2 = min(x1, x2), max(x1, x2)
-        self.damage(uron, x1, y1, x2, y2, x, y)
-
-    #   Получение урона при нахождении в прямоуглоьнике
-    def damage_rectangle(self, x1, y1, width, height, uron=1, x=0, y=0):
-        x2 = x1 + width
-        y2 = y1 + height
+    def damage(self, x1, y1, width_threat, height_threat, uron=1):
+        # Распределение крайних точек атакующего обекта
+        x2 = x1 + width_threat
+        y2 = y1 + height_threat
         x1, x2 = min(x1, x2), max(x1, x2)
         y1, y2 = min(y1, y2), max(y1, y2)
-        self.damage(uron, x1, y1, x2, y2, x, y)
+
+        X = x1 - self.width < self.body_entitie.x < x2
+        Y = y1 - self.height < self.body_entitie.y < y2
+        time0 = time()
+        time_kd = time0 - self.time > self.kd
+
+        if X and Y and time_kd: 
+            self.time = time0
+            self.hp_entitie.width -= self.width_one_hp * uron
+            print(uron, self.width_one_hp, self.hp_entitie.width)
+            if self.hp_entitie.width <= 0:
+                self.death()
+
+    def death(self): # Механника смерти
+        # Возраждение игрока
+        self.body_entitie.x = self.x_spawn
+        self.body_entitie.y = self.x_spawn
+        # Возполнение hp
+        self.hp_entitie.width = self.width
+        self.hp_entitie.x = self.x_spawn
+        self.hp_entitie.y = self.y_spawn + self.height
+            
+
+    def draw(self):
+        self.pak.draw()
 
 
+#_____Игрок________________________________________________________________________________#
+
+class Player(Entitie):
+    def __init__(self):
+        super().__init__()
+        self.width = 50
+
+
+#_____Зомби________________________________________________________________________________#
 
 class Zombi:
-    def __init__(self, player, hp, screens, entitie):
+    def __init__(self, player, screens):
         #Мне лень писать self
         #Но я напишу
         #type это тип зомби
@@ -97,15 +99,11 @@ class Zombi:
         self.xp = 100
         self.speed = 1
         self.player = player
-        self.hp = hp
-
-        self.entitie = entitie
 
 
         self.screens = screens
         self.zombies = {} # значение в хэш таблице это хр зомби
         self.bath = []
-        self.damage = Damage(self.player, self.hp)
         self.animation = Animation()
 
     def turn(self, zombis, n):
@@ -133,7 +131,7 @@ class Zombi:
                 x = randint(0, self.screens.width)
                 y = choice((0, self.screens.height))
             
-            self.art = self.animation.fox(x, y, self.player.x)
+            self.art = self.animation.fox(x, y, self.player.body_entitie.x)
             self.art[0].batch = self.zombiBat
             zombi_key = self.art
             self.zombies[zombi_key] = [sh.Rectangle(
@@ -148,8 +146,8 @@ class Zombi:
         for zombis in self.zombies:
             n = self.zombies[zombis][2]
 
-            if self.player.x != zombis[n].x:
-                if self.player.x > zombis[n].x:
+            if self.player.body_entitie.x != zombis[n].x:
+                if self.player.body_entitie.x > zombis[n].x:
                     if not n:
                         zombis = self.turn(zombis, n)
                     zombis[1].x += self.speed
@@ -160,8 +158,8 @@ class Zombi:
                     zombis[0].x -= self.speed
                     self.zombies[zombis][0].x -= self.speed
             
-            if self.player.y != zombis[n].y:
-                if self.player.y > zombis[n].y:
+            if self.player.body_entitie.y != zombis[n].y:
+                if self.player.body_entitie.y > zombis[n].y:
                     zombis[n].y += self.speed
                     self.zombies[zombis][0].y += self.speed
                 else:
@@ -171,48 +169,45 @@ class Zombi:
     def attack(self, impact_force=1):
         for zomby in self.zombies:
             zomby = zomby[self.zombies[zomby][2]] # Проверяет нынешнию анимация для определения параметров зомби
-            self.damage.damage_rectangle(
+            self.player.damage(
                 zomby.x, zomby.y, 
-                zomby.width, zomby.height, 
+                zomby.width, zomby.height,
                 impact_force
                 )
-            self.entitie.damage(
-                zomby.x, zomby.y, 
-                zomby.width, zomby.height
-                )
+
 
     def draw(self):
         self.zombiBat.draw()
 
+
+#_____Стены________________________________________________________________________________#
+
 class Wall: 
-    # Координаты стен для отображения 
-    left_wall = (240, 230, 240, 490, (255, 255, 255))
-    right_wall = (480, 230, 480, 490, (255, 255, 255))
-    niz_wall = (350, 240, 490, 240, (255, 255, 255))
-    verh_wall = (230, 480, 490, 480, (255, 255, 255))
-    # Координаты чегото наносящего урон
-    spike1 = (200, 200, 20, 20, (111,111,111))
-    # Ширина стен
-    width_wall = 20
-    # Пакет данных со всеми стенами
-    dom = pyglet.graphics.Batch() 
-
-    all_walls_in_forest = {
-        left_wall: None, 
-        right_wall: None, 
-        niz_wall: None, 
-        verh_wall: None
-        }
-    
-    all_spikes_in_forest = {
-        spike1: None
-        }
-
     #   Отображение стен (смотри на названия)
-    def __init__(self, player, hp): 
+    def __init__(self, player): 
         self.player = player   
-        self.hp = hp
-        self.width = player.width
+        # Координаты стен для отображения 
+        left_wall = (240, 230, 240, 490, (255, 255, 255))
+        right_wall = (480, 230, 480, 490, (255, 255, 255))
+        niz_wall = (350, 240, 490, 240, (255, 255, 255))
+        verh_wall = (230, 480, 490, 480, (255, 255, 255))
+        # Координаты чегото наносящего урон
+        spike1 = (200, 200, 20, 20, (111,111,111))
+        # Ширина стен
+        self.width_wall = 20
+        # Пакет данных со всеми стенами
+        self.dom = pyglet.graphics.Batch() 
+
+        self.all_walls_in_forest = {
+            left_wall: None, 
+            right_wall: None, 
+            niz_wall: None, 
+            verh_wall: None
+            }
+        
+        self.all_spikes_in_forest = {
+            spike1: None
+            }
 
         for line_wall in self.all_walls_in_forest:
             self.all_walls_in_forest[line_wall] = sh.Line(
@@ -252,8 +247,8 @@ class Wall:
     #   Ограничение прохаждение через линии
     def ogran_line(self, x1, y1, x2, y2, x=0, y=0):
         x1, y1, x2, y2 = self.line(x1, y1, x2, y2, x, y) # Переназначение переменных через функцию line
-        X = x1 - Player().width < self.player.x + x < x2
-        Y = y1 - Player().height < self.player.y + y < y2
+        X = x1 - self.player.width < self.player.x + x < x2
+        Y = y1 - self.player.height < self.player.y + y < y2
         if X and Y:
             return False
         return True
@@ -261,15 +256,15 @@ class Wall:
     #   Ограничение прохаждение через прямоуглоьники
     def ogran_rectangle(self, x1, y1, width, height, x=0, y=0):
         x2, y2 = self.rectangle(x1, y1, width, height, x, y) # Переназначение переменных через функцию rectangle
-        X = x1 - Player().width < self.player.x + x < x2
-        Y = y1 - Player().height < self.player.y + y < y2
+        X = x1 - self.player.width < self.player.x + x < x2
+        Y = y1 - self.player.height < self.player.y + y < y2
         if X and Y:
             return False
         return True
     
     # Все стены
     def all_walls(self, x_moving, y_moving): 
-        for walls in Wall.all_walls_in_forest:
+        for walls in self.all_walls_in_forest:
             ogran = self.ogran_line( 
                 walls[0], walls[1], 
                 walls[2], walls[3], 
@@ -280,85 +275,7 @@ class Wall:
         return True
 
     #   Функция для отображения стен
-    def draw(): 
-        Wall.dom.draw()
+    def draw(self): 
+        self.dom.draw()
 
 
-# ____________________________________________________________________________________________________
-
-class Entitie:
-    def __init__(self):
-        # Параметры сущности
-        self.color_body = (54, 136, 181)
-        self.x = 320
-        self.y = 320
-        self.width = 100
-        self.height = 100
-        
-        # Параметры полоски HP 
-        self.color_hp = (255, 0, 0)
-        self.height_hp = 15
-        self.x_hp = self.x
-        self.y_hp = self.y + self.height
-        self.hp_quantity = 15
-
-        # Игровые параметры
-        self.x_spawn = 320
-        self.y_spawn = 320
-        self.time = 0
-        self.kd = 0.75
-        self.pak = pyglet.graphics.Batch()
-
-    def hp(self):
-        self.hp_quantity = self.hp_quantity
-        self.width_one_hp = self.width / self.hp_quantity
-        print(self.width_one_hp)
-        self.hp_entitie = sh.Rectangle(
-            self.x_hp, self.y_hp, 
-            self.width, self.height_hp, 
-            self.color_hp, batch=self.pak
-            )
-
-    def body(self): # Создание существа
-        self.body_entitie = sh.Rectangle(
-            self.x, self.y, 
-            self.width, self.height, 
-            self.color_body, batch=self.pak
-            )
-
-    def damage(self, x1, y1, width_threat, height_threat, uron=1):
-        # Распределение крайних точек атакующего обекта
-        x2 = x1 + width_threat
-        y2 = y1 + height_threat
-        x1, x2 = min(x1, x2), max(x1, x2)
-        y1, y2 = min(y1, y2), max(y1, y2)
-        X = x1 - self.width < self.x < x2
-        Y = y1 - self.height < self.y < y2
-        time0 = time()
-        time_kd = time0 - self.time > self.kd
-
-        # Миханника получение урона
-        if X and Y and time_kd: 
-            self.time = time0
-            self.hp_entitie.width -= self.width_one_hp * uron
-            print(uron, self.width_one_hp, self.hp_entitie.width)
-            if self.hp_entitie.width <= 0:
-                self.death()
-
-    def death(self): # Механника смерти
-        # Возраждение игрока
-        self.x = self.x_spawn
-        self.y = self.x_spawn
-        # Возполнение hp
-        self.hp_entitie.width = self.width
-        self.hp_entitie.x = self.x_spawn
-        self.hp_entitie.y = self.y_spawn + self.height
-            
-
-    def draw(self):
-        self.pak.draw()
-    
-class Player(Entitie):
-    def __init__(self):
-        super().__init__()
-        self.width = 50
