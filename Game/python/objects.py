@@ -59,7 +59,6 @@ class Entitie:
         if X and Y and time_kd: 
             self.time = time0
             self.hp_entitie.width -= self.width_one_hp * uron
-            print(uron, self.width_one_hp, self.hp_entitie.width)
             if self.hp_entitie.width <= 0:
                 self.death()
 
@@ -99,7 +98,7 @@ class Zombi:
         self.xp = 100
         self.speed = 1
         self.player = player
-
+        self.player_body = player.body_entitie
 
         self.screens = screens
         self.zombies = {} # значение в хэш таблице это хр зомби
@@ -108,18 +107,18 @@ class Zombi:
 
     def turn(self, zombis, n):
         if n:
-            zombis[1].batch = None
-            self.zombies[zombis][2] = 0
-            zombis[0].x = zombis[1].x
-            zombis[0].y = zombis[1].y
-            zombis[0].batch = self.zombiBat
+            zombis[0].batch = None
+            self.zombies[zombis][2] = 1
+            zombis[1].x = zombis[0].x
+            zombis[1].y = zombis[0].y
+            zombis[1].batch = self.zombiBat
             return zombis
         
-        zombis[0].batch = None
-        self.zombies[zombis][2] = 1
-        zombis[1].x = zombis[0].x
-        zombis[1].y = zombis[0].y
-        zombis[1].batch = self.zombiBat
+        zombis[1].batch = None
+        self.zombies[zombis][2] = 0
+        zombis[0].x = zombis[1].x
+        zombis[0].y = zombis[1].y
+        zombis[0].batch = self.zombiBat
         return zombis
 
     def spawn(self, isSpawn=True):  
@@ -131,40 +130,48 @@ class Zombi:
                 x = randint(0, self.screens.width)
                 y = choice((0, self.screens.height))
             
-            self.art = self.animation.fox(x, y, self.player.body_entitie.x)
+            self.art = self.animation.fox(x, y)
             self.art[0].batch = self.zombiBat
             zombi_key = self.art
-            self.zombies[zombi_key] = [sh.Rectangle(
-                x, y + self.height, 
-                self.width, 8, 
-                batch=self.zombiBat, color=(255, 0, 0)
-                ), self.width / self.xp, 0]
+            self.zombies[zombi_key] = [
+                sh.Rectangle(
+                    x, y + self.height, 
+                    self.width, 8, 
+                    batch=self.zombiBat, color=(255, 0, 0)
+                ), self.width / self.xp, 0
+                ]
             
         print(len(self.zombies))
 
     def moving(self):
         for zombis in self.zombies:
             n = self.zombies[zombis][2]
+            zombis_ser_x = zombis[n].x + zombis[n].width // 2
+            player_ser_x = self.player_body.x + self.player_body.width // 2
 
-            if self.player.body_entitie.x != zombis[n].x:
-                if self.player.body_entitie.x > zombis[n].x:
-                    if not n:
-                        zombis = self.turn(zombis, n)
-                    zombis[1].x += self.speed
-                    self.zombies[zombis][0].x += self.speed
+            if zombis_ser_x < player_ser_x - 70:
+                if not n:
+                    zombis = self.turn(zombis, 1)
+                    n = 1
+                zombis[1].x += self.speed
+                self.zombies[zombis][0].x += self.speed
+
+            elif player_ser_x < zombis_ser_x - 70:
+                if n:
+                    zombis = self.turn(zombis, 0)
+                    n = 0
+                zombis[0].x -= self.speed
+                self.zombies[zombis][0].x -= self.speed
+
+
+            if self.player_body.y != zombis[n].y:
+                if self.player_body.y > zombis[n].y:
+                    speed = self.speed
                 else:
-                    if n:
-                        zombis = self.turn(zombis, n)
-                    zombis[0].x -= self.speed
-                    self.zombies[zombis][0].x -= self.speed
-            
-            if self.player.body_entitie.y != zombis[n].y:
-                if self.player.body_entitie.y > zombis[n].y:
-                    zombis[n].y += self.speed
-                    self.zombies[zombis][0].y += self.speed
-                else:
-                    zombis[n].y -= self.speed
-                    self.zombies[zombis][0].y -= self.speed
+                    speed = -self.speed
+                
+                zombis[n].y += speed 
+                self.zombies[zombis][0].y += speed
 
     def attack(self, impact_force=1):
         for zomby in self.zombies:
@@ -174,7 +181,6 @@ class Zombi:
                 zomby.width, zomby.height,
                 impact_force
                 )
-
 
     def draw(self):
         self.zombiBat.draw()
@@ -226,7 +232,7 @@ class Wall:
             
 
     #   Проверка линий
-    def line(self, x1, y1, x2, y2, x, y, speed=5): 
+    def line(self, x1, y1, x2, y2, x=0, y=0, speed=5): 
         if x1 == x2:
             x1 -= 10
             x2 += 10
@@ -239,29 +245,34 @@ class Wall:
         return x1, y1, x2, y2
 
     #   Проверка прямоугольников
-    def rectangle(self, x1, y1, width, height, x, y, speed=5):
+    def rectangle(self, x1, y1, width, height, x=0, y=0, speed=5):
         x2 = x1 + width
         y2 = y1 + height
         return x2, y2
 
-    #   Ограничение прохаждение через линии
-    def ogran_line(self, x1, y1, x2, y2, x=0, y=0):
-        x1, y1, x2, y2 = self.line(x1, y1, x2, y2, x, y) # Переназначение переменных через функцию line
-        X = x1 - self.player.width < self.player.x + x < x2
-        Y = y1 - self.player.height < self.player.y + y < y2
-        if X and Y:
-            return False
-        return True
-
-    #   Ограничение прохаждение через прямоуглоьники
-    def ogran_rectangle(self, x1, y1, width, height, x=0, y=0):
-        x2, y2 = self.rectangle(x1, y1, width, height, x, y) # Переназначение переменных через функцию rectangle
+    def ogran(self, x, y, x1, y1, x2, y2):
         X = x1 - self.player.width < self.player.x + x < x2
         Y = y1 - self.player.height < self.player.y + y < y2
         if X and Y:
             return False
         return True
     
+    def ogran_line(self, x1, y1, x2, y2, x=0, y=0):
+        if x1 == x2:
+            x1 -= 10
+            x2 += 10
+            return self.ogran(x, y, x1, y1, x2, y2)
+        
+        y1 -= 10
+        y2 += 10
+        return self.ogran(x, y, x1, y1, x2, y2)
+
+    #   Ограничение прохаждение через прямоуглоьники
+    def ogran_rectangle(self, x1, y1, width, height, x=0, y=0):
+        x2 = x1 + width
+        y2 = y1 + height
+        return self.ogran(x, y, x1, y1, x2, y2)
+
     # Все стены
     def all_walls(self, x_moving, y_moving): 
         for walls in self.all_walls_in_forest:
@@ -270,7 +281,7 @@ class Wall:
                 walls[2], walls[3], 
                 x_moving, y_moving
                 )
-            if ogran == False:
+            if not ogran:
                 return False
         return True
 

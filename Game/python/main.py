@@ -3,6 +3,7 @@ from management import *
 import pyglet
 from pyglet.window import key
 
+
 screens = pyglet.display.get_display().get_screens()[0] # Определение максимальной высоты и ширины экрана
 pyglet.options['vsync'] = False  # Отключает синхронизацию (У меня моник с низкой герцовкой так что не уберай)
 wind_width, wind_height = 720, 620
@@ -11,7 +12,6 @@ wind.maximize()
 
 fps_display = pyglet.window.FPSDisplay(wind)
 fps_display.y = 600
-
 
 player = Player()
 player.body()
@@ -33,12 +33,10 @@ wind.push_handlers(keys)
 def update(dt, speed=5, uron=1):
     zombi.moving()
     zombi.attack()  
-    
     player.damage(
         200, 200, 
         20, 20, 
         uron)
-        
     if walking_y := (keys[key.W] - keys[key.S]): # Проверка ходьбы по оси y
         y_moving = speed * walking_y
         managment.player_moving(0, y_moving, wall.all_walls(0, y_moving))
@@ -54,8 +52,7 @@ def on_draw():
     player.draw()
     zombi.draw()
     fps_display.draw()
-    
 
 pyglet.clock.schedule_interval(update, 1/60)
-pyglet.clock.schedule_interval(zombi.spawn, 2)
+pyglet.clock.schedule_interval(zombi.spawn, 1/30)
 pyglet.app.run()
