@@ -79,9 +79,37 @@ class Entitie:
 #_____Игрок________________________________________________________________________________#
 
 class Player(Entitie):
-    def __init__(self):
+    def __init__(self, screens):
         super().__init__()
         self.width = 50
+        self.screens = screens
+        self.screens_width = screens.width
+        self.screens_height =  screens.height
+    
+
+
+    #   Передвижеие игрока и его полоски жизни
+    def moving(self, x, y, all_walls):
+        # left - линия огранияения ухода влево
+        # right - линия огранияения ухода вправо
+        # bottom - линия огранияения ухода вниз
+        # top - линия огранияения ухода вверх
+        left = 0
+        right = self.screens_width - self.width 
+        bottom = 0
+        top = self.screens_height - self.height - self.hp_entitie.height
+
+        map_x = left < self.body_entitie.x + x < right
+        map_y = bottom < self.body_entitie.y + y < top
+
+        if all_walls:
+            if map_x:
+                self.body_entitie.x += x
+                self.hp_entitie.x += x
+
+            if map_y:
+                self.body_entitie.y += y
+                self.hp_entitie.y += y
 
 
 #_____Зомби________________________________________________________________________________#
@@ -91,8 +119,7 @@ class Zombi:
         #Мне лень писать self
         #Но я напишу
         #type это тип зомби
-        self.zombiBat = pyglet.graphics.Batch()
-        self.zombiBatch = pyglet.graphics.Batch()
+        self.batch_zombi = pyglet.graphics.Batch()
         self.width = 116
         self.height = 72
         self.xp = 100
@@ -111,14 +138,14 @@ class Zombi:
             self.zombies[zombis][2] = 1
             zombis[1].x = zombis[0].x
             zombis[1].y = zombis[0].y
-            zombis[1].batch = self.zombiBat
+            zombis[1].batch = self.batch_zombi
             return zombis
         
         zombis[1].batch = None
         self.zombies[zombis][2] = 0
         zombis[0].x = zombis[1].x
         zombis[0].y = zombis[1].y
-        zombis[0].batch = self.zombiBat
+        zombis[0].batch = self.batch_zombi
         return zombis
 
     def spawn(self, isSpawn=True):  
@@ -131,13 +158,13 @@ class Zombi:
                 y = choice((0, self.screens.height))
             
             self.art = self.animation.fox(x, y)
-            self.art[0].batch = self.zombiBat
+            self.art[0].batch = self.batch_zombi
             zombi_key = self.art
             self.zombies[zombi_key] = [
                 sh.Rectangle(
                     x, y + self.height, 
                     self.width, 8, 
-                    batch=self.zombiBat, color=(255, 0, 0)
+                    batch=self.batch_zombi, color=(255, 0, 0)
                 ), self.width / self.xp, 0
                 ]
             
@@ -164,14 +191,12 @@ class Zombi:
                 self.zombies[zombis][0].x -= self.speed
 
 
-            if self.player_body.y != zombis[n].y:
-                if self.player_body.y > zombis[n].y:
-                    speed = self.speed
-                else:
-                    speed = -self.speed
-                
-                zombis[n].y += speed 
-                self.zombies[zombis][0].y += speed
+            if self.player_body.y > zombis[n].y + 5:
+                zombis[n].y += self.speed 
+                self.zombies[zombis][0].y += self.speed
+            elif self.player_body.y < zombis[n].y - 5:
+                zombis[n].y -= self.speed 
+                self.zombies[zombis][0].y -= self.speed
 
     def attack(self, impact_force=1):
         for zomby in self.zombies:
@@ -183,7 +208,7 @@ class Zombi:
                 )
 
     def draw(self):
-        self.zombiBat.draw()
+        self.batch_zombi.draw()
 
 
 #_____Стены________________________________________________________________________________#
@@ -250,6 +275,7 @@ class Wall:
         y2 = y1 + height
         return x2, y2
 
+    # Проверка пересечений объектов
     def ogran(self, x, y, x1, y1, x2, y2):
         X = x1 - self.player.width < self.player.x + x < x2
         Y = y1 - self.player.height < self.player.y + y < y2

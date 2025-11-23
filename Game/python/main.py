@@ -1,5 +1,4 @@
 from objects import *
-from management import *
 import pyglet
 from pyglet.window import key
 
@@ -13,7 +12,7 @@ wind.maximize()
 fps_display = pyglet.window.FPSDisplay(wind)
 fps_display.y = 600
 
-player = Player()
+player = Player(screens)
 player.body()
 player.hp()
 player_body = player.body_entitie
@@ -24,7 +23,6 @@ def on_mouse_press(x, y, button, modifiers):
     print(f"x = {x}, y = {y}")
 
 
-managment = Managment(player, screens)
 wall = Wall(player_body)
 zombi = Zombi(player, screens)
 keys = key.KeyStateHandler()
@@ -37,13 +35,14 @@ def update(dt, speed=5, uron=1):
         200, 200, 
         20, 20, 
         uron)
+    
     if walking_y := (keys[key.W] - keys[key.S]): # Проверка ходьбы по оси y
         y_moving = speed * walking_y
-        managment.player_moving(0, y_moving, wall.all_walls(0, y_moving))
+        player.moving(0, y_moving, wall.all_walls(0, y_moving))
         
     if walking_x := (keys[key.D] - keys[key.A]): # Проверка ходьбы по оси x
         x_moving = speed * walking_x
-        managment.player_moving(x_moving, 0, wall.all_walls(x_moving, 0))
+        player.moving(x_moving, 0, wall.all_walls(x_moving, 0))
 
 @wind.event
 def on_draw():
@@ -54,5 +53,5 @@ def on_draw():
     fps_display.draw()
 
 pyglet.clock.schedule_interval(update, 1/60)
-pyglet.clock.schedule_interval(zombi.spawn, 1/30)
+pyglet.clock.schedule_interval(zombi.spawn, 2)
 pyglet.app.run()
