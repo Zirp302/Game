@@ -3,7 +3,6 @@ import pyglet
 from pyglet.window import key
 from menu import *
 
-
 screens = pyglet.display.get_display().get_screens()[0] # Определение максимальной высоты и ширины экрана
 pyglet.options['vsync'] = False  # Отключает синхронизацию (У меня моник с низкой герцовкой так что не уберай)
 wind_width, wind_height = 720, 620
@@ -12,17 +11,18 @@ wind.maximize()
 
 draw_run = True
 play_run = True
+settings_run = False
 menu = Menu(screens.width, screens.height)
-
+menu.stop()
+menu.game()
 fps_display = pyglet.window.FPSDisplay(wind)
 fps_display.y = 600
-
 
 player = Player(screens)
 player.body()
 player.hp()
-player_body = player.body_entitie
-hp = player.hp_entitie
+player_body = player.body_player
+hp = player.hp_player
 
 @wind.event
 def on_mouse_press(x, y, button, modifiers):
@@ -30,25 +30,27 @@ def on_mouse_press(x, y, button, modifiers):
 
     global play_run
     global draw_run
+    global settings_run
     menu.key(x, y)
 
-    if menu.key_play and play_run:
+    if menu.keys_click[0] and play_run: # Кнопка Играть
         pyglet.clock.schedule_interval(update, 1/60)
         pyglet.clock.schedule_interval(zombi.spawn, 2)
         draw_run = False
         play_run = False
+    
+    elif menu.keys_click[1] and play_run: # Кнопка Настройки
+        settings_run = True
+        print(9)
 
+    elif menu.keys_click[2] and play_run: # Кнопка Выйти
+        wind.close()
+    
     elif menu.key_menu:
         pyglet.clock.unschedule(update)
         pyglet.clock.unschedule(zombi.spawn)
         play_run = True
         draw_run = True
-    
-    elif menu.key_settings:
-        print(9)
-
-    elif menu.key_exat:
-        wind.close()
 
 wall = Wall(player_body)
 zombi = Zombi(player, screens)
@@ -58,6 +60,9 @@ wind.push_handlers(keys)
 def update(dt, speed=5, uron=1):
     zombi.moving()
     zombi.attack()  
+    zombi.damag(
+        200, 200, 
+        20, 20)
     player.damage(
         200, 200, 
         20, 20, 
@@ -78,9 +83,7 @@ def on_draw():
     if draw_run:
         menu.draw()
         return
-    wall.draw()
-    player.draw()
-    zombi.draw()
+    all_batch.draw()
     fps_display.draw()
 
 

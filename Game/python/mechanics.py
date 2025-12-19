@@ -16,9 +16,6 @@ class Animation:
             pyglet.image.load(str(self.file_game)+"/img/right_fox1.png")
             )
 
-        self.batch1 = pyglet.graphics.Batch()
-        self.batch2 = pyglet.graphics.Batch()
-
         self.animation_right = pyglet.image.Animation.from_image_sequence(
             self.imgs_right, 
             duration=0.4,  # время показа одного кадра

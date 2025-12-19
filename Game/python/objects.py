@@ -5,20 +5,20 @@ from mechanics import Animation
 from random import choice, randint
 
 
-#_____Сущности_____________________________________________________________________________#
+all_batch = pyglet.graphics.Batch()
+#_____Игрок________________________________________________________________________________#
 
-class Entitie:
-    def __init__(self):
+class Player:
+    def __init__(self, screens):
         # Игровые параметры
         self.x_spawn = 320
         self.y_spawn = 320
         self.time = 0
         self.kd = 0.75
-        self.pak = pyglet.graphics.Batch()
 
         # Параметры сущности
         self.color_body = (54, 136, 181)
-        self.width = 100
+        self.width = 50
         self.height = 100
         
         # Параметры полоски HP 
@@ -28,20 +28,25 @@ class Entitie:
         self.y_hp = self.y_spawn + self.height
         self.hp_quantity = 15
 
+        self.screens = screens
+        self.screens_width = screens.width
+        self.screens_height =  screens.height
+
     def hp(self):
         self.hp_quantity = self.hp_quantity
         self.width_one_hp = self.width / self.hp_quantity
-        self.hp_entitie = sh.Rectangle(
+        self.hp_player = sh.Rectangle(
             self.x_hp, self.y_hp, 
             self.width, self.height_hp, 
-            self.color_hp, batch=self.pak
+            self.color_hp, batch=all_batch, 
+            group = pyglet.graphics.Group(1)
             )
 
     def body(self): # Создание существа
-        self.body_entitie = sh.Rectangle(
+        self.body_player = sh.Rectangle(
             self.x_spawn, self.y_spawn, 
             self.width, self.height, 
-            self.color_body, batch=self.pak
+            self.color_body, batch=all_batch
             )
 
     def damage(self, x1, y1, width_threat, height_threat, uron=1):
@@ -51,43 +56,26 @@ class Entitie:
         x1, x2 = min(x1, x2), max(x1, x2)
         y1, y2 = min(y1, y2), max(y1, y2)
 
-        X = x1 - self.width < self.body_entitie.x < x2
-        Y = y1 - self.height < self.body_entitie.y < y2
+        X = x1 - self.width < self.body_player.x < x2
+        Y = y1 - self.height < self.body_player.y < y2
         time0 = time()
         time_kd = time0 - self.time > self.kd
 
         if X and Y and time_kd: 
             self.time = time0
-            self.hp_entitie.width -= self.width_one_hp * uron
-            if self.hp_entitie.width <= 0:
+            self.hp_player.width -= self.width_one_hp * uron
+            if self.hp_player.width <= 0:
                 self.death()
 
     def death(self): # Механника смерти
         # Возраждение игрока
-        self.body_entitie.x = self.x_spawn
-        self.body_entitie.y = self.x_spawn
+        self.body_player.x = self.x_spawn
+        self.body_player.y = self.x_spawn
         # Возполнение hp
-        self.hp_entitie.width = self.width
-        self.hp_entitie.x = self.x_spawn
-        self.hp_entitie.y = self.y_spawn + self.height
-            
-
-    def draw(self):
-        self.pak.draw()
-
-
-#_____Игрок________________________________________________________________________________#
-
-class Player(Entitie):
-    def __init__(self, screens):
-        super().__init__()
-        self.width = 50
-        self.screens = screens
-        self.screens_width = screens.width
-        self.screens_height =  screens.height
+        self.hp_player.width = self.width
+        self.hp_player.x = self.x_spawn
+        self.hp_player.y = self.y_spawn + self.height
     
-
-
     #   Передвижеие игрока и его полоски жизни
     def moving(self, x, y, all_walls):
         # left - линия огранияения ухода влево
@@ -97,19 +85,21 @@ class Player(Entitie):
         left = 0
         right = self.screens_width - self.width 
         bottom = 0
-        top = self.screens_height - self.height - self.hp_entitie.height
+        top = self.screens_height - self.height - self.hp_player.height
 
-        map_x = left < self.body_entitie.x + x < right
-        map_y = bottom < self.body_entitie.y + y < top
+        map_x = left < self.body_player.x + x < right
+        map_y = bottom < self.body_player.y + y < top
 
         if all_walls:
             if map_x:
-                self.body_entitie.x += x
-                self.hp_entitie.x += x
+                self.body_player.x += x
+                self.hp_player.x += x
 
             if map_y:
-                self.body_entitie.y += y
-                self.hp_entitie.y += y
+                self.body_player.y += y
+                self.hp_player.y += y
+            
+
 
 
 #_____Зомби________________________________________________________________________________#
@@ -119,38 +109,31 @@ class Zombi:
         #Мне лень писать self
         #Но я напишу
         #type это тип зомби
-        self.batch_zombi = pyglet.graphics.Batch()
         self.width = 116
         self.height = 72
         self.xp = 100
         self.speed = 1
         self.player = player
-        self.player_body = player.body_entitie
+        self.player_body = player.body_player
+        self.kd = 1
+        
+        self.height_hp = 15
+        self.hp_quantity = 5
+        self.hp_quantity = self.hp_quantity
+        self.width_one_hp = self.width / self.hp_quantity
 
         self.screens = screens
         self.zombies = {} # значение в хэш таблице это хр зомби
         self.bath = []
         self.animation = Animation()
 
-    def turn(self, zombis, n):
-        if n:
-            zombis[0].batch = None
-            self.zombies[zombis][2] = 1
-            zombis[1].x = zombis[0].x
-            zombis[1].y = zombis[0].y
-            zombis[1].batch = self.batch_zombi
-            return zombis
-        
-        zombis[1].batch = None
-        self.zombies[zombis][2] = 0
-        zombis[0].x = zombis[1].x
-        zombis[0].y = zombis[1].y
-        zombis[0].batch = self.batch_zombi
-        return zombis
 
     def spawn(self, isSpawn=True):  
+        if len(self.zombies) > 5:
+            isSpawn = False
+        
         if isSpawn:
-            if choice((0, 1)):
+            if choice((False, True)):
                 y = randint(0, self.screens.height)
                 x = choice((0, self.screens.width))
             else:
@@ -158,31 +141,46 @@ class Zombi:
                 y = choice((0, self.screens.height))
             
             self.art = self.animation.fox(x, y)
-            self.art[0].batch = self.batch_zombi
-            zombi_key = self.art
-            self.zombies[zombi_key] = [
+            self.art[0].batch = all_batch
+            self.zombies[self.art] = [
                 sh.Rectangle(
                     x, y + self.height, 
                     self.width, 8, 
-                    batch=self.batch_zombi, color=(255, 0, 0)
-                ), self.width / self.xp, 0
+                    batch=all_batch, color=(255, 0, 0)
+                ), self.width / self.xp, 0, 0
                 ]
             
         print(len(self.zombies))
 
+    def turn(self, zombis, n):
+        if n:
+            zombis[0].batch = None
+            self.zombies[zombis][2] = 1
+            zombis[1].x = zombis[0].x
+            zombis[1].y = zombis[0].y
+            zombis[1].batch = all_batch
+            return zombis
+        
+        zombis[1].batch = None
+        self.zombies[zombis][2] = 0
+        zombis[0].x = zombis[1].x
+        zombis[0].y = zombis[1].y
+        zombis[0].batch = all_batch
+        return zombis
+    
     def moving(self):
         for zombis in self.zombies:
             n = self.zombies[zombis][2]
             zombis_ser_x = zombis[n].x + zombis[n].width // 2
             player_ser_x = self.player_body.x + self.player_body.width // 2
 
+            # Передвижение по Х
             if zombis_ser_x < player_ser_x - 70:
                 if not n:
                     zombis = self.turn(zombis, 1)
                     n = 1
                 zombis[1].x += self.speed
                 self.zombies[zombis][0].x += self.speed
-
             elif player_ser_x < zombis_ser_x - 70:
                 if n:
                     zombis = self.turn(zombis, 0)
@@ -190,13 +188,44 @@ class Zombi:
                 zombis[0].x -= self.speed
                 self.zombies[zombis][0].x -= self.speed
 
-
+            # Передвижение по У
             if self.player_body.y > zombis[n].y + 5:
                 zombis[n].y += self.speed 
                 self.zombies[zombis][0].y += self.speed
             elif self.player_body.y < zombis[n].y - 5:
                 zombis[n].y -= self.speed 
                 self.zombies[zombis][0].y -= self.speed
+            
+    
+    def damag(self, x1, y1, width, height):
+        for zomby_one in self.zombies:
+            hp_zomby = self.zombies[zomby_one][0]
+            zomby = zomby_one[self.zombies[zomby_one][2]] # Проверяет нынешнию анимация для определения параметров зомби
+            x2 = x1 + width
+            y2 = y1 + height
+
+            x_zomb = zomby.x
+            y_zomb = zomby.y
+
+            X = x1 - zomby.width < x_zomb < x2 
+            Y = y1 - zomby.height < y_zomb < x2 
+
+            
+            time0 = time()
+            zomby_time = self.zombies[zomby_one][3]
+            time_kd = time0 - zomby_time > self.kd
+            if X and Y and time_kd:
+                self.zombies[zomby_one][3] = time0
+                print(hp_zomby.width, self.width_one_hp)
+                hp_zomby.width -= self.width_one_hp
+                
+                if hp_zomby.width <= 0:
+                    zomby_one[0].batch = None
+                    zomby_one[1].batch = None
+                    self.zombies.pop(zomby_one)
+                    del zomby_one
+                    break
+
 
     def attack(self, impact_force=1):
         for zomby in self.zombies:
@@ -206,9 +235,6 @@ class Zombi:
                 zomby.width, zomby.height,
                 impact_force
                 )
-
-    def draw(self):
-        self.batch_zombi.draw()
 
 
 #_____Стены________________________________________________________________________________#
@@ -227,7 +253,6 @@ class Wall:
         # Ширина стен
         self.width_wall = 20
         # Пакет данных со всеми стенами
-        self.dom = pyglet.graphics.Batch() 
 
         self.all_walls_in_forest = {
             left_wall: None, 
@@ -245,14 +270,14 @@ class Wall:
                 line_wall[0], line_wall[1], 
                 line_wall[2], line_wall[3], 
                 color=line_wall[4], thickness=self.width_wall, 
-                batch=self.dom
+                batch=all_batch
                 )
         
         for recta_wall in self.all_spikes_in_forest:
             self.all_spikes_in_forest[recta_wall] = sh.Rectangle(
                 recta_wall[0], recta_wall[1], 
                 recta_wall[2], recta_wall[3], 
-                color=recta_wall[4], batch=self.dom
+                color=recta_wall[4], batch=all_batch
                 )
             
 
@@ -310,9 +335,5 @@ class Wall:
             if not ogran:
                 return False
         return True
-
-    #   Функция для отображения стен
-    def draw(self): 
-        self.dom.draw()
 
 
