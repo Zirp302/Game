@@ -18,25 +18,34 @@ class Menu:
         self.y_settings = self.y_play - self.knop_height - 20
         self.y_exat = self.y_settings - self.knop_height - 20
 
-        self.y_menu = 620
+        self.y_manu_game = 620
         self.x1_menu = 10
         self.x2_menu = 110
     
-    def game(self):
-        self.menu_key = sh.Line(
-            self.x1_menu, self.y_menu, self.x2_menu, self.y_menu, 
+    def in_game(self):
+        # Кнопка паузы
+        self.pause_key = sh.Line(
+            self.x1_menu, self.y_manu_game, self.x2_menu, self.y_manu_game, 
             self.knop_height, color=(133, 133, 133), 
             batch=all_batch, group=self.gr
             )
         
-        self.menu_text = pyglet.text.Label( 
-                '||', self.x1_menu + 39, self.y_menu - 30, 
+        self.pause_text = pyglet.text.Label( 
+                '||', self.x1_menu + 39, self.y_manu_game - 30, 
                 font_size=40, font_name='SevenExEight Pixel', 
                 color=(13, 13, 13), batch=all_batch, group=self.gr
                 )
+        
+        # Кнопка оружия
+        self.weapon_key = sh.Circle(
+            self.width - 100, self.y_manu_game, 
+            50, color=(133, 133, 133), 
+            batch=all_batch, group=self.gr 
+        )
 
     
-    def stop(self):
+    def glav_menu(self):
+        # Все клавиши из главного меню
         self.keys_texts = {
             self.y_play: "Играть", 
             self.y_settings: "Настройки", 
@@ -45,8 +54,9 @@ class Menu:
     
         self.keys_click = list(self.keys_texts)
         self.knop = []
-        
-        for y in self.keys_texts: # Цикл для создания клавишь и текста на них
+
+        # Цикл для создания клавишь и текста на них
+        for y in self.keys_texts:
             text = self.keys_texts[y]
             x = self.width // 2 - len(text) * 16
 
@@ -69,11 +79,19 @@ class Menu:
         X = self.x2 > x > self.x1
         height_ser = self.knop_height // 2
 
-        self.key_menu = (
+        # Проверяет нажатие на кнопку паузы
+        self.key_pause = (
             self.x2_menu > x > self.x1_menu and 
-            self.y_menu + height_ser > y > self.y_menu - height_ser
+            self.y_manu_game + height_ser > y > self.y_manu_game - height_ser
             )
+
+        self.key_weapon = (
+            self.width - 100 + self.weapon_key.radius > x > self.width - 100 - self.weapon_key.radius and
+            self.y_manu_game + self.weapon_key.radius > y > self.y_manu_game - self.weapon_key.radius
+        )
         
+
+        # Проверяет нажатие у всех кнопок из главного меню
         list_keys_texts = list(self.keys_texts)
         for i in range(len(self.keys_click)):
             self.keys_click[i] = (
@@ -82,6 +100,7 @@ class Menu:
                 )
             if self.keys_click[i]:
                 return
+
 
     def draw(self):
         for i in self.knop:

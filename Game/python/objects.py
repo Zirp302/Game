@@ -11,8 +11,8 @@ all_batch = pyglet.graphics.Batch()
 class Player:
     def __init__(self, screens):
         # Игровые параметры
-        self.x_spawn = 320
-        self.y_spawn = 320
+        self.x_spawn = 0
+        self.y_spawn = 0
         self.time = 0
         self.kd = 0.75
 
@@ -23,9 +23,10 @@ class Player:
         
         # Параметры полоски HP 
         self.color_hp = (255, 0, 0)
-        self.height_hp = 15
-        self.x_hp = self.x_spawn
-        self.y_hp = self.y_spawn + self.height
+        self.height_hp = 50
+        self.width_hp = 400
+        self.x_hp = 200
+        self.y_hp = 600
         self.hp_quantity = 15
 
         self.screens = screens
@@ -34,12 +35,12 @@ class Player:
 
     def hp(self):
         self.hp_quantity = self.hp_quantity
-        self.width_one_hp = self.width / self.hp_quantity
+        self.width_one_hp = self.width_hp / self.hp_quantity
         self.hp_player = sh.Rectangle(
             self.x_hp, self.y_hp, 
-            self.width, self.height_hp, 
+            self.width_hp, self.height_hp, 
             self.color_hp, batch=all_batch, 
-            group = pyglet.graphics.Group(1)
+            group = pyglet.graphics.Group(993)
             )
 
     def body(self): # Создание существа
@@ -72,9 +73,10 @@ class Player:
         self.body_player.x = self.x_spawn
         self.body_player.y = self.x_spawn
         # Возполнение hp
-        self.hp_player.width = self.width
-        self.hp_player.x = self.x_spawn
-        self.hp_player.y = self.y_spawn + self.height
+        self.hp_player.width = self.width_hp
+        # Нож
+        self.knife.x = self.body_player.x + (self.height // 2) 
+        self.knife.y = self.body_player.y + self.width
     
     #   Передвижеие игрока и его полоски жизни
     def moving(self, x, y, all_walls):
@@ -93,12 +95,21 @@ class Player:
         if all_walls:
             if map_x:
                 self.body_player.x += x
-                self.hp_player.x += x
+                self.knife.x += x
 
             if map_y:
                 self.body_player.y += y
-                self.hp_player.y += y
-            
+                self.knife.y += y
+        
+    def weapion(self):
+        self.knife = sh.Rectangle(
+            self.body_player.x + (self.height // 2), 
+            self.body_player.y + self.width,
+            40, 15, color=(133, 133, 133)
+            )
+        print(9)
+
+
 
 
 
@@ -118,7 +129,7 @@ class Zombi:
         self.kd = 1
         
         self.height_hp = 15
-        self.hp_quantity = 5
+        self.hp_quantity = 1
         self.hp_quantity = self.hp_quantity
         self.width_one_hp = self.width / self.hp_quantity
 
@@ -129,7 +140,7 @@ class Zombi:
 
 
     def spawn(self, isSpawn=True):  
-        if len(self.zombies) > 5:
+        if len(self.zombies) > 0:
             isSpawn = False
         
         if isSpawn:
@@ -150,7 +161,6 @@ class Zombi:
                 ), self.width / self.xp, 0, 0
                 ]
             
-        print(len(self.zombies))
 
     def turn(self, zombis, n):
         if n:
@@ -216,7 +226,6 @@ class Zombi:
             time_kd = time0 - zomby_time > self.kd
             if X and Y and time_kd:
                 self.zombies[zomby_one][3] = time0
-                print(hp_zomby.width, self.width_one_hp)
                 hp_zomby.width -= self.width_one_hp
                 
                 if hp_zomby.width <= 0:
@@ -224,6 +233,7 @@ class Zombi:
                     zomby_one[1].batch = None
                     self.zombies.pop(zomby_one)
                     del zomby_one
+                    print('Лиса умирла от психической травмы')
                     break
 
 
