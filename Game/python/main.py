@@ -8,17 +8,17 @@ from Objects import Zombi, Pl, Stena, Ognestrel
 import os
 # доки пайглета https://pyglet.readthedocs.io/en/latest/programming_guide/shapes.html
 #это чтобы писать названия клавиш не указывая функцию key
-# wind is a window
 isSpawn=True
+#могут ли зомби появляться
 #Сори но это хп персонажа я не мог не реализовать хп если есть зомби
 wind_width, wind_height = (720, 720)
 wind = pyglet.window.Window(width=wind_width, height=wind_height, caption="gameOnPyglet")
+# wind is a window object
 width, height = (50, 100)
 playr = Pl()
 xp=100
 pist = Ognestrel(playr)
 uprav = playrUprav(playr, playr.HP, pist)
-#могут ли зомби появляться
 #Скорость появления зомбей попробуй изменить число на какое нибудь оч маленькое по типу 1/60 и тд
 w = 30
 h = 30
@@ -30,12 +30,6 @@ def on_mouse_press(x,y,button,modifiers):
 defaultZomb = Zombi(playr, uprav)
 MiniBoss = Zombi(playr=playr,plrUprv=uprav, width=25, height=25, type="big", xp=1000, speed=0.2, spawnSpeed=3, damage=30)
 
-
-
-@wind.event
-def on_mouse_press(x,y,button,modifiers):
-    defaultZomb.attack()
-    print(f"x = {x}, y = {y}")
 
 '''
 dm = False
@@ -85,16 +79,14 @@ def update(dt, speed=5):
     if keys[D]:
         x_moving, y_moving = speed, 0
         uprav.pl_moving(x_moving, y_moving, avanpost(x_moving, y_moving))
-    if keys[Q]:
+    if keys[SPACE]:
         pist.shot()
-    if keys[E]:
+    if keys[M]:
         pist.recharge()
     if True in (keys[UP], keys[DOWN], keys[RIGHT], keys[LEFT]):
         pist.Rotat(keys)
 
 
-
-defaultZomb.test(360, 360, 30, 30)
 @wind.event
 def on_draw():
     wind.clear()
@@ -106,13 +98,11 @@ def on_draw():
     pist.pist.draw()
     pist.mugsInLab.draw()
     pist.AllmugsLab.draw()
-"""i=1
-while True:
-    os.mkdir("hihi" + str(i))
-    i += 1"""
-#defaultZomb.spawn()
-pyglet.clock.schedule_interval(defaultZomb.spawn, defaultZomb.spawSpeed)
-pyglet.clock.schedule_interval(defaultZomb.moving, 1/60)
+
+
+defaultZomb.spawn()
+#pyglet.clock.schedule_interval(defaultZomb.spawn, defaultZomb.spawSpeed)
+#pyglet.clock.schedule_interval(defaultZomb.moving, 1/60)
 pyglet.clock.schedule_interval(pist.pulaMoving, 1/100)
 #передвижения зомбей с обновлением каждые 1/4 секунды может уже не 1/4 
 pyglet.clock.schedule_interval(update, 1/60)

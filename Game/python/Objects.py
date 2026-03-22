@@ -8,7 +8,7 @@ class OutOfXpError(Exception):
     pass
 zombies={}
 spawnSpeed=1/2
-zombiBat=pyglet.graphics.Batch()
+global_bat=pyglet.graphics.Batch()
 
 #Если объекты для прорисовки не добавить во что то глобальное то они не прорисуются
 """
@@ -23,19 +23,19 @@ class Pl:
         self.height = height
         self.color = color
         self.xp = pyglet.text.Label(str(xp),20,690,color=(255,0,0))
-        self.pl = pyglet.graphics.Batch()
+        self.pl_bat = pyglet.graphics.Batch()
         self.harXp = harXp
-        self.playr = sh.Rectangle(self.x, self.y, self.width, self.height, self.color, batch=self.pl)
+        self.playr = sh.Rectangle(self.x, self.y, self.width, self.height, self.color, batch=self.pl_bat)
         self.HP_playr = harXp
         self.HP_One = self.width / self.harXp
         self.Polosa = self.HP_playr * self.HP_One # Полоска HP
-        self.HP = sh.Rectangle(self.x, self.y + self.height, self.Polosa, 15, color=(255,0,0), batch=self.pl)
+        self.HP = sh.Rectangle(self.x, self.y + self.height, self.Polosa, 15, color=(255,0,0), batch=self.pl_bat)
         self.speed = speed
         self.phys = Physics()
         self.items = {
             "rock" : 7000
         }
-        self.itemsCheck = pyglet.text.Label()
+        self.itemsCheck = pyglet.text.Label(str(self.items), 5, 700, color=(255, 255, 0), batch=global_bat)
     # Характеристеки самого игрока
     def player(self): #Создание и отображение игрока
         return self.playr
@@ -45,11 +45,11 @@ class Pl:
         self.HP_playr = 5
         self.HP_One = self.width / self.harXp
         self.Polosa = self.HP_playr * self.HP_One # Полоска HP
-        self.HP = sh.Rectangle(self.x, self.y + self.height, self.Polosa, 15, color=(255,0,0), batch=self.pl)
+        self.HP = sh.Rectangle(self.x, self.y + self.height, self.Polosa, 15, color=(255,0,0), batch=self.pl_bat)
         return self.HP
 
     def draw(self): # Отрисовка пакета данных с игроком и его полоской так как они должны передвигаться одновременно и одинаково
-        self.pl.draw() 
+        self.pl_bat.draw() 
 
 
 class Stena: # Характеристики стен для их отображения
@@ -181,7 +181,7 @@ class Walls:
         self.uprav = uprav
 
 class Zombi:
-    def __init__(self, playr, plrUprv, batch=zombiBat, width=35, height=35, col={21, 110, 100}, type=None, xp=100, speed=1, spawnSpeed=2, damage=10):
+    def __init__(self, playr, plrUprv, batch=global_bat, width=35, height=35, col={21, 110, 100}, type=None, xp=30, speed=1, spawnSpeed=2, damage=10):
         #Мне лень писать self
         #Но я напишу
         #type это тип зомби
@@ -204,11 +204,11 @@ class Zombi:
             coord1 = random.choice((0,720))
             if r(0,1) == 0:
                 #print(1,coord,coord1)
-                zombies[(sh.Rectangle(coord, coord1, self.width, self.height, (21, 110, 100), batch=zombiBat))] = (sh.Rectangle(coord, coord1 + self.height, self.width, 4, batch=zombiBat, color=(255, 0, 0)), self.width / self.xp)
+                zombies[(sh.Rectangle(coord, coord1, self.width, self.height, (21, 110, 100), batch=global_bat))] = (sh.Rectangle(coord, coord1 + self.height, self.width, 4, batch=global_bat, color=(255, 0, 0)), self.width / self.xp)
             else:
                 #print(2,coord1,coord)
                 #зомбей справа  и сверху видно не было поэтому я думал что спaвн почему то не работает
-                zombies[(sh.Rectangle(coord1, coord, self.width, self.height, (21, 110, 100), batch=zombiBat))] = (sh.Rectangle(coord1, coord + self.height, self.width, 4, batch=zombiBat, color=(255, 0, 0)), self.width / self.xp)
+                zombies[(sh.Rectangle(coord1, coord, self.width, self.height, (21, 110, 100), batch=global_bat))] = (sh.Rectangle(coord1, coord + self.height, self.width, 4, batch=global_bat, color=(255, 0, 0)), self.width / self.xp)
             #значение в хэш таблице это хр зомби
 
     def moving(self, dt=1/60):
@@ -231,7 +231,7 @@ class Zombi:
                         zombis.y = zombis.y - self.speed
                         zombies[zombis][0].y -= self.speed
     def test(self, x, y, width, height):
-        zombies[sh.Rectangle(x, y, width, height, color=self.col, batch=zombiBat)] = (sh.Rectangle(x, y + height, width, 3, color=(255,0,0), batch=zombiBat), self.width / 100)
+        zombies[sh.Rectangle(x, y, width, height, color=self.col, batch=global_bat)] = (sh.Rectangle(x, y + height, width, 3, color=(255,0,0), batch=global_bat), self.width / 100)
 
 
                         
@@ -241,25 +241,9 @@ class Zombi:
             for i in zombies:
                 x, y, x1, y1 = self.playr.x, self.playr.y, self.playr.x + self.playr.width, self.playr.y + self.playr.height
                 zx, zy, zx1, zy1 = i.x, i.y, i.x + i.width, i.y + i.height
-                #print((zy1 , y1 , zy), (zy1 , y , zy), (zx1 , x1 , zx), (zx1 , x , zx))
-                #print(((zy1 >= y1 > zy), (zy1 >= y > zy)), ((zx1 >= x1 > zx), (zx1 >= x > zx)))
-                #print(x,y,x1,y1)
-                #print(zx,zy,zx1,zy1)
-                #if (minpx<=maxzx and (minpy>=minzy or maxpy<=maxzy)) or (maxpx>=minzx and (minpy>=minzy or maxpy<=maxzy)) or (minpy<=maxzy and (minpx>=minzx or maxpx<=maxzx)) or (minpy>=maxzy and (minpx>=minzx or maxpx<=maxzx)):
-                        #print(minpx,maxpx,minpy,maxpy)
-                        #print(minzx,maxzx,minpy,maxzy)
-                    #if self.playr.x==i.x and self.playr.y==i.y:
-                        #self.playr.xp.text = str(int(self.playr.xp.text)-self.damage)
                 if ((zy1 >= y1 > zy) or (zy1 >= y > zy)) and ((zx1 >= x1 > zx) or (zx1 >= x > zx)):
-                        print("yes we gonna think about two chairs")
                         self.playr.HP.width -= self.playr.HP_One
-                        #if int(self.playr.xp.text)==0:
                         if self.playr.HP.width <= 0:
-                            """self.HP.width = self.playr.width
-                            self.playr.x = self.playr.x
-                            self.playr.y = self.playr.y
-                            self.HP.x = self.playr.x
-                            self.HP.y = self.playr.y + self.playr.height"""
                             raise OutOfXpError
                             
                     
