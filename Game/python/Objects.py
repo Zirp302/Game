@@ -301,55 +301,39 @@ class Ognestrel:
             return mug
 
     def pula_moving_and_damage(self, dt):
-        for i in mugs:
-            try:
-                if not i.x in [720, 0] and not i.y in [720, 0]:
-                    i.x += mugs[i][0]
-                    i.y += mugs[i][1]
-                    for ii in zombies:
-                        x, y, x1, y1 = i.x, i.y, i.x + i.width, i.y + i.height
-                        zx, zy, zx1, zy1 = ii.x, ii.y, ii.x + ii.width, ii.y + ii.height
-                        if ((zy1 >= y1 > zy) or (zy1 >= y > zy)) and ((zx1 >= x1 > zx) or (zx1 >= x > zx)):
-                            rest, xp = zombies[ii]
-                            rest.width -= xp * self.damag
-                            mugs.pop(i)
-                            i.delete()
-                else:
-                    mugs.pop(i)
-                    i.delete()
-                    break
-            except AttributeError:
-                continue
+        try:
+            for i in mugs:
+                try:
+                    if not i.x in [720, 0] and not i.y in [720, 0]:
+                        i.x += mugs[i][0]
+                        i.y += mugs[i][1]
+                        for ii in zombies:
+                            x, y, x1, y1 = i.x, i.y, i.x + i.width, i.y + i.height
+                            zx, zy, zx1, zy1 = ii.x, ii.y, ii.x + ii.width, ii.y + ii.height
+                            if ((zy1 >= y1 > zy) or (zy1 >= y > zy)) and ((zx1 >= x1 > zx) or (zx1 >= x > zx)):
+                                xp_line, xp = zombies[ii]
+                                xp_line.width -= xp * self.damag
+                                mugs.pop(i)
+                                i.delete()
+                                if xp_line.width <= 0:
+                                    zombies.pop(ii)
+                                    ii.delete()
+                                    break
+
+                    else:
+                        mugs.pop(i)
+                        i.delete()
+                        break
+                except RuntimeError:
+                    print(1)
+        except RuntimeError:
+            pass
     def recharge(self):
         if self.MaxMugsNum <= int(self.AllmugsLab.text):
             now = int(self.mugsInLab.text.split("/")[0])
             self.AllmugsLab.text = str(int(self.AllmugsLab.text) - (self.MaxMugsNum - int(now)))
             self.mugsNum = self.MaxMugsNum
             self.mugsInLab.text = str(str(self.mugsNum) + "/" + self.mugsInLab.text.split("/")[1])
-    """    def damage(self, dt):
-        mugsToDel = []
-        for i in mugs:
-            zombToDel = []
-            for ii in zombies:
-                try:
-                    x, y, x1, y1 = i.x, i.y, i.x + i.width, i.y + i.height
-                    zx, zy, zx1, zy1 = ii.x, ii.y, ii.x + ii.width, ii.y + ii.height
-                    if ((zy1 >= y1 > zy) or (zy1 >= y > zy)) and ((zx1 >= x1 > zx) or (zx1 >= x > zx)):
-                        mugsToDel.append(i)
-                        rest, xp = zombies[ii]
-                        rest.width -= xp * self.damag
-                        #self.toDel.append(i)
-                        if rest.width <= 0:
-                            zombToDel.append(ii)
-                        break
-                except AttributeError:
-                    break
-            for ii in zombToDel:
-                zombies.pop(ii)
-                ii.delete()
-        for i in mugsToDel:
-            i.delete()
-            mugs.pop(i)"""
     def Rotat(self, keys):
         if keys[RIGHT]:
             self.pist.x = self.playr.x + self.playr.width
@@ -369,8 +353,8 @@ class Ognestrel:
         """if self.pist.x != self.x or self.pist.y != self.y or self.pist.x2 != self.x2 or self.pist.y2 != self.y2:
             print("jjj")"""
 
-        """if keys[RIGHT]:
-            if self.playr.x <= self.x <= self.playr.x + self.playr.hseeight:
+        """        if keys[RIGHT]:
+            if self.playr.x <= self.x <= self.playr.x + self.playr.height:
                 if self.playr.x == self.x:
                     self.x += 1
                     self.pist.x += 1
@@ -385,7 +369,7 @@ class Ognestrel:
                     self.pist.x -= 1
                 elif self.playr.x + self.playr.width == self.x:
                     self.x += 1
-                    self.pist.x += 1"""           
+                    self.pist.x += 1 """          
 class Physics():
     def line(x1, y1, x2, y2, x, y, speed=5): 
         if x1 == x2:
