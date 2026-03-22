@@ -300,28 +300,33 @@ class Ognestrel:
             mugs[mug] = (x, y)
             return mug
 
-    def pulaMoving(self, dt):
-        self.toDel=[]
+    def pula_moving_and_damage(self, dt):
         for i in mugs:
             try:
                 if not i.x in [720, 0] and not i.y in [720, 0]:
                     i.x += mugs[i][0]
                     i.y += mugs[i][1]
+                    for ii in zombies:
+                        x, y, x1, y1 = i.x, i.y, i.x + i.width, i.y + i.height
+                        zx, zy, zx1, zy1 = ii.x, ii.y, ii.x + ii.width, ii.y + ii.height
+                        if ((zy1 >= y1 > zy) or (zy1 >= y > zy)) and ((zx1 >= x1 > zx) or (zx1 >= x > zx)):
+                            rest, xp = zombies[ii]
+                            rest.width -= xp * self.damag
+                            mugs.pop(i)
+                            i.delete()
                 else:
-                    self.toDel.append(i)
+                    mugs.pop(i)
+                    i.delete()
                     break
             except AttributeError:
                 continue
-        for i in self.toDel:
-            mugs.pop(i)
-            i.delete()
     def recharge(self):
         if self.MaxMugsNum <= int(self.AllmugsLab.text):
             now = int(self.mugsInLab.text.split("/")[0])
             self.AllmugsLab.text = str(int(self.AllmugsLab.text) - (self.MaxMugsNum - int(now)))
             self.mugsNum = self.MaxMugsNum
             self.mugsInLab.text = str(str(self.mugsNum) + "/" + self.mugsInLab.text.split("/")[1])
-    def damage(self, dt):
+    """    def damage(self, dt):
         mugsToDel = []
         for i in mugs:
             zombToDel = []
@@ -344,7 +349,7 @@ class Ognestrel:
                 ii.delete()
         for i in mugsToDel:
             i.delete()
-            mugs.pop(i)
+            mugs.pop(i)"""
     def Rotat(self, keys):
         if keys[RIGHT]:
             self.pist.x = self.playr.x + self.playr.width

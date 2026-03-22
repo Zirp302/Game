@@ -103,9 +103,9 @@ def on_draw():
 defaultZomb.spawn()
 #pyglet.clock.schedule_interval(defaultZomb.spawn, defaultZomb.spawSpeed)
 #pyglet.clock.schedule_interval(defaultZomb.moving, 1/60)
-pyglet.clock.schedule_interval(pist.pulaMoving, 1/100)
+pyglet.clock.schedule_interval(pist.pula_moving_and_damage, 1/100)
 #передвижения зомбей с обновлением каждые 1/4 секунды может уже не 1/4 
 pyglet.clock.schedule_interval(update, 1/60)
 pyglet.clock.schedule_interval(defaultZomb.attack, 1)
-pyglet.clock.schedule_interval(pist.damage, 1/200)
+#pyglet.clock.schedule_interval(pist.damage, 1/200)
 pyglet.app.run()
