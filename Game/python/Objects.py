@@ -253,7 +253,7 @@ class Zombi:
 bat = pyglet.graphics.Batch()
 mugs = {}
 class Ognestrel:
-    def __init__(self, playr, phot="ognestrel.png", damag=10, MaxMugsNum=10, mugsType="common", type=None, isPist=True, bat=bat, mugsNow=100, kd=0.2, mugSpeed=15):
+    def __init__(self, playr, phot="ognestrel.png", damag=10, MaxMugsNum=100, mugsType="common", type=None, isPist=True, bat=bat, mugsNow=100, kd=0.2, mugSpeed=15):
         self.ognTypes={}
         if not type or type not in self.ognTypes:
             self.damag = damag
@@ -261,7 +261,7 @@ class Ognestrel:
             self.mugsType = mugsType
             self.playr = playr
             #photo = pyglet.image.load(phot, open(phot, "br"))
-            self.pist = pyglet.shapes.Line(playr.x, playr.y + self.playr.height / 3, playr.x - 10, playr.y + self.playr.height / 3)
+            self.pist = pyglet.shapes.Line(playr.x + playr.width / 2, playr.y + self.playr.height / 2, playr.x - 10, playr.y + self.playr.height / 3)
             #pyglet.sprite.Sprite(photo, playr.x, playr.y+3)
             self.x = playr.x
             self.y = playr.y + self.playr.height / 3
@@ -286,7 +286,7 @@ class Ognestrel:
             self.time = time.time() + self.kd
             mx, my = self.x2, self.y2
             #print(self.x, self.x2, self.y, self.y2)
-            if self.y == self.y2:
+            """            if self.y == self.y2:
                 if self.x < self.x2:
                     x, y = self.mugSpeed, 0
                 else:
@@ -295,8 +295,14 @@ class Ognestrel:
                 if self.y < self.y2:
                     x, y = 0, self.mugSpeed
                 else:
-                    x, y = 0, -self.mugSpeed
-            mug = pyglet.shapes.Rectangle(mx, my, 4, 2, color = [250, 250, 0], batch = bat)
+                    x, y = 0, -self.mugSpeed"""
+            mx2 =  mx + (mx - self.pist.x) * 0.5
+            my2 = my + (my - self.pist.y) * 0.5
+            x = mx2 - mx
+            y = my2 - my
+            print(mx, self.pist.x2, my, self.pist.y2)
+            mug = sh.Line(mx, my, mx2, my2, color=[250, 250, 0], batch=bat)
+            #mug = pyglet.shapes.Rectangle(mx, my, 4, 2, color = [250, 250, 0], batch = bat)
             mugs[mug] = (x, y)
             return mug
 
@@ -308,7 +314,7 @@ class Ognestrel:
                         i.x += mugs[i][0]
                         i.y += mugs[i][1]
                         for ii in zombies:
-                            x, y, x1, y1 = i.x, i.y, i.x + i.width, i.y + i.height
+                            x, y, x1, y1 = i.x, i.y, i.x2, i.y2
                             zx, zy, zx1, zy1 = ii.x, ii.y, ii.x + ii.width, ii.y + ii.height
                             if ((zy1 >= y1 > zy) or (zy1 >= y > zy)) and ((zx1 >= x1 > zx) or (zx1 >= x > zx)):
                                 xp_line, xp = zombies[ii]
@@ -335,7 +341,7 @@ class Ognestrel:
             self.mugsNum = self.MaxMugsNum
             self.mugsInLab.text = str(str(self.mugsNum) + "/" + self.mugsInLab.text.split("/")[1])
     def Rotat(self, keys):
-        if keys[RIGHT]:
+        """        if keys[RIGHT]:
             self.pist.x = self.playr.x + self.playr.width
             self.pist.y = self.playr.y + self.playr.height / 3
             self.pist.x2 = self.pist.x + 10
@@ -345,7 +351,7 @@ class Ognestrel:
         if keys[UP]:
             self.pist = sh.Line(self.playr.x + self.playr.width / 3, self.playr.y + self.playr.height, self.playr.x + self.playr.width / 3, self.playr.y + self.playr.height + self.playr.HP.height + 3)
         if keys[DOWN]:
-            self.pist = sh.Line(self.playr.x + self.playr.width / 3, self.playr.y, self.playr.x + self.playr.width / 3, self.playr.y - 10)
+            self.pist = sh.Line(self.playr.x + self.playr.width / 3, self.playr.y, self.playr.x + self.playr.width / 3, self.playr.y - 10)"""
         self.x = self.pist.x
         self.y = self.pist.y
         self.x2 = self.pist.x2
@@ -353,23 +359,34 @@ class Ognestrel:
         """if self.pist.x != self.x or self.pist.y != self.y or self.pist.x2 != self.x2 or self.pist.y2 != self.y2:
             print("jjj")"""
 
-        """        if keys[RIGHT]:
-            if self.playr.x <= self.x <= self.playr.x + self.playr.height:
-                if self.playr.x == self.x:
-                    self.x += 1
-                    self.pist.x += 1
-                elif self.playr.x + self.playr.width == self.x:
-                    self.x -= 1
-                    self.pist.x -= 1
+        if keys[RIGHT]:
+            if self.x2 > self.playr.x + self.playr.width / 2:
+                self.pist.y2 -= 1
+                self.y2 -= 1
+            else:
+                self.pist.y2 += 1
+                self.y2 += 1      
+            if self.y2 > self.playr.y + self.playr.height / 2:
+                self.pist.x2 += 1
+                self.x2 += 1
+            else:
+                self.pist.x2 -= 1
+                self.x2 -= 1
 
         if keys[LEFT]:
-            if self.playr.x <= self.x <= self.playr.x + self.playr.height:
-                if self.playr.x == self.x:
-                    self.x -= 1
-                    self.pist.x -= 1
-                elif self.playr.x + self.playr.width == self.x:
-                    self.x += 1
-                    self.pist.x += 1 """          
+            if self.x2 > self.playr.x + self.playr.width / 2:
+                self.pist.y2 += 1
+                self.y2 += 1
+            else:
+                self.pist.y2 -= 1
+                self.y2 -= 1      
+            if self.y2 > self.playr.y + self.playr.height / 2:
+                self.pist.x2 -= 1
+                self.x2 -= 1
+            else:
+                self.pist.x2 += 1
+                self.x2 += 1
+
 class Physics():
     def line(x1, y1, x2, y2, x, y, speed=5): 
         if x1 == x2:

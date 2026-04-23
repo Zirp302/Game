@@ -20,6 +20,7 @@ class playrUprav:
             self.playr.HP.x += x
             if self.oruzhie.isPist == True:
                 self.oruzhie.pist.x += x
+                self.oruzhie.pist.x2 += x
                 self.oruzhie.x += x
                 self.oruzhie.x2 += x
 
@@ -29,6 +30,7 @@ class playrUprav:
             self.playr.HP.y += y
             if self.oruzhie.isPist == True:
                 self.oruzhie.pist.y += y
+                self.oruzhie.pist.y2 += y
                 self.oruzhie.y += y
                 self.oruzhie.y2 += y
 
